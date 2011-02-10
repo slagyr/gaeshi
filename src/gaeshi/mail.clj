@@ -38,12 +38,12 @@
    :text (.getTextBody message)
    :to (as-coll (.getTo message))})
 
-(def service-instance (atom nil))
+(def mail-service-instance (atom nil))
 
 (defn mail-service []
-  (when (nil? @service-instance)
-    (reset! service-instance (MailServiceFactory/getMailService)))
-  @service-instance)
+  (when (nil? @mail-service-instance)
+    (reset! mail-service-instance (MailServiceFactory/getMailService)))
+  @mail-service-instance)
 
 (defn send-mail [values]
   (let [message (map->message values)]

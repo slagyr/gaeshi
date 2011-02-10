@@ -35,6 +35,13 @@
       (should= ["cc1@test.com" "cc2@test.com"] (.getCc message))
       (should= ["to1@test.com" "to2@test.com"] (.getTo message))))
 
+  (it "creates message will nil recipients if there are none"
+    (let [message (map->message {:bcc nil
+                                 :cc []})]
+      (should= [] (.getBcc message))
+      (should= [] (.getCc message))
+      (should= [] (.getTo message))))
+
   (it "creates messages with attachments"
     (let [message (map->message {:attachments [{:filename "one.txt" :data (.getBytes "Hello")}]})
           attachments (.getAttachments message)]

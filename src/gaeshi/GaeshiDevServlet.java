@@ -9,7 +9,9 @@ import java.io.IOException;
 
 public class GaeshiDevServlet extends GaeshiServlet
 {
-  private Var refreshFn;
+  private static Var refreshFn;
+  private static final Object lock = new Object();
+  private static long lastRefreshTime;
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -30,6 +32,13 @@ public class GaeshiDevServlet extends GaeshiServlet
   {
     if(refreshFn == null)
       refreshFn = RT.var("gaeshi.servlet", "refresh!");
-    refreshFn.invoke();
+    synchronized(lock)
+    {
+      if(System.currentTimeMillis() > (lastRefreshTime + 1000))
+      {
+        refreshFn.invoke();
+        lastRefreshTime = System.currentTimeMillis();
+      }
+    }
   }
 }

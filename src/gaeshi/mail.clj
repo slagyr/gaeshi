@@ -3,9 +3,10 @@
     [com.google.appengine.api.mail MailService$Message MailService$Attachment MailServiceFactory]))
 
 (defn- as-coll [value]
-  (if (coll? value)
-    value
-    [value]))
+  (cond
+    (nil? value) []
+    (coll? value) value
+    :else  [value]))
 
 (defn map->attachment [values]
   (MailService$Attachment. (:filename values) (:data values)))

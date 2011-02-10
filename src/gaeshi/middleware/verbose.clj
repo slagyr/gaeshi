@@ -1,6 +1,6 @@
 (ns gaeshi.middleware.verbose)
 
-(def request-count (atom 1))
+(def request-count (atom 0))
 
 (def spaces (repeat " "))
 (def indents (repeat "    "))
@@ -42,14 +42,14 @@
 
 (defn wrap-verbose [handler]
   (fn [request]
-    (println "REQUEST " @request-count " ========================================================================================")
-    (say (dissoc request :servlet-request))
-    (println)
-    (println)
-    (let [response (handler request)]
-      (println "RESPONSE " @request-count " ========================================================================================")
-      (say (assoc response :body (str (count (str (:body response))) " chars of body")))
+    (let [request-id (swap! request-count inc)]
+      (println "REQUEST " request-id " ========================================================================================")
+      (say (dissoc request :servlet-request))
       (println)
       (println)
-      (swap! request-count inc)
-      response)))
+      (let [response (handler request)]
+        (println "RESPONSE " request-id " ========================================================================================")
+        (say (assoc response :body (str (count (str (:body response))) " chars of body")))
+        (println)
+        (println)
+        response))))

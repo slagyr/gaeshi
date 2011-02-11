@@ -28,7 +28,7 @@ public class GaeshiDevServlet extends GaeshiServlet
     }
   }
 
-  private void reloadClojureSrc() throws Exception
+  private static void reloadClojureSrc() throws Exception
   {
     if(refreshFn == null)
       refreshFn = RT.var("gaeshi.servlet", "refresh!");

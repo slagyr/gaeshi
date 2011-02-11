@@ -21,12 +21,17 @@
   (isUserAdmin [this] @admin?)
   (isUserLoggedIn [this] @logged-in?))
 
+(def default-user-values {:name "Test User"
+                          :email "test@user.com"
+                          :auth-domain "test.com"
+                          :id "1234567890"})
+
 (def fake-user-service (atom nil))
 
 (defn setup-fake-user [& args]
   (let [values (apply hash-map args)
         service @fake-user-service]
-    (when (contains? values :user) (reset! (.user service) (map->user (:user values))))
+    (when (contains? values :user) (reset! (.user service) (map->user (merge default-user-values (:user values)))))
     (when (contains? values :admin?) (reset! (.admin? service) (:admin? values)))
     (when (contains? values :logged-in?) (reset! (.logged-in? service) (:logged-in? values)))))
 

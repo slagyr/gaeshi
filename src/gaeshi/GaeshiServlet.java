@@ -14,6 +14,7 @@ import java.security.AccessController;
 public class GaeshiServlet extends HttpServlet
 {
   protected IFn serviceMethod;
+  private static Var makeServiceMethodFn;
 
   public GaeshiServlet()
   {
@@ -40,16 +41,23 @@ public class GaeshiServlet extends HttpServlet
     }
   }
 
+  protected static Var getMakeServiceMethodFn() throws Exception
+  {
+    if(makeServiceMethodFn == null)
+    {
+      RT.loadResourceScript("gaeshi/servlet.clj");
+      makeServiceMethodFn = RT.var("gaeshi.servlet", "make-service-method");
+    }
+    return makeServiceMethodFn;
+  }
+
   protected void loadServiceMethod() throws Exception
   {
     final String coreNamespace = getCoreNamespace();
     loadCoreNamespace(coreNamespace);
     Var handler = loadHandler(coreNamespace);
 
-    RT.loadResourceScript("gaeshi/servlet.clj");
-    Var makeServiceMethod = RT.var("gaeshi.servlet", "make-service-method");
-
-    serviceMethod = (IFn)makeServiceMethod.invoke(handler);
+    serviceMethod = (IFn)getMakeServiceMethodFn().invoke(handler);
   }
 
   private Var loadHandler(String coreNamespace)

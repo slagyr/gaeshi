@@ -69,10 +69,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="GaeshiDevServlet.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="GaeshiDevServlet.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="5" selection-start="874" selection-end="874" vertical-scroll-proportion="0.0">
+            <state line="48" column="53" selection-start="1159" selection-end="1159" vertical-scroll-proportion="0.50341463">
               <folding />
             </state>
           </provider>
@@ -123,10 +123,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="servlet.clj" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="servlet.clj" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gaeshi/servlet.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="30" selection-start="340" selection-end="340" vertical-scroll-proportion="0.15219513">
+            <state line="13" column="30" selection-start="340" selection-end="340" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -186,8 +186,8 @@
         <option value="$PROJECT_DIR$/spec/gaeshi/users_spec.clj" />
         <option value="$PROJECT_DIR$/src/gaeshi/spec_helpers/users.clj" />
         <option value="$PROJECT_DIR$/src/gaeshi/GaeshiServlet.java" />
-        <option value="$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java" />
         <option value="$PROJECT_DIR$/src/gaeshi/servlet.clj" />
+        <option value="$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java" />
       </list>
     </option>
   </component>
@@ -308,18 +308,19 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Modules" />
     <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
+    <property name="OverrideImplement.combined" value="true" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="recentsLimit" value="5" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="recentsLimit" value="5" />
-    <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
-    <property name="project.structure.side.proportion" value="0.2" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="dynamic.classpath" value="false" />
-    <property name="MemberChooser.copyJavadoc" value="false" />
   </component>
   <component name="RunManager" selected="JUnit.gaeshi.spec_helpers in Gaeshi">
     <configuration default="false" name="gaeshi.spec_helpers in Gaeshi" type="JUnit" factoryName="JUnit" temporary="true">
@@ -645,6 +646,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/gaeshi/servlet.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="30" selection-start="340" selection-end="340" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/gaeshi/GaeshiServlet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="16" column="30" selection-start="446" selection-end="446" vertical-scroll-proportion="0.0">
@@ -654,14 +662,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="5" selection-start="874" selection-end="874" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/servlet.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="30" selection-start="340" selection-end="340" vertical-scroll-proportion="0.15219513">
+        <state line="48" column="53" selection-start="1159" selection-end="1159" vertical-scroll-proportion="0.50341463">
           <folding />
         </state>
       </provider>

@@ -1,4 +1,4 @@
-package gaeshi;
+package gaeshi.support;
 
 import clojure.lang.*;
 
@@ -24,14 +24,17 @@ public class GaeshiDevServlet extends GaeshiServlet
     }
     catch(Exception e)
     {
-      throw new ServletException(e);
+      e.printStackTrace();
+      e.printStackTrace(resp.getWriter());
+      resp.getWriter().close();
+      resp.setContentType("text/plain");
     }
   }
 
   private static void reloadClojureSrc() throws Exception
   {
     if(refreshFn == null)
-      refreshFn = RT.var("gaeshi.servlet", "refresh!");
+      refreshFn = RT.var("gaeshi.support.servlet", "refresh!");
     synchronized(lock)
     {
       if(System.currentTimeMillis() > (lastRefreshTime + 1000))

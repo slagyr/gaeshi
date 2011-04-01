@@ -2,7 +2,7 @@
   (:use
     [speclj.core]
     [gaeshi.mail]
-    [gaeshi.spec_helpers.mail])
+    [gaeshi.spec-helpers.mail])
   (:import
     [com.google.appengine.api.mail MailService]))
 

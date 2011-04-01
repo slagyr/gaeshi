@@ -1,4 +1,4 @@
-package gaeshi;
+package gaeshi.support;
 
 import clojure.lang.*;
 import gaeshi.util.Clj;
@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLClassLoader;
-import java.security.AccessController;
 
 public class GaeshiServlet extends HttpServlet
 {
@@ -45,8 +43,8 @@ public class GaeshiServlet extends HttpServlet
   {
     if(makeServiceMethodFn == null)
     {
-      RT.loadResourceScript("gaeshi/servlet.clj");
-      makeServiceMethodFn = RT.var("gaeshi.servlet", "make-service-method");
+      RT.loadResourceScript("gaeshi/support/servlet.clj");
+      makeServiceMethodFn = RT.var("gaeshi.support.servlet", "make-service-method");
     }
     return makeServiceMethodFn;
   }

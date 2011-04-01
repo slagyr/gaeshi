@@ -2,12 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f689154f-9a33-45da-b620-4301d7f39d01" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/gaeshi/users.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/gaeshi/middleware/view_context_spec.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/gaeshi/test_view/_test_partial.hiccup.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/gaeshi/test_view/layout.hiccup.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/gaeshi/test_view/nested/_nested_partial.hiccup.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/gaeshi/test_view/nested/nested_template.hiccup.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/gaeshi/test_view/test_template.hiccup.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/gaeshi/util/pretty_map_spec.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/gaeshi/views_spec.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/gaeshi/middleware/view_context.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/gaeshi/spec_helpers/datastore.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/gaeshi/support/default_rendering.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/gaeshi/util/pretty_map.clj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/gaeshi/views.clj" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/gaeshi/util/Base64.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/gaeshi/util/Base64Test.java" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java" afterPath="$PROJECT_DIR$/src/gaeshi/support/GaeshiDevServlet.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/gaeshi/GaeshiServlet.java" afterPath="$PROJECT_DIR$/src/gaeshi/support/GaeshiServlet.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/gaeshi/environment.clj" afterPath="$PROJECT_DIR$/src/gaeshi/support/environment.clj" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/gaeshi/servlet.clj" afterPath="$PROJECT_DIR$/src/gaeshi/support/servlet.clj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gaeshi.iml" afterPath="$PROJECT_DIR$/Gaeshi.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.clj" afterPath="$PROJECT_DIR$/project.clj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/gaeshi/mail_spec.clj" afterPath="$PROJECT_DIR$/spec/gaeshi/mail_spec.clj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java" afterPath="$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/gaeshi/GaeshiServlet.java" afterPath="$PROJECT_DIR$/src/gaeshi/GaeshiServlet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/gaeshi/mail.clj" afterPath="$PROJECT_DIR$/src/gaeshi/mail.clj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/gaeshi/users_spec.clj" afterPath="$PROJECT_DIR$/spec/gaeshi/users_spec.clj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/gaeshi/middleware/verbose.clj" afterPath="$PROJECT_DIR$/src/gaeshi/middleware/verbose.clj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/gaeshi/spec_helpers/mail.clj" afterPath="$PROJECT_DIR$/src/gaeshi/spec_helpers/mail.clj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/gaeshi/spec_helpers/users.clj" afterPath="$PROJECT_DIR$/src/gaeshi/spec_helpers/users.clj" />
@@ -21,6 +39,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CoverageDataManager" choice="3" />
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
     <option name="REVERSE_PATCH" value="false" />
@@ -69,91 +88,82 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="GaeshiDevServlet.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java">
+      <file leaf-file-name="views.clj" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gaeshi/views.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="38" selection-start="377" selection-end="377" vertical-scroll-proportion="0.09365854">
+            <state line="32" column="23" selection-start="996" selection-end="996" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GaeshiServlet.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gaeshi/GaeshiServlet.java">
+      <file leaf-file-name="view_context.clj" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gaeshi/middleware/view_context.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="30" selection-start="446" selection-end="446" vertical-scroll-proportion="0.0">
+            <state line="11" column="0" selection-start="295" selection-end="295" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="verbose.clj" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gaeshi/middleware/verbose.clj">
+      <file leaf-file-name="view_context_spec.clj" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/gaeshi/middleware/view_context_spec.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="0" selection-start="1110" selection-end="1110" vertical-scroll-proportion="0.0">
+            <state line="22" column="58" selection-start="726" selection-end="726" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="users.clj" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gaeshi/users.clj">
+      <file leaf-file-name="flash_spec.clj" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/gaeshi/middleware/flash_spec.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="9" selection-start="830" selection-end="830" vertical-scroll-proportion="0.0">
+            <state line="32" column="0" selection-start="0" selection-end="863" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="users_spec.clj" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spec/gaeshi/users_spec.clj">
+      <file leaf-file-name="views_spec.clj" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/gaeshi/views_spec.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="48" selection-start="1366" selection-end="1366" vertical-scroll-proportion="0.0">
+            <state line="26" column="89" selection-start="821" selection-end="821" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="users.clj" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gaeshi/spec_helpers/users.clj">
+      <file leaf-file-name="default_rendering.clj" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gaeshi/support/default_rendering.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="115" selection-start="1504" selection-end="1504" vertical-scroll-proportion="0.0">
+            <state line="3" column="40" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="servlet.clj" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gaeshi/servlet.clj">
+      <file leaf-file-name="project.clj" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/project.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="30" selection-start="340" selection-end="340" vertical-scroll-proportion="0.0">
+            <state line="0" column="25" selection-start="25" selection-end="25" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mail_spec.clj" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spec/gaeshi/mail_spec.clj">
+      <file leaf-file-name="layout.hiccup.clj" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/gaeshi/test_view/layout.hiccup.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="17" selection-start="1776" selection-end="1776" vertical-scroll-proportion="0.0">
+            <state line="5" column="194" selection-start="128" selection-end="128" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mail.clj" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gaeshi/mail.clj">
+      <file leaf-file-name="test_template.hiccup.clj" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/gaeshi/test_view/test_template.hiccup.clj">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="8" selection-start="1392" selection-end="1392" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mail.clj" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gaeshi/spec_helpers/mail.clj">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="39" selection-start="460" selection-end="460" vertical-scroll-proportion="0.0">
+            <state line="0" column="20" selection-start="20" selection-end="20" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -173,21 +183,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
+        <option value="$PROJECT_DIR$/src/gaeshi/support/environment.clj" />
+        <option value="$PROJECT_DIR$/src/gaeshi/support/servlet.clj" />
+        <option value="$PROJECT_DIR$/src/gaeshi/support/GaeshiServlet.java" />
+        <option value="$PROJECT_DIR$/src/gaeshi/support/GaeshiDevServlet.java" />
+        <option value="$PROJECT_DIR$/src/gaeshi/spec_helpers/blobstore.clj" />
+        <option value="$PROJECT_DIR$/spec/gaeshi/test_view/test_template.hiccup.clj" />
+        <option value="$PROJECT_DIR$/spec/gaeshi/test_view/_test_partial.hiccup.clj" />
+        <option value="$PROJECT_DIR$/spec/gaeshi/test_view/nested/nested_template.hiccup.clj" />
+        <option value="$PROJECT_DIR$/spec/gaeshi/test_view/nested/_nested_partial.hiccup.clj" />
+        <option value="$PROJECT_DIR$/src/gaeshi/support/default_rendering.clj" />
+        <option value="$PROJECT_DIR$/src/gaeshi/views.clj" />
+        <option value="$PROJECT_DIR$/spec/gaeshi/views_spec.clj" />
+        <option value="$PROJECT_DIR$/spec/gaeshi/middleware/view_context_spec.clj" />
+        <option value="$PROJECT_DIR$/src/gaeshi/middleware/view_context.clj" />
+        <option value="$PROJECT_DIR$/spec/gaeshi/test_view/layout.hiccup.clj" />
         <option value="$PROJECT_DIR$/project.clj" />
-        <option value="$PROJECT_DIR$/spec/gaeshi/mail.clj" />
-        <option value="$PROJECT_DIR$/spec/gaeshi/datetime_spec.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/spec/mail.clj" />
-        <option value="$PROJECT_DIR$/spec/gaeshi/mail_spec.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/middleware/verbose.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/users_spec.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/mail.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/spec_helpers/mail.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/users.clj" />
-        <option value="$PROJECT_DIR$/spec/gaeshi/users_spec.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/spec_helpers/users.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/GaeshiServlet.java" />
-        <option value="$PROJECT_DIR$/src/gaeshi/servlet.clj" />
-        <option value="$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java" />
       </list>
     </option>
   </component>
@@ -198,7 +209,7 @@
     <option name="LAST_EDITED_MODULE_NAME" />
     <option name="LAST_EDITED_TAB_NAME" />
   </component>
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
     <OptionsSetting value="true" id="Remove" />
     <OptionsSetting value="true" id="Checkout" />
@@ -224,8 +235,7 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Favorites" />
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -280,7 +290,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="spec_helpers" />
+              <option name="myItemId" value="middleware" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -302,9 +312,76 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="spec" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="util" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="spec" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test_view" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="spec" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gaeshi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="middleware" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="Favorites" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -315,6 +392,7 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -322,7 +400,7 @@
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="dynamic.classpath" value="false" />
   </component>
-  <component name="RunManager" selected="JUnit.gaeshi.spec_helpers in Gaeshi">
+  <component name="RunManager" selected="Application.spec vigilant">
     <configuration default="false" name="gaeshi.spec_helpers in Gaeshi" type="JUnit" factoryName="JUnit" temporary="true">
       <extension name="coverage" enabled="false" merge="false" runner="emma">
         <pattern>
@@ -459,8 +537,8 @@
       <method />
     </configuration>
     <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="Application.spec vigilant" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.gaeshi.spec in Gaeshi" />
+      <item index="0" class="java.lang.String" itemvalue="JUnit.gaeshi.spec_helpers in Gaeshi" />
+      <item index="1" class="java.lang.String" itemvalue="Application.spec vigilant" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -472,7 +550,6 @@
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
     <option name="LAST_MERGED_REVISION" />
-    <option name="UPDATE_RUN_STATUS" value="false" />
     <option name="MERGE_DRY_RUN" value="false" />
     <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
     <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
@@ -481,10 +558,12 @@
     <option name="CHECK_NESTED_FOR_QUICK_MERGE" value="false" />
     <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
     <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
+    <option name="FORCE_UPDATE" value="false" />
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+      <changelist id="f689154f-9a33-45da-b620-4301d7f39d01" name="Default" comment="" />
       <created>1297220314392</created>
       <updated>1297220314392</updated>
     </task>
@@ -496,9 +575,7 @@
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922202" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="IntelliJad Console" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922202" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -508,11 +585,13 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.670778" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16666667" sideWeight="0.7096774" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922202" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29032257" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922202" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="IntelliJad Console" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922202" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -532,6 +611,7 @@
     <option name="ENABLE_BACKGROUND_PROCESSES" value="false" />
     <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
     <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
+    <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="LAST_COMMIT_MESSAGE" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
@@ -555,114 +635,110 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/spec/gaeshi/datetime_spec.clj">
+    <entry file="file://$PROJECT_DIR$/src/gaeshi/support/servlet.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="17" selection-start="183" selection-end="183" vertical-scroll-proportion="0.0">
+        <state line="0" column="19" selection-start="19" selection-end="19" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gaeshi/support/environment.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="19" selection-start="19" selection-end="19" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gaeshi/spec_helpers/blobstore.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="17" selection-start="59" selection-end="59" vertical-scroll-proportion="0.05172414">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/src/gaeshi/blobstore.clj">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/util/Base64Test.java">
+    <entry file="file://$PROJECT_DIR$/spec/gaeshi/test_view/_test_partial.hiccup.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="16" selection-start="38" selection-end="38" vertical-scroll-proportion="0.0">
+        <state line="0" column="20" selection-start="20" selection-end="20" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/gaeshi/test_view/nested/nested_template.hiccup.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="20" selection-start="20" selection-end="20" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/gaeshi/test_view/nested/_nested_partial.hiccup.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="19" selection-start="19" selection-end="19" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gaeshi/support/default_rendering.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="40" selection-start="189" selection-end="189" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/gaeshi/views_spec.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="89" selection-start="821" selection-end="821" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gaeshi/views.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="23" selection-start="996" selection-end="996" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/gaeshi/middleware/flash_spec.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="0" selection-start="0" selection-end="863" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/gaeshi/middleware/view_context_spec.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="58" selection-start="726" selection-end="726" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gaeshi/middleware/view_context.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="0" selection-start="295" selection-end="295" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/gaeshi/test_view/test_template.hiccup.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="20" selection-start="20" selection-end="20" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/gaeshi/test_view/layout.hiccup.clj">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="194" selection-start="128" selection-end="128" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/project.clj">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="23" selection-start="23" selection-end="23" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/middleware/verbose.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="0" selection-start="1110" selection-end="1110" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spec/gaeshi/mail_spec.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="17" selection-start="1776" selection-end="1776" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/mail.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="8" selection-start="1392" selection-end="1392" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/spec_helpers/mail.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="39" selection-start="460" selection-end="460" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/appengine-api-1.0-sdk-1.4.0.jar!/com/google/appengine/api/users/User.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="0" selection-start="1523" selection-end="1523" vertical-scroll-proportion="0.63716817">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spec/gaeshi/users_spec.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="48" selection-start="1366" selection-end="1366" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/users.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="9" selection-start="830" selection-end="830" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/clojure-1.2.0.jar!/clojure/lang/Var.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="32" selection-start="2113" selection-end="2113" vertical-scroll-proportion="0.79398495">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/spec_helpers/users.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="115" selection-start="1504" selection-end="1504" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/servlet.clj">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="30" selection-start="340" selection-end="340" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/GaeshiServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="30" selection-start="446" selection-end="446" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gaeshi/GaeshiDevServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="38" selection-start="377" selection-end="377" vertical-scroll-proportion="0.09365854">
+        <state line="0" column="25" selection-start="25" selection-end="25" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -670,68 +746,9 @@
   </component>
   <component name="masterDetails">
     <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>Android</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>[gem] actionmailer (v1.3.6, /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/gems/1.8/gems/actionmailer-1.3.6)</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>1.5</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
           <last-edited>Gaeshi</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
           <splitter-proportions>
             <option name="proportions">
               <list>

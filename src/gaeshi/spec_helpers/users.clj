@@ -1,4 +1,4 @@
-(ns gaeshi.spec_helpers.users
+(ns gaeshi.spec-helpers.users
   (:use
     [speclj.core :only (before)]
     [gaeshi.users])

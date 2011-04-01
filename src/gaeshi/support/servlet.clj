@@ -1,4 +1,4 @@
-(ns gaeshi.servlet
+(ns gaeshi.support.servlet
   (:require
     [ring.util.servlet :as rs]
     [clojure.set :as set])

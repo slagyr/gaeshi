@@ -1,4 +1,4 @@
-(ns gaeshi.spec_helpers.mail
+(ns gaeshi.spec-helpers.mail
   (:use
     [speclj.core]
     [gaeshi.mail])

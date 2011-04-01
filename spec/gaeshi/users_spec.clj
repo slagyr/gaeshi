@@ -2,7 +2,7 @@
   (:use
     [speclj.core]
     [gaeshi.users]
-    [gaeshi.spec_helpers.users]))
+    [gaeshi.spec-helpers.users]))
 
 (describe "Users"
 

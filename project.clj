@@ -2,7 +2,7 @@
   :description "FIXME: write"
   :repositories {"releases" "http://appengine-magic-mvn.googlecode.com/svn/releases/"}
   :dependencies [[org.clojure/clojure "1.2.0"]
-                 [ring/ring-servlet "0.3.5"]
+                 [ring/ring-servlet "0.3.7"]
                  [compojure "0.6.2"]
                  [appengine "0.4.3-SNAPSHOT"]
                  [speclj "1.3.1"]

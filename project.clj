@@ -1,4 +1,4 @@
-(defproject gaeshi "0.3.1"
+(defproject gaeshi "0.3.2"
   :description "Web Framework For Google App Engine"
   :repositories {"releases" "http://appengine-magic-mvn.googlecode.com/svn/releases/"}
   :dependencies [[org.clojure/clojure "1.2.0"]

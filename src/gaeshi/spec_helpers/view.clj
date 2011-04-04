@@ -1,4 +1,4 @@
-(ns gaeshi.spec_helpers.view
+(ns gaeshi.spec-helpers.view
   (:use
     [speclj.core :only (around)]
     [clojure.xml :only (parse)]

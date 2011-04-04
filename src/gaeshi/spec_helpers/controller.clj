@@ -1,4 +1,4 @@
-(ns gaeshi.spec_helpers.controller
+(ns gaeshi.spec-helpers.controller
   (:use
     [speclj.core]
     [gaeshi.views :only (*view-context* render-template render-html)]

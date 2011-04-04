@@ -12,6 +12,10 @@
     (should-not= nil (blobstore-service))
     (should-be-same (blobstore-service) (blobstore-service)))
 
+  (it "provides the file service"
+    (should-not= nil (file-service))
+    (should-be-same (file-service) (file-service)))
+
   (it "generates an upload URL"
     (let [url (blobstore-upload-url "/landing")]
       (should-not= nil url)))

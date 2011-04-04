@@ -1,9 +1,10 @@
 (ns gaeshi.blobstore
   (:use
     [clojure.java.io :only (copy)]
+    [clojure.string :only (split)]
     [appengine.datastore.service :only (datastore)])
   (:import
-    [com.google.appengine.api.blobstore BlobstoreServiceFactory BlobInfoFactory]
+    [com.google.appengine.api.blobstore BlobstoreServiceFactory BlobInfoFactory BlobKey]
     [com.google.appengine.api.files FileServiceFactory]
     [java.nio.channels Channels]))
 
@@ -36,13 +37,17 @@
      :size (.getSize blob-info)
      :content-type (.getContentType blob-info)
      :created-at (.getCreation blob-info)
-     :key (.getBlobKey blob-info)}))
+     :key (.getKeyString (.getBlobKey blob-info))}))
 
 (defn blob-infos []
   (let [iterator (.queryBlobInfos (blob-info-factory))]
     (map blob-info->map (iterator-seq iterator))))
 
-(defn write-blob [content-type filename source]
+(defn blob-info [key]
+  (let [blob-key (BlobKey. key)]
+    (.loadBlobInfo (blob-info-factory) blob-key)))
+
+(defn create-blob [content-type filename source]
   (let [file (.createNewBlobFile (file-service) content-type filename)
         channel (.openWriteChannel (file-service) file true)
         out (Channels/newOutputStream channel)]
@@ -51,7 +56,7 @@
     (.closeFinally channel)
     file))
 
-(defn serve-blob [key reseponse]
+(defn serve-blob [key response]
   (let [blob-key (BlobKey. key)]
     (.serve (blobstore-service) blob-key response)))
 

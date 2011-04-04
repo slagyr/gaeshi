@@ -3,18 +3,21 @@
     [speclj.core])
   (:import
     [com.google.appengine.tools.development.testing
+     LocalServiceTestConfig
      LocalDatastoreServiceTestConfig
+     LocalBlobstoreServiceTestConfig
      LocalServiceTestHelper]
     [com.google.apphosting.api ApiProxy]))
 
 (defn tear-down []
+  (.stop (ApiProxy/getDelegate))
   (ApiProxy/clearEnvironmentForCurrentThread)
-  (.stop (ApiProxy/getDelegate)))
+  )
 
-(defn with-local-datastore []
+(defn with-local-blobstore []
   (around [it]
     (try
-      (.setUp (LocalServiceTestHelper. (into-array [(LocalDatastoreServiceTestConfig.)])))
+      (.setUp (LocalServiceTestHelper.
+        (into-array LocalServiceTestConfig [(LocalBlobstoreServiceTestConfig.) (LocalDatastoreServiceTestConfig.)])))
       (it)
       (finally (tear-down)))))
-

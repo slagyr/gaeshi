@@ -4,7 +4,8 @@
     [gaeshi.spec-helpers.blobstore]
     [gaeshi.blobstore])
   (:import
-    [com.google.appengine.api.files AppEngineFile]))
+    [com.google.appengine.api.files AppEngineFile]
+    [java.util Date]))
 
 (describe "Blobstore"
 
@@ -26,17 +27,18 @@
     (should= 0 (count (blob-infos))))
   
   (it "writes a blob"
-    (let [blob (write-blob "text/plain" "test.txt" "Foobar")]
-      (should-not= nil blob)
-      (should= AppEngineFile (class blob))))
+    (let [blob (create-blob "text/plain" "test.txt" "Foobar")]
+      (should-not= nil blob)))
 
   (it "add a blob to the blobstore"
-    (write-blob "text/plain" "test.txt" "Foobar")
+    (create-blob "text/plain" "test.txt" "Foobar")
     (should= 1 (count (blob-infos)))
     (let [blob (first (blob-infos))]
       (should= "test.txt" (:filename blob))
       (should= 6 (:size blob))
       (should= "text/plain" (:content-type blob))
       (should-not= nil (:created-at blob))
-      (should-not= nil (:key blob))))
+      (should= Date (class (:created-at blob)))
+      (should-not= nil (:key blob))
+      (should= String (class (:key blob)))))
   )

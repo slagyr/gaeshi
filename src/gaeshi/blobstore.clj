@@ -27,6 +27,11 @@
     (reset! blob-info-factory-instance (BlobInfoFactory. (datastore))))
   @blob-info-factory-instance)
 
+(defn- blob-key [key]
+  (if (= BlobKey (class key))
+    key
+    (BlobKey. key)))
+
 (defn blobstore-upload-url [success-path]
   (.createUploadUrl (blobstore-service) success-path))
 
@@ -44,8 +49,7 @@
     (map blob-info->map (iterator-seq iterator))))
 
 (defn blob-info [key]
-  (let [blob-key (BlobKey. key)]
-    (.loadBlobInfo (blob-info-factory) blob-key)))
+  (.loadBlobInfo (blob-info-factory) (blob-key key)))
 
 (defn create-blob [content-type filename source]
   (let [file (.createNewBlobFile (file-service) content-type filename)
@@ -59,4 +63,8 @@
 (defn serve-blob [key response]
   (let [blob-key (BlobKey. key)]
     (.serve (blobstore-service) blob-key response)))
+
+(defn delete-blob [& keys]
+  (.delete (blobstore-service)
+    (into-array BlobKey (map blob-key keys))))
 

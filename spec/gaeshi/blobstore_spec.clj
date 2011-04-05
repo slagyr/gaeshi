@@ -1,7 +1,7 @@
 (ns gaeshi.blobstore-spec
   (:use
     [speclj.core]
-    [gaeshi.spec-helpers.blobstore]
+    [gaeshi.spec-helpers.datastore]
     [gaeshi.blobstore])
   (:import
     [com.google.appengine.api.files AppEngineFile]
@@ -9,7 +9,7 @@
 
 (describe "Blobstore"
 
-  (with-local-blobstore)
+  (with-local-datastore)
 
   (it "provides the blobstore service"
     (should-not= nil (blobstore-service))
@@ -41,4 +41,10 @@
       (should= Date (class (:created-at blob)))
       (should-not= nil (:key blob))
       (should= String (class (:key blob)))))
+
+  (it "deleted a blob"
+    (create-blob "text/plain" "test.txt" "Foobar")
+    (let [blob (first (blob-infos))]
+      (delete-blob (:key blob)))
+    (should= 0 (count (blob-infos))))
   )

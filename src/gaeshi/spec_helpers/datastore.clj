@@ -14,7 +14,7 @@
   (ApiProxy/clearEnvironmentForCurrentThread)
   )
 
-(defn with-local-blobstore []
+(defn with-local-datastore []
   (around [it]
     (try
       (.setUp (LocalServiceTestHelper.

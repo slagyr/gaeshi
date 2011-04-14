@@ -13,21 +13,53 @@ public class GaeshiServlet extends HttpServlet
 {
   protected IFn serviceMethod;
   private static Var makeServiceMethodFn;
+  protected Exception loadError;
+  protected Thread loadThread;
 
   public GaeshiServlet()
   {
-    try
+    loadThread = new Thread(new Runnable()
     {
-      loadServiceMethod();
-    }
-    catch(Exception e)
-    {
-      throw new RuntimeException(e);
-    }
+      public void run()
+      {
+        try
+        {
+          loadServiceMethod();
+        }
+        catch(Exception e)
+        {
+          loadError = e;
+        }
+      }
+    });
+    loadThread.start();
   }
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+  {
+    waitForLoad();
+    invokeServiceMethod(req, resp);
+  }
+
+  protected void waitForLoad()
+  {
+    if(loadThread.isAlive())
+    {
+      try
+      {
+        loadThread.join();
+      }
+      catch(InterruptedException e)
+      {
+        throw new RuntimeException(e);
+      }
+    }
+    else if(loadError != null)
+      throw new RuntimeException("Failed to load Service Method", loadError);
+  }
+
+  private void invokeServiceMethod(HttpServletRequest req, HttpServletResponse resp) throws ServletException
   {
     try
     {
@@ -55,7 +87,7 @@ public class GaeshiServlet extends HttpServlet
     loadCoreNamespace(coreNamespace);
     Var handler = loadHandler(coreNamespace);
 
-    serviceMethod = (IFn)getMakeServiceMethodFn().invoke(handler);
+    serviceMethod = (IFn) getMakeServiceMethodFn().invoke(handler);
   }
 
   private Var loadHandler(String coreNamespace)

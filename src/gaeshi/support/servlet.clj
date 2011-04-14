@@ -11,7 +11,7 @@
      HttpServletResponse]))
 
 (defn update-servlet-response [^HttpServletResponse response, response-map]
-  (when (not (and response (.isCommitted response)))
+  (when (not (and response (or (.isCommitted response) (:ignore-response response-map))))
     (rs/update-servlet-response response response-map)))
 
 (defn make-service-method

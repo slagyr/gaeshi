@@ -13,6 +13,12 @@ public class GaeshiDevServlet extends GaeshiServlet
   private static final Object lock = new Object();
   private static long lastRefreshTime;
 
+  public GaeshiDevServlet() throws Exception
+  {
+    super();
+    waitForLoad();
+  }
+
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
   {

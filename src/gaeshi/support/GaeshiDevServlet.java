@@ -16,7 +16,6 @@ public class GaeshiDevServlet extends GaeshiServlet
   public GaeshiDevServlet() throws Exception
   {
     super();
-    waitForLoad();
   }
 
   @Override

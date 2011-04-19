@@ -13,53 +13,21 @@ public class GaeshiServlet extends HttpServlet
 {
   protected IFn serviceMethod;
   private static Var makeServiceMethodFn;
-  protected Exception loadError;
-  protected Thread loadThread;
 
   public GaeshiServlet()
   {
-    loadThread = new Thread(new Runnable()
+    try
     {
-      public void run()
-      {
-        try
-        {
-          loadServiceMethod();
-        }
-        catch(Exception e)
-        {
-          loadError = e;
-        }
-      }
-    });
-    loadThread.start();
+      loadServiceMethod();
+    }
+    catch(Exception e)
+    {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
-  {
-    waitForLoad();
-    invokeServiceMethod(req, resp);
-  }
-
-  protected void waitForLoad()
-  {
-    if(loadThread.isAlive())
-    {
-      try
-      {
-        loadThread.join();
-      }
-      catch(InterruptedException e)
-      {
-        throw new RuntimeException(e);
-      }
-    }
-    else if(loadError != null)
-      throw new RuntimeException("Failed to load Service Method", loadError);
-  }
-
-  private void invokeServiceMethod(HttpServletRequest req, HttpServletResponse resp) throws ServletException
   {
     try
     {
@@ -87,7 +55,7 @@ public class GaeshiServlet extends HttpServlet
     loadCoreNamespace(coreNamespace);
     Var handler = loadHandler(coreNamespace);
 
-    serviceMethod = (IFn) getMakeServiceMethodFn().invoke(handler);
+    serviceMethod = (IFn)getMakeServiceMethodFn().invoke(handler);
   }
 
   private Var loadHandler(String coreNamespace)
@@ -108,17 +76,17 @@ public class GaeshiServlet extends HttpServlet
 
   private void loadCoreNamespace(String coreNamespace)
   {
-    final String coreFilename = Clj.nsToFilename(coreNamespace);
+//    final String coreFilename = Clj.nsToFilename(coreNamespace);
     try
     {
       final Symbol nsSymbol = Symbol.intern(null, coreNamespace);
       final Namespace ns = Namespace.find(nsSymbol);
       if(ns == null)
-        RT.loadResourceScript(coreFilename);
+        RT.load(coreNamespace, true);
     }
     catch(Exception e)
     {
-      throw new RuntimeException("Failed to load core src file: " + coreFilename, e);
+      throw new RuntimeException("Failed to load core namespace: " + coreNamespace, e);
     }
   }
 

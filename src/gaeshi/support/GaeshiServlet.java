@@ -55,7 +55,7 @@ public class GaeshiServlet extends HttpServlet
     loadCoreNamespace(coreNamespace);
     Var handler = loadHandler(coreNamespace);
 
-    serviceMethod = (IFn)getMakeServiceMethodFn().invoke(handler);
+    serviceMethod = (IFn) getMakeServiceMethodFn().invoke(handler);
   }
 
   private Var loadHandler(String coreNamespace)
@@ -76,18 +76,28 @@ public class GaeshiServlet extends HttpServlet
 
   private void loadCoreNamespace(String coreNamespace)
   {
-//    final String coreFilename = Clj.nsToFilename(coreNamespace);
     try
     {
       final Symbol nsSymbol = Symbol.intern(null, coreNamespace);
-      final Namespace ns = Namespace.find(nsSymbol);
-      if(ns == null)
-        RT.load(coreNamespace, true);
+      if(Namespace.find(nsSymbol) != null)
+        return;
+      RT.load(coreNamespace, false);
+
+      if(Namespace.find(nsSymbol) != null)
+        return;
+      final String coreFilename = Clj.nsToFilename(coreNamespace);
+      RT.loadResourceScript(coreFilename);
+
+      if(Namespace.find(nsSymbol) != null)
+        return;
+      throw new RuntimeException("namespace still not found after load attempts");
     }
     catch(Exception e)
     {
+      e.printStackTrace();
       throw new RuntimeException("Failed to load core namespace: " + coreNamespace, e);
     }
+
   }
 
   private String getCoreNamespace()

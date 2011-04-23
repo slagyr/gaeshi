@@ -42,17 +42,13 @@ public class GaeshiServlet extends HttpServlet
   protected static Var getMakeServiceMethodFn() throws Exception
   {
     if(makeServiceMethodFn == null)
-    {
-      RT.loadResourceScript("gaeshi/support/servlet.clj");
-      makeServiceMethodFn = RT.var("gaeshi.support.servlet", "make-service-method");
-    }
+      makeServiceMethodFn = loadVar("gaeshi.support.servlet", "make-service-method");
     return makeServiceMethodFn;
   }
 
   protected void loadServiceMethod() throws Exception
   {
     final String coreNamespace = getCoreNamespace();
-    loadCoreNamespace(coreNamespace);
     Var handler = loadHandler(coreNamespace);
 
     serviceMethod = (IFn) getMakeServiceMethodFn().invoke(handler);
@@ -63,7 +59,7 @@ public class GaeshiServlet extends HttpServlet
     Var handler = null;
     try
     {
-      handler = RT.var(coreNamespace, "gaeshi-handler");
+      handler = loadVar(coreNamespace, "gaeshi-handler");
       if(!(handler.deref() instanceof IFn))
         throw new Exception("Not an IFn");
     }
@@ -74,28 +70,35 @@ public class GaeshiServlet extends HttpServlet
     return handler;
   }
 
-  private void loadCoreNamespace(String coreNamespace)
+  protected static Var loadVar(String namespace, String varName)
   {
     try
     {
-      final Symbol nsSymbol = Symbol.intern(null, coreNamespace);
-      if(Namespace.find(nsSymbol) != null)
-        return;
-      RT.load(coreNamespace, false);
+      Symbol namespaceSymbol = Symbol.intern(namespace);
+      Namespace ns = Namespace.find(namespaceSymbol);
+      if(ns != null)
+        return (Var)ns.getMapping(Symbol.create(varName));
 
-      if(Namespace.find(nsSymbol) != null)
-        return;
-      final String coreFilename = Clj.nsToFilename(coreNamespace);
+      System.err.println("ATTEMPTING TO LOAD NAMESPACE " + namespace + "/" + varName);
+      RT.load(namespace, false);
+
+      ns = Namespace.find(namespaceSymbol);
+      if(ns != null)
+        return (Var)ns.getMapping(Symbol.create(varName));
+
+      System.err.println("ATTEMPTING TO LOAD RESOURCE SCRIPT " + namespace + "/" + varName);
+      final String coreFilename = Clj.nsToFilename(namespace);
       RT.loadResourceScript(coreFilename);
+      ns = Namespace.find(namespaceSymbol);
+      if(ns != null)
+        return (Var)ns.getMapping(Symbol.create(varName));
 
-      if(Namespace.find(nsSymbol) != null)
-        return;
-      throw new RuntimeException("namespace still not found after load attempts");
+      throw new RuntimeException("var still not found after load attempts: " + namespace + "/" + varName);
     }
     catch(Exception e)
     {
       e.printStackTrace();
-      throw new RuntimeException("Failed to load core namespace: " + coreNamespace, e);
+      throw new RuntimeException("Failed to load var:" + namespace + "/" + varName, e);
     }
 
   }

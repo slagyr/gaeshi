@@ -39,7 +39,7 @@ public class GaeshiDevServlet extends GaeshiServlet
   private static void reloadClojureSrc() throws Exception
   {
     if(refreshFn == null)
-      refreshFn = RT.var("gaeshi.support.servlet", "refresh!");
+      refreshFn = loadVar("gaeshi.support.servlet", "refresh!");
     synchronized(lock)
     {
       if(System.currentTimeMillis() > (lastRefreshTime + 1000))

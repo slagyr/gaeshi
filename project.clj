@@ -20,5 +20,5 @@
                      [com.google.appengine/appengine-testing "1.4.3"]]
   :test-path "spec/"
   :java-source-path "src/"
-  :aot [gaeshi.spec-helpers.datastore appengine.datastore]
+;  :aot [gaeshi.spec-helpers.datastore appengine.datastore]
   )

@@ -3,7 +3,7 @@
     [clojure.set :as set])
   (:use
     [ring.util.servlet :as rs :only (build-request-map merge-servlet-keys)]
-    [fresh.core :only (freshener ns-to-file)])
+    [gaeshi.env :only (development-env?)])
   (:import
     [javax.servlet.http
      HttpServlet
@@ -29,16 +29,34 @@
         (update-servlet-response response response-map)
         (throw (NullPointerException. "Handler returned nil"))))))
 
+(defn- extract-gaeshi-handler []
+  (let [core-namespace (System/getProperty "gaeshi.core.namespace")
+        core-ns-sym (symbol core-namespace)
+        _ (require core-ns-sym)
+        core-ns (the-ns core-ns-sym)]
+    (ns-resolve core-ns (symbol "gaeshi-handler"))))
 
-(defn- files-to-keep-fresh []
-  (filter identity (map #(ns-to-file (.name %)) (all-ns))))
+(defn- build-development-handler [handler]
+  ; MDM - The reason for obscurity here is to avoid the dependencies.
+  ; If we did this the typical way, the fresh jar would have to be in the classpath and it's not needed in non-development environments.
+  (try
+    (require 'gaeshi.middleware.refresh)
+    (require 'gaeshi.middleware.verbose)
+    (let [refresh-ns (the-ns 'gaeshi.middleware.refresh)
+          verbose-ns (the-ns 'gaeshi.middleware.verbose)
+          wrap-refresh (ns-resolve refresh-ns 'wrap-refresh)
+          wrap-verbose (ns-resolve verbose-ns 'wrap-verbose)]
+      (->
+        handler
+        wrap-verbose
+        wrap-refresh))
+    (catch Exception e
+      (println "Failed to create development handler.  Using normal handler." e)
+      handler)))
 
-(defn- report-refresh [report]
-  (when-let [reloaded (seq (:reloaded report))]
-    (println "Reloading...")
-    (doseq [file reloaded] (println file))
-    (println ""))
-  true)
-
-(def refresh! (freshener files-to-keep-fresh report-refresh))
+(defn initialize-gaeshi-servlet [servlet]
+  (let [handler (extract-gaeshi-handler)
+        handler (if (development-env?) (build-development-handler handler) handler)
+        service-method (make-service-method handler)]
+    (.setServiceMethod servlet service-method)))
 

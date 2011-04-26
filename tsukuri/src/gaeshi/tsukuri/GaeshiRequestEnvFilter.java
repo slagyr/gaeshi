@@ -1,4 +1,4 @@
-package gaeshi.support;
+package gaeshi.tsukuri;
 
 import com.google.appengine.api.NamespaceManager;
 import com.google.appengine.api.users.dev.LoginCookieUtils;

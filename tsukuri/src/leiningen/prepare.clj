@@ -44,7 +44,6 @@
     (lancet/copy {:todir "war/WEB-INF/lib"}
       (lancet/fileset {:dir dev-lib-dir :includes (join ","
         ["appengine-api-1.0-sdk*"
-         "appengine-api-labs*"
          "commons-io*"
          "commons-codec*"
          "commons-fileupload*"

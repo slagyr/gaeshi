@@ -1,4 +1,4 @@
-package gaeshi.support;
+package gaeshi.tsukuri;
 
 import com.google.appengine.tools.development.LocalServerEnvironment;
 

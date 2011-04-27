@@ -5,7 +5,7 @@
 (def *view-context* {
   :template-root "view"
   :layout "layout"
-  :ns `gaeshi.support.default-rendering
+  :ns `gaeshi.kake.default-rendering
   })
 
 (defn- updated-context [kwargs]

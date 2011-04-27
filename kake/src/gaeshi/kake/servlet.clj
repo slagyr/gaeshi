@@ -1,14 +1,12 @@
-(ns gaeshi.support.servlet
+(ns gaeshi.kake.servlet
   (:require
     [clojure.set :as set])
   (:use
     [ring.util.servlet :as rs :only (build-request-map merge-servlet-keys)]
     [gaeshi.env :only (development-env?)])
   (:import
-    [javax.servlet.http
-     HttpServlet
-     HttpServletRequest
-     HttpServletResponse]))
+    [javax.servlet.http HttpServlet HttpServletRequest HttpServletResponse]
+    [gaeshi.kake GaeshiServlet]))
 
 (defn update-servlet-response [^HttpServletResponse response, response-map]
   (when (not (and response (or (.isCommitted response) (:ignore-response response-map))))
@@ -37,26 +35,26 @@
     (ns-resolve core-ns (symbol "gaeshi-handler"))))
 
 (defn- build-development-handler [handler]
-  ; MDM - The reason for obscurity here is to avoid the dependencies.
-  ; If we did this the typical way, the fresh jar would have to be in the classpath and it's not needed in non-development environments.
+  ; MDM - The reason for obscurity here is to avoid the dependencies on dev jars.
   (try
-    (require 'gaeshi.middleware.refresh)
-    (require 'gaeshi.middleware.verbose)
-    (let [refresh-ns (the-ns 'gaeshi.middleware.refresh)
-          verbose-ns (the-ns 'gaeshi.middleware.verbose)
-          wrap-refresh (ns-resolve refresh-ns 'wrap-refresh)
-          wrap-verbose (ns-resolve verbose-ns 'wrap-verbose)]
-      (->
-        handler
-        wrap-verbose
-        wrap-refresh))
+    (require 'gaeshi.middleware.development)
+    (let [development-ns (the-ns 'gaeshi.middleware.development)
+          wrap-development (ns-resolve development-ns 'wrap-development)]
+      (wrap-development handler))
     (catch Exception e
       (println "Failed to create development handler.  Using normal handler." e)
       handler)))
 
+(defprotocol HandlerInstallable
+  (install-handler [_ handler]))
+
+(extend-type GaeshiServlet
+  HandlerInstallable
+  (install-handler [this handler]
+    (.setServiceMethod this (make-service-method handler))))
+
 (defn initialize-gaeshi-servlet [servlet]
   (let [handler (extract-gaeshi-handler)
-        handler (if (development-env?) (build-development-handler handler) handler)
-        service-method (make-service-method handler)]
-    (.setServiceMethod servlet service-method)))
+        handler (if (development-env?) (build-development-handler handler) handler)]
+    (install-handler servlet handler)))
 

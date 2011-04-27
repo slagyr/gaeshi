@@ -1,4 +1,4 @@
-package gaeshi.tsukuri;
+package gaeshi.kake;
 
 import clojure.lang.*;
 import gaeshi.util.Clj;

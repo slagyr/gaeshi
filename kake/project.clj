@@ -8,6 +8,7 @@
                  [com.google.appengine/appengine-api-1.0-sdk "1.4.3"]
                  [inflections "0.4.3"]]
   :dev-dependencies [[speclj "1.3.1"]
+                     [gaeshi/tsukuri "0.4.0"]
                      [lein-clojars "0.6.0"]]
   :test-path "spec/"
   :java-source-path "src/"

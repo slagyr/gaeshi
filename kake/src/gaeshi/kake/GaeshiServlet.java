@@ -17,7 +17,7 @@ public class GaeshiServlet extends HttpServlet
   {
     try
     {
-      final Var var = loadVar("gaeshi.support.servlet", "initialize-gaeshi-servlet");
+      final Var var = loadVar("gaeshi.kake.servlet", "initialize-gaeshi-servlet");
       var.invoke(this);
     }
     catch(Exception e)

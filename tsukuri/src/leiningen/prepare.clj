@@ -40,19 +40,7 @@
   (let [lib-dir (:library-path project)
         dev-lib-dir (.getPath (file lib-dir "dev"))]
     (lancet/copy {:todir "war/WEB-INF/lib"}
-      (lancet/fileset {:dir lib-dir :includes "*" :excludes "dev"}))
-    (lancet/copy {:todir "war/WEB-INF/lib"}
-      (lancet/fileset {:dir dev-lib-dir :includes (join ","
-        ["appengine-api-1.0-sdk*"
-         "commons-io*"
-         "commons-codec*"
-         "commons-fileupload*"
-         "compojure*"
-         "gaeshi*"
-         "hiccup*"
-         "ring-core*"
-         "ring-servlet*"
-         "servlet-api*"])}))))
+      (lancet/fileset {:dir lib-dir :includes "*" :excludes "dev"}))))
 
 (defn clean-public [project]
   (lancet/delete {:dir "war/public"})
@@ -70,6 +58,7 @@
 
 (defn prepare [project & args]
   (let [env (or (first args) "development")]
+    (println "Gaeshi: preparing the" env "environment for deployment")
     (clean-classes project)
     (prepare-app-jar project)
     (prepare-views-jar project)
@@ -77,8 +66,4 @@
     (prepare-public project)
     (prepare-config project env)
     ))
-
-
-; TODO
-; * 2 different gaeshi libraries? 1 lien plugin to generate project/provide lein tasks, and 1 to bring in all deps.
 

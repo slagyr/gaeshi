@@ -1,6 +1,6 @@
 (ns gaeshi.validations
   (:use
-    [inflections]))
+    [inflections.core]))
 
 (defn validator [& validations]
   (fn [entity]

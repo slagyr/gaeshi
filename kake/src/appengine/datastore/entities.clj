@@ -16,7 +16,7 @@ and a set of zero or more typed properties." }
         appengine.datastore.protocols
         appengine.datastore.keys
         appengine.utils
-        inflections))
+        inflections.core))
 
 (defn- extract-values
   "Extract the attributes of the record that are used to build the

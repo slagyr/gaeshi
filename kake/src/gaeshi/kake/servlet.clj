@@ -3,7 +3,15 @@
     [clojure.set :as set])
   (:use
     [ring.util.servlet :as rs :only (build-request-map merge-servlet-keys)]
-    [gaeshi.env :only (development-env?)])
+    [ring.middleware.params :only (wrap-params)]
+    [ring.middleware.keyword-params :only (wrap-keyword-params)]
+    [ring.middleware.cookies :only (wrap-cookies)]
+    [gaeshi.env :only (development-env?)]
+    [gaeshi.middleware.keyword-cookies :only (wrap-keyword-cookies)]
+    [gaeshi.middleware.multipart-params :only (wrap-multipart-params)]
+    [gaeshi.middleware.servlet-session :only (wrap-servlet-session)]
+    [gaeshi.middleware.flash :only (wrap-flash)]
+    [gaeshi.middleware.request :only (wrap-bind-request)])
   (:import
     [javax.servlet.http HttpServlet HttpServletRequest HttpServletResponse]
     [gaeshi.kake GaeshiServlet]))
@@ -27,23 +35,45 @@
         (update-servlet-response response response-map)
         (throw (NullPointerException. "Handler returned nil"))))))
 
-(defn- extract-gaeshi-handler []
+(defn- attempt-to-load-var [ns-sym var-sym]
+  (try
+    (require ns-sym)
+    (let [ns (the-ns ns-sym)]
+      (ns-resolve ns var-sym))
+    (catch Exception e
+      (println "Failed to load var:" var-sym "from ns:" ns-sym e)
+      nil)))
+
+(defn- attempt-wrap [handler ns-sym var-sym]
+  (if-let [wrapper (attempt-to-load-var ns-sym var-sym)]
+    (wrapper handler)
+    (do
+      (println "Bypassing" var-sym)
+      handler)))
+
+(defn build-gaeshi-handler [handler]
+  (let [handler (if (development-env?) (attempt-wrap handler 'gaeshi.middleware.verbose 'wrap-verbose) handler)]
+    (->
+      handler
+      wrap-bind-request
+      wrap-keyword-params
+      wrap-params
+      wrap-multipart-params
+      wrap-flash
+      wrap-keyword-cookies
+      wrap-cookies
+      wrap-servlet-session)))
+
+(defn extract-gaeshi-handler []
   (let [core-namespace (System/getProperty "gaeshi.core.namespace")
         core-ns-sym (symbol core-namespace)
         _ (require core-ns-sym)
         core-ns (the-ns core-ns-sym)]
-    (ns-resolve core-ns (symbol "gaeshi-handler"))))
-
-(defn- build-development-handler [handler]
-  ; MDM - The reason for obscurity here is to avoid the dependencies on dev jars.
-  (try
-    (require 'gaeshi.middleware.development)
-    (let [development-ns (the-ns 'gaeshi.middleware.development)
-          wrap-development (ns-resolve development-ns 'wrap-development)]
-      (wrap-development handler))
-    (catch Exception e
-      (println "Failed to create development handler.  Using normal handler." e)
-      handler)))
+    (if-let [gaeshi-handler (ns-resolve core-ns 'gaeshi-handler)]
+      gaeshi-handler
+      (if-let [app-handler (ns-resolve core-ns 'app-handler)]
+        (build-gaeshi-handler app-handler)
+        (throw (Exception. (str core-namespace " must define app-handler or gaeshi-handler")))))))
 
 (defprotocol HandlerInstallable
   (install-handler [_ handler]))
@@ -55,6 +85,6 @@
 
 (defn initialize-gaeshi-servlet [servlet]
   (let [handler (extract-gaeshi-handler)
-        handler (if (development-env?) (build-development-handler handler) handler)]
+        handler (if (development-env?) (attempt-wrap handler 'gaeshi.middleware.refresh 'wrap-refresh) handler)]
     (install-handler servlet handler)))
 

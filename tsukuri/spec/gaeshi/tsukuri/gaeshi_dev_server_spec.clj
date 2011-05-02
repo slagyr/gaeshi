@@ -1,4 +1,4 @@
-(ns gaeshi.support.gaeshi-dev-server-spec
+(ns gaeshi.tsukuri.gaeshi-dev-server-spec
   (:use
     [speclj.core])
   (:import

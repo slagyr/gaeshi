@@ -1,4 +1,4 @@
 (ns gaeshi.kake.test-core)
 
-(defn gaeshi-handler [request]
-  (assoc request :processed true))
+(defn app-handler [request]
+  (assoc request :app-handler true))

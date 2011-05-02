@@ -1,7 +1,7 @@
 (ns gaeshi.middleware.multipart-params
   (:import [org.apache.commons.fileupload.servlet ServletFileUpload]
-           [org.apache.commons.fileupload.util Streams]
-           org.apache.commons.io.IOUtils))
+    [org.apache.commons.fileupload.util Streams]
+    org.apache.commons.io.IOUtils))
 ;;; This code is adapted from Ring (http://github.com/mmcgrana/ring) and patches
 ;;; by Adam Blinkinsop
 ;;; (https://github.com/coonsta/compojure/commit/dd36e217de2ea968eca1953a0b9d5a81b54d0d9c).
@@ -19,14 +19,15 @@
 (defn- multipart-form?
   "Does a request have a multipart form?"
   [request]
-  (ServletFileUpload/isMultipartContent (:servlet-request request)))
-
+  (if-let [servlet-request (:servlet-request request)]
+    (ServletFileUpload/isMultipartContent servlet-request)
+    false))
 
 (defn- itemiterator-to-seq
   "Converts an ItemIterator into a sequence."
   [it]
   (lazy-seq (when (.hasNext it)
-              (cons (.next it) (itemiterator-to-seq it)))))
+    (cons (.next it) (itemiterator-to-seq it)))))
 
 
 (defn- field-seq
@@ -35,19 +36,19 @@
    and stream (an open input stream object)."
   [request encoding]
   (into {}
-        (map (fn [i]
-               [(.getFieldName i)
-                (if (.isFormField i)
-                    (Streams/asString (.openStream i) encoding)
-                    (let [upload-bytes (IOUtils/toByteArray (.openStream i))
-                          size (alength upload-bytes)
-                          upload-bytes (if (zero? size) nil upload-bytes)]
-                      {:content-type (.getContentType i)
-                       :filename (.getName i)
-                       :size size
-                       :bytes upload-bytes}))])
-             (itemiterator-to-seq (.getItemIterator (ServletFileUpload.)
-                                                    (:servlet-request request))))))
+    (map (fn [i]
+      [(.getFieldName i)
+       (if (.isFormField i)
+         (Streams/asString (.openStream i) encoding)
+         (let [upload-bytes (IOUtils/toByteArray (.openStream i))
+               size (alength upload-bytes)
+               upload-bytes (if (zero? size) nil upload-bytes)]
+           {:content-type (.getContentType i)
+            :filename (.getName i)
+            :size size
+            :bytes upload-bytes}))])
+      (itemiterator-to-seq (.getItemIterator (ServletFileUpload.)
+        (:servlet-request request))))))
 
 
 (defn wrap-multipart-params
@@ -58,12 +59,12 @@
   [handler & [opts]]
   (fn [request]
     (let [encoding (or (:encoding opts)
-                       (:character-encoding request)
-                       "UTF-8")
+      (:character-encoding request)
+      "UTF-8")
           params (if (multipart-form? request)
-                     (field-seq request encoding)
-                     {})
+        (field-seq request encoding)
+        {})
           request (merge-with merge request
-                              {:multipart-params params}
-                              {:params params})]
+        {:multipart-params params}
+        {:params params})]
       (handler request))))

@@ -2,11 +2,14 @@
   (:import
     [filecabinet FileSystem Templater]))
 
-(defn create-templater [project]
+(defn create-templater [project forceful]
   (let [destination (:root project)
         templates-marker (.getFile (.getResource (clojure.lang.RT/baseLoader) "gaeshi/tsukuri/templates/marker.txt"))
-        source (.parentPath (FileSystem/instance) templates-marker)]
-    (Templater. destination source)))
+        source (.parentPath (FileSystem/instance) templates-marker)
+        templater (Templater. destination source)]
+    (when forceful
+      (.setForceful templater true))
+    templater))
 
 (defn add-tokens [templater & kvargs]
   (let [tokens (apply hash-map kvargs)]
@@ -39,9 +42,11 @@
   (.file templater (format "src/%s/view/not_found.hiccup.clj" (:name project)) "src/app/view/not_found.hiccup.clj")
   )
 
-(defn generate [project]
+(defn generate [project & args]
   (let [project (assoc project :name (.toLowerCase (:name project)))
-        templater (create-templater project)]
+        forceful (contains? "--FORCE" (set args))
+        args (remove (partial = "--FORCE") args)
+        templater (create-templater project forceful)]
     (add-config project templater "development")
     (add-config project templater "production")
     (add-publics project templater)

@@ -15,7 +15,7 @@
                  [taglibs/standard "1.1.2"]
                  [commons-el "1.0"]
                  [org.apache.geronimo.specs/geronimo-jsp_2.1_spec "1.0.1"]
-                 [filecabinet "1.0.0"]]
+                 [filecabinet "1.0.1"]]
   :dev-dependencies [[speclj "1.3.1"]
                      [lein-clojars "0.6.0"]
                      [com.google.appengine/appengine-api-1.0-sdk "1.4.3"]

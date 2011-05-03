@@ -11,10 +11,14 @@
   (with fs (FakeFileSystem/installed))
 
   (it "creates a templater"
-    (let [templater (create-templater {:root "/foo/bar"})]
+    (let [templater (create-templater {:root "/foo/bar"} nil)]
       (should= "/foo/bar" (.getDestinationRoot templater))
       (should= (.getCanonicalPath (File. "resources/gaeshi/tsukuri/templates"))
         (.getSourceRoot templater))))
+
+  (it "creates a forceful templater"
+    (let [templater (create-templater {:root "/foo/bar"} "--FORCE")]
+      (should= true (.isForceful templater))))
 
   (context "default"
 
@@ -23,7 +27,7 @@
         (say [message])))
     (around [it]
       (binding [create-templater
-                (fn [project]
+                (fn [project forceful]
                   (let [templater (Templater. (:root project) "/templates")]
                     (.setLogger templater @logger)
                     templater))]

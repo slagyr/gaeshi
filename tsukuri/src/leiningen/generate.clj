@@ -4,7 +4,7 @@
 
 (defn create-templater [project forceful]
   (let [destination (:root project)
-        templates-marker (.getFile (.getResource (clojure.lang.RT/baseLoader) "gaeshi/tsukuri/templates/marker.txt"))
+        templates-marker (.toString (.getResource (clojure.lang.RT/baseLoader) "gaeshi/tsukuri/templates/marker.txt"))
         source (.parentPath (FileSystem/instance) templates-marker)
         templater (Templater. destination source)]
     (when forceful
@@ -28,7 +28,8 @@
 (defn- add-publics [project templater]
   (.directory templater "public/images")
   (.file templater (format "public/javascript/%s.js" (:name project)) "public/javascript/default.js")
-  (.file templater (format "public/stylesheets/%s.css" (:name project)) "public/stylesheets/default.css"))
+  (.file templater (format "public/stylesheets/%s.css" (:name project)) "public/stylesheets/default.css")
+  (.directory templater "WEB-INF"))
 
 (defn- add-default-src [project templater]
   (add-tokens templater "APP_NAME" (:name project))
@@ -44,7 +45,7 @@
 
 (defn generate [project & args]
   (let [project (assoc project :name (.toLowerCase (:name project)))
-        forceful (contains? "--FORCE" (set args))
+        forceful (contains? (set args) "--FORCE")
         args (remove (partial = "--FORCE") args)
         templater (create-templater project forceful)]
     (add-config project templater "development")

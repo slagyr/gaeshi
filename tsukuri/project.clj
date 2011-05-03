@@ -1,4 +1,4 @@
-(defproject gaeshi/tsukuri "0.4.2"
+(defproject gaeshi/tsukuri "0.4.2-SNAPSHOT"
   :description "Development library for Gaeshi, a Clojure framework for Google App Engine apps."
   :repositories {"releases" "http://appengine-magic-mvn.googlecode.com/svn/releases/"}
   :dependencies [[org.clojure/clojure "1.2.1"]

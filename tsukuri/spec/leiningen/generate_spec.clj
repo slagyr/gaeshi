@@ -13,7 +13,7 @@
   (it "creates a templater"
     (let [templater (create-templater {:root "/foo/bar"} nil)]
       (should= "/foo/bar" (.getDestinationRoot templater))
-      (should= (.getCanonicalPath (File. "resources/gaeshi/tsukuri/templates"))
+      (should= (str "file:" (.getCanonicalPath (File. "resources/gaeshi/tsukuri/templates")))
         (.getSourceRoot templater))))
 
   (it "creates a forceful templater"
@@ -59,6 +59,9 @@
       (should= "appengine: app:production" (.readTextFile @fs "/default/root/config/production/appengine-web.xml"))
       (should= "web.xml: app" (.readTextFile @fs "/default/root/config/production/web.xml"))
       (should= "lumberjacks ho!" (.readTextFile @fs "/default/root/config/production/logging.properties")))
+
+    (it "generates misc stuff"
+      (should= true (.exists @fs "/default/root/WEB-INF")))
 
     (it "generated public dirs"
       (should= true (.exists @fs "/default/root/public/images"))

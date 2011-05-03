@@ -1,4 +1,4 @@
-(defproject gaeshi/kake "0.4.0"
+(defproject gaeshi/kake "0.4.2"
   :description "Runtime library for Gaeshi, a Clojure framework for Google App Engine apps."
   :repositories {"releases" "http://appengine-magic-mvn.googlecode.com/svn/releases/"}
   :dependencies [[org.clojure/clojure "1.2.1"]

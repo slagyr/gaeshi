@@ -2,7 +2,7 @@
   (:use
     [speclj.core])
   (:import
-    [gaeshi.support GaeshiDevServer]))
+    [gaeshi.tsukuri GaeshiDevServer]))
 
 (describe "Gaeshi Dev Server"
   (with server (GaeshiDevServer.))

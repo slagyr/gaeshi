@@ -1,4 +1,4 @@
-(defproject gaeshi/tsukuri "0.4.1"
+(defproject gaeshi/tsukuri "0.4.2"
   :description "Development library for Gaeshi, a Clojure framework for Google App Engine apps."
   :repositories {"releases" "http://appengine-magic-mvn.googlecode.com/svn/releases/"}
   :dependencies [[org.clojure/clojure "1.2.1"]
@@ -15,7 +15,7 @@
                  [taglibs/standard "1.1.2"]
                  [commons-el "1.0"]
                  [org.apache.geronimo.specs/geronimo-jsp_2.1_spec "1.0.1"]
-                 [file-cabinet "1.0.0"]]
+                 [filecabinet "1.0.0"]]
   :dev-dependencies [[speclj "1.3.1"]
                      [lein-clojars "0.6.0"]
                      [com.google.appengine/appengine-api-1.0-sdk "1.4.3"]

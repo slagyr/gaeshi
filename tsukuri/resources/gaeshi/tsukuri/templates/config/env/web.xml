@@ -4,16 +4,16 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
         version="2.5">
-    <display-name>Clean Coders</display-name>
+    <display-name>!-APP_NAME-!</display-name>
 
     <servlet>
-        <servlet-name>cleancoders</servlet-name>
+        <servlet-name>gaeshi</servlet-name>
         <servlet-class>gaeshi.kake.GaeshiServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>cleancoders</servlet-name>
+        <servlet-name>gaeshi</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 

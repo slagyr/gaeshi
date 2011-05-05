@@ -15,7 +15,7 @@
   (isLoggedIn [this] false)
 
   LocalServerEnvironment
-  (getAppDir [this] (java.io.File. "war")))
+  (getAppDir [this] (java.io.File. ".")))
 
 (defn setup-environment [app]
   (let [environment (Environment. app)]

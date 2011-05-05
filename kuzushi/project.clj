@@ -9,4 +9,5 @@
                      [lein-clojars "0.6.0"]]
   :test-path "spec/"
   :shell-wrapper {:main gaeshi.kuzushi.core
-                  :bin "bin/gaeshi"})
+                  :bin "bin/gaeshi"}
+  :resources-path "resources/")

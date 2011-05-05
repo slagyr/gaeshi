@@ -1,0 +1,17 @@
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+
+    <application>!-APP_NAME-!!-ENV_SUFFIX-!</application>
+    <version>1</version>
+
+    <public-root>/public</public-root>
+    <sessions-enabled>true</sessions-enabled>
+    <threadsafe>true</threadsafe>
+
+    <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+
+        <property name="gaeshi.env" value="!-ENVIRONMENT-!"/>
+        <property name="gaeshi.core.namespace" value="!-APP_NAME-!.core"/>
+    </system-properties>
+
+</appengine-web-app>

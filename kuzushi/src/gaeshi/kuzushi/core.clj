@@ -1,7 +1,7 @@
 (ns gaeshi.kuzushi.core
   (:use
     [gaeshi.kuzushi.common :only (exit symbolize load-var)]
-    [gaeshi.kuzushi.commands.help :only (usage)])
+    [gaeshi.kuzushi.commands.help :only (usage usage-for)])
   (:require
     [gaeshi.kuzushi.version])
   (:import
@@ -16,8 +16,8 @@
 
 (defn- resolve-aliases [options]
   (cond
-     (:help options) (recur (dissoc (assoc options :command "help") :help))
-     (:version options) (recur (dissoc (assoc options :command "version") :version))
+    (:help options) (recur (dissoc (assoc options :command "help") :help))
+    (:version options) (recur (dissoc (assoc options :command "version") :version))
     :else options))
 
 (defn parse-args [& args]
@@ -30,14 +30,18 @@
 
 (defn run-command [options]
   (try
-    (let [command-ns-sym (symbol (str "gaeshi.kuzushi.commands." (:command options)))
-          exec-fn (load-var command-ns-sym 'execute)]
-      (if exec-fn
-        (exec-fn options)
-        (throw (Exception. (str "Can't find command: " (:command options))))))
+    (let [command (:command options)
+          command-ns-sym (symbol (str "gaeshi.kuzushi.commands." command))
+          parse-fn (load-var command-ns-sym 'parse-args)
+          sub-options (apply parse-fn (:*leftover options))]
+      (if-let [errors (:*errors sub-options)]
+        (usage-for command errors)
+        (let [exec-fn (load-var command-ns-sym 'execute)]
+          (exec-fn sub-options))))
     (catch Exception e
       (.printStackTrace e)
       (exit -1))))
+
 
 (defn run [& args]
   (let [options (apply parse-args args)]
@@ -45,3 +49,4 @@
 
 (defn -main [& args]
   (apply run args))
+

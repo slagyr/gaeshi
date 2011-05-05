@@ -3,7 +3,8 @@
     [speclj.core]
     [gaeshi.kuzushi.spec-helper]
     [gaeshi.kuzushi.core]
-    [gaeshi.kuzushi.common :only (exit endl)])
+    [gaeshi.kuzushi.common :only (exit endl)]
+    [gaeshi.kuzushi.commands.help :only (all-commands)])
   (:require
     [gaeshi.kuzushi.version]))
 
@@ -13,7 +14,8 @@
   (with-command-help)
 
   (it "parses no arguments"
-    (should= -1 (parse-args)))
+    (binding [all-commands (fn [& args] [])]
+      (should= -1 (parse-args))))
 
   (it "parses command arg dirs"
     (should= "one" (:command (parse-args "one")))
@@ -29,10 +31,6 @@
     (should= nil (:comand (parse-args "")))
     (should= "help" (:command (parse-args "--help")))
     (should= "help" (:command (parse-args "-h"))))
-
-  (it "handles the --help switch"
-    (should= 0 (run "--help"))
-    (should-not= -1 (.indexOf (to-s @output) "Usage")))
   )
 
 (run-specs)

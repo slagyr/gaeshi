@@ -2,7 +2,8 @@
   (:use
     [gaeshi.kuzushi.common :only (exit symbolize load-var)])
   (:require
-    [clojure.string :as str])
+    [clojure.string :as str]
+    [gaeshi.kuzushi.version])
   (:import
     [mmargs Arguments]
     [filecabinet FileSystem]))
@@ -42,32 +43,49 @@
   (println "  Commands:")
   (let [commands (all-commands)
         docstrings (map docstring-for commands)
-        command-ary (into-array commands)
-        doc-ary (into-array docstrings)]
+        command-ary (into-array String commands)
+        doc-ary (into-array String docstrings)]
     (println (Arguments/tabularize command-ary doc-ary))))
 
-(defn usage [errors]
+(defn- print-errors [errors]
+  (when (seq errors)
+    (println "ERROR!!!")
+    (doseq [error (seq errors)]
+      (println error))))
+
+(defn- exit-with [errors]
   (if (seq errors)
-    (do
-      (println "ERROR!!!")
-      (doseq [error (seq errors)]
-        (println error))))
+    (exit -1)
+    (exit 0)))
+
+(defn usage [errors]
+  (print-errors errors)
+  (println)
+  (println gaeshi.kuzushi.version/summary ": Command line component for Gaeshi; A Clojure framework to build AppEngine web applications.")
   (println)
   (println "Usage: gaeshi" (.argString @main-arg-spec) "[command options]")
   (println)
   (println (.parametersString @main-arg-spec))
   (println (.optionsString @main-arg-spec))
   (print-commands)
-  (if (seq errors)
-    (exit -1)
-    (exit 0)))
+  (exit-with errors))
 
-(defn usage-for [command]
-  )
+(defn usage-for [command errors]
+  (let [docstring (docstring-for command)
+        arg-spec @(load-var (symbol (str "gaeshi.kuzushi.commands." command)) 'arg-spec)]
+    (print-errors errors)
+    (println)
+    (println command ":" docstring)
+    (println)
+    (println "Usage: gaeshi" command (.argString arg-spec))
+    (println)
+    (println (.parametersString arg-spec))
+    (println (.optionsString arg-spec))
+    (exit-with errors)))
 
 (defn execute
   "Prints help message for commands: gaeshi help <command>"
   [options]
   (if-let [command (:command options)]
-    (usage-for command)
+    (usage-for command nil)
     (usage nil)))

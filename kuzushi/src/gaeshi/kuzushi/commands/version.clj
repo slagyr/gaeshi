@@ -11,7 +11,9 @@
 (defn parse-args [& args]
   (symbolize (.parse arg-spec (into-array String args))))
 
-(defn execute [options]
+(defn execute
+  "Prints the current version of gaeshi/kuzushi"
+  [options]
   (println gaeshi.kuzushi.version/summary)
   (exit 0))
 

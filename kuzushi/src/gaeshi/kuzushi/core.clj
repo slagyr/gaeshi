@@ -1,6 +1,6 @@
 (ns gaeshi.kuzushi.core
   (:use
-    [gaeshi.kuzushi.common :only (exit symbolize)]
+    [gaeshi.kuzushi.common :only (exit symbolize load-var)]
     [gaeshi.kuzushi.commands.help :only (usage)])
   (:require
     [gaeshi.kuzushi.version])
@@ -11,8 +11,8 @@
 (doto arg-spec
   (.addParameter "command" "The name of the command to execute. Use --help for a listing of command.")
   (.addSwitchOption "v" "version" "Shows the current gaeshi/kuzushi version.")
-  (.addSwitchOption "h" "help" "You're looking at it.")
-  )
+  (.addSwitchOption "h" "help" "You're looking at it."))
+(reset! gaeshi.kuzushi.commands.help/main-arg-spec arg-spec)
 
 (defn- resolve-aliases [options]
   (cond
@@ -27,15 +27,6 @@
     (if-let [command (:command options)]
       options
       (usage (:*errors options)))))
-
-(defn- load-var [ns-sym var-sym]
-  (try
-    (require ns-sym)
-    (let [ns (the-ns ns-sym)]
-      (ns-resolve ns var-sym))
-    (catch Exception e
-      (.printStackTrace e)
-      nil)))
 
 (defn run-command [options]
   (try

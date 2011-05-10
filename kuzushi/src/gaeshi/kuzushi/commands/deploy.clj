@@ -24,8 +24,7 @@
   (System/exit -1))
 
 (defn- config-path [project]
-  (let [config-file-name (str "." (:name project))
-        config-file-path (str/join (System/getProperty "file.separator") [(System/getProperty "user.home") ".gaeshi" config-file-name])]
+  (let [config-file-path (str/join (System/getProperty "file.separator") [(System/getProperty "user.home") ".gaeshi" (:name project)])]
     config-file-path))
 
 (defn- config-help [project]

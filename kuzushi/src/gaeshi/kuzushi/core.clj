@@ -45,7 +45,8 @@
 
 (defn run [& args]
   (let [options (apply parse-args args)]
-    (run-command options)))
+    (run-command options)
+    (exit 0)))
 
 (defn -main [& args]
   (apply run args))

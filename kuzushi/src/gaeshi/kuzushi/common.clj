@@ -1,8 +1,6 @@
 (ns gaeshi.kuzushi.common
-;  (:use
-;;    [leiningen.core :only (read-project)])
-;    )
-  )
+  (:use
+    [leiningen.core :only (read-project)]))
 
 (def endl (System/getProperty "line.separator"))
 
@@ -22,7 +20,7 @@
       nil)))
 
 (defn load-lein-project []
-  (if-let [project {}];(read-project)]
+  (if-let [project (read-project)]
     project
     (do
       (println "Couldn't find project.clj. Is the current directory a Gaeshi project?")

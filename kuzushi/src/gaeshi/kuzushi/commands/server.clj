@@ -1,8 +1,8 @@
 (ns gaeshi.kuzushi.commands.server
   (:use
-    ;    [leiningen.core :only (read-project)]
-    ;    [leiningen.clean :only (clean)]
-    ;    [leiningen.classpath :only (get-classpath-string)]
+    [leiningen.core :only (read-project)]
+    [leiningen.clean :only (clean)]
+    [leiningen.classpath :only (get-classpath-string)]
     [gaeshi.cmd :only (java)]
     [gaeshi.kuzushi.common :only (symbolize load-lein-project)])
   (:import
@@ -30,8 +30,10 @@
   "Starts the app in on a local web server"
   [options]
   (let [project (load-lein-project)
-        classpath "foo" ;(get-classpath-string project)
-        jvm-args ["-cp" classpath]]
-    ;      (clean project)
-    (java jvm-args "gaeshi.tsukuri.GaeshiDevServer" options)))
+        classpath (get-classpath-string project)
+        _ (println "classpath: " classpath)
+        jvm-args ["-cp" classpath]
+        args ["-p" (:port options) "-a" (:address options) "-e" (:environment options) "-d" (:directory options)]]
+    (clean project)
+    (java jvm-args "gaeshi.tsukuri.GaeshiDevServer" (map str args))))
 

@@ -49,6 +49,7 @@
       (.createTextFile @fs "/templates/config/env/logging.properties" "lumberjacks ho!")
       (.createTextFile @fs "/templates/config/env/repl_init.clj" "repl_init: !-APP_NAME-!-!-ENVIRONMENT-!")
       (.createTextFile @fs "/templates/config/env/web.xml" "web.xml: !-APP_NAME-!")
+      (.createTextFile @fs "/templates/public/images/gaeshi.png" "gaeshi")
       (.createTextFile @fs "/templates/public/javascript/default.js" "javascript")
       (.createTextFile @fs "/templates/public/stylesheets/default.css" "css")
       (.createTextFile @fs "/templates/spec/app/core_spec.clj" "core-spec: !-APP_NAME-!")
@@ -77,7 +78,7 @@
       (should= true (.exists @fs "/home/app/WEB-INF")))
 
     (it "generated public dirs"
-      (should= true (.exists @fs "/home/app/public/images"))
+      (should= "gaeshi" (.readTextFile @fs "/home/app/public/images/gaeshi.png"))
       (should= "javascript" (.readTextFile @fs "/home/app/public/javascript/app.js"))
       (should= "css" (.readTextFile @fs "/home/app/public/stylesheets/app.css")))
 

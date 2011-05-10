@@ -45,7 +45,7 @@
 
 (defn- add-publics [options templater]
   (let [name (:name options)]
-    (.directory templater (format "%s/public/images" name))
+    (.binary templater (format "%s/public/images/gaeshi.png" name) "public/images/gaeshi.png")
     (.file templater (format "%s/public/javascript/%s.js" name name) "public/javascript/default.js")
     (.file templater (format "%s/public/stylesheets/%s.css" name name) "public/stylesheets/default.css")))
 

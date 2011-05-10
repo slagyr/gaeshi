@@ -31,7 +31,6 @@
   [options]
   (let [project (load-lein-project)
         classpath (get-classpath-string project)
-        _ (println "classpath: " classpath)
         jvm-args ["-cp" classpath]
         args ["-p" (:port options) "-a" (:address options) "-e" (:environment options) "-d" (:directory options)]]
     (clean project)

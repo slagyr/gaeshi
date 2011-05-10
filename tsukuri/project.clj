@@ -1,5 +1,9 @@
 (defproject gaeshi/tsukuri "0.4.2"
   :description "Development library for Gaeshi, a Clojure framework for Google App Engine apps."
+  :license {:name "The MIT License"
+            :url "file://LICENSE"
+            :distribution :repo
+            :comments "Copyright © 2011 Micah Martin All Rights Reserved."}
   :repositories {"releases" "http://appengine-magic-mvn.googlecode.com/svn/releases/"}
   :dependencies [[org.clojure/clojure "1.2.1"]
                  [speclj "1.3.1"]

@@ -7,11 +7,12 @@
             :distribution :repo
             :comments "Copyright © 2011 Micah Martin All Rights Reserved."}
   :dependencies [[org.clojure/clojure "1.2.1"]
-                 [filecabinet "1.0.2"]
+                 [filecabinet "1.0.3"]
                  [mmargs "1.2.0"]]
   :dev-dependencies [[speclj "1.3.1"]
                      [lein-clojars "0.6.0"]]
   :test-path "spec/"
   :shell-wrapper {:main gaeshi.kuzushi.core
                   :bin "bin/gaeshi"}
-  :resources-path "resources/")
+  :resources-path "resources/"
+  :eval-in-leiningen true)

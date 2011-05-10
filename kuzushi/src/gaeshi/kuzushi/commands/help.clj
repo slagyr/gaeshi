@@ -36,8 +36,11 @@
     (sort (filter identity (map extract-ns-from-filename files)))))
 
 (defn- docstring-for [command]
-  (let [exec-fn (load-var (symbol (str "gaeshi.kuzushi.commands." command)) 'execute)]
-    (:doc (meta exec-fn))))
+  (if-let [exec-fn (load-var (symbol (str "gaeshi.kuzushi.commands." command)) 'execute)]
+    (:doc (meta exec-fn))
+    (do
+      (println "Failed to load command:" command)
+      (exit -1))))
 
 (defn- print-commands []
   (println "  Commands:")
@@ -86,6 +89,10 @@
 (defn execute
   "Prints help message for commands: gaeshi help <command>"
   [options]
-  (if-let [command (:command options)]
-    (usage-for command nil)
-    (usage nil)))
+  (try
+    (if-let [command (:command options)]
+      (usage-for command nil)
+      (usage nil))
+    (catch Exception e
+      (println "Sorry, I can't help you with that. " e)
+      (exit -1))))

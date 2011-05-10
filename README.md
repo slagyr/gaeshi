@@ -3,7 +3,7 @@
 ## Installation
 
 1. Install [Leiningen](https://github.com/technomancy/leiningen) 1.5 or later.
-2. Install the gaeshi/kuzushi plugin
+2. Install the `gaeshi/kuzushi` plugin
 
         lein plugin install gaeshi/kuzushi 0.5.0
 

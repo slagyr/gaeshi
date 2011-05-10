@@ -16,7 +16,6 @@
     (let [ns (the-ns ns-sym)]
       (ns-resolve ns var-sym))
     (catch Exception e
-      (.printStackTrace e)
       nil)))
 
 (defn load-lein-project []

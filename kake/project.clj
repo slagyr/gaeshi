@@ -1,4 +1,4 @@
-(defproject gaeshi/kake "0.4.2"
+(defproject gaeshi/kake "0.5.0"
   :description "Runtime library for Gaeshi, a Clojure framework for Google App Engine apps."
   :license {:name "The MIT License"
             :url "file://LICENSE"

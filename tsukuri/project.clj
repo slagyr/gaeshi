@@ -1,4 +1,4 @@
-(defproject gaeshi/tsukuri "0.4.2"
+(defproject gaeshi/tsukuri "0.5.0"
   :description "Development library for Gaeshi, a Clojure framework for Google App Engine apps."
   :license {:name "The MIT License"
             :url "file://LICENSE"

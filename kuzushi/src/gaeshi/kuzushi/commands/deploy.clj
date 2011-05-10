@@ -49,17 +49,18 @@
     (config-help)))
 
 (defn deploy [project options]
-  (apply println "Gaeshi:" (:environment options) "deployment requested...")
+  (println "Gaeshi:" (:environment options) "deployment requested...")
   (let [config (read-deploy-config project)
         _ (check-required-config config)
         windows? (re-find #"Windows" (System/getProperty "os.name"))
         deploy-exe (str/join (System/getProperty "file.separator") [(:appengine-sdk-dir config) "bin" (if windows? "appcfg.cmd" "appcfg.sh")])]
-    (apply prepare project options)
+    (prepare project options)
     (println "Gaeshi: Invoking deploy command")
     (exec [deploy-exe (str "--email=" (:appengine-email config)) "--passin" "update" "war"] (:appengine-password config))))
 
 (defn execute
   "Deploy the project to Google AppEngine"
   [options]
-  (let [project (load-lein-project)]
+  (let [project (load-lein-project)
+        options (assoc options :environment (or (:environment options) "development"))]
     (deploy project options)))

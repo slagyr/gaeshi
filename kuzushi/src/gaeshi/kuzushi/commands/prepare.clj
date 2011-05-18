@@ -28,7 +28,7 @@
 
 (defn- create-app-jar [project]
   (let [core-namespace (or (:gaeshi-core-namespace project) (str (:name project) ".core"))
-        project (assoc project :aot [core-namespace])
+        project (assoc project :aot :all) ;[core-namespace])
         project (assoc project :keep-non-project-classes true)
         project (assoc project :omit-source true)]
     (jar project)))

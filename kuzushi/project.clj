@@ -13,5 +13,6 @@
   :shell-wrapper {:main gaeshi.kuzushi.core
                   :bin "bin/gaeshi"}
   :resources-path "resources/"
+  :jar-exclusions [#"leiningen/.*"]
 ;  :eval-in-leiningen true
   )

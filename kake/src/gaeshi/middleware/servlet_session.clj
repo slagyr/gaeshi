@@ -27,7 +27,6 @@
   (remove-entry [this key]
     (.removeAttribute this (name key))))
 
-
 (extend-type javax.servlet.http.HttpServletRequest
   SessionSource
   (get-session [this]

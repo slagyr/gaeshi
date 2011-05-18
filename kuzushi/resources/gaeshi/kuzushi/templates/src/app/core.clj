@@ -8,7 +8,7 @@
 
 (defroutes !-APP_NAME-!-routes
   (GET "/" [] (render-template "index"))
-  (controller-router 'cleancoders.controller)
+  (controller-router '!-APP_NAME-!.controller)
   (not-found (render-template "not_found" :template-root "!-APP_NAME-!/view" :ns `!-APP_NAME-!.view.view-helpers)))
 
 (def app-handler

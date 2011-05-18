@@ -1,6 +1,7 @@
 (ns gaeshi.kuzushi.commands.new
   (:use
-    [gaeshi.kuzushi.common :only (symbolize)])
+    [gaeshi.kuzushi.common :only (symbolize)]
+    [gaeshi.kuzushi.version :only (kake-version tsukuri-version)])
   (:import
     [filecabinet FileSystem Templater]
     [mmargs Arguments]))
@@ -39,7 +40,7 @@
 
 (defn- add-misc [options templater]
   (let [name (:name options)]
-    (add-tokens templater "APP_NAME" name)
+    (add-tokens templater "APP_NAME" name "KAKE_VERSION" kake-version "TSUKURI_VERSION" tsukuri-version)
     (.file templater (format "%s/project.clj" name) "project.clj")
     (.directory templater (format "%s/WEB-INF" name))))
 

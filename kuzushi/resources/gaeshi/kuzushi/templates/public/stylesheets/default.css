@@ -1,1 +1,6 @@
-body { background:#e3b200; font-family:sans-serif; font-size:62.5%; }
+body {
+    background: #e3b200;
+    font-family: sans-serif;
+    width: 600px;
+    margin: auto;
+}

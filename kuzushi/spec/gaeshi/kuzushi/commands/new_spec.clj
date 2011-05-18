@@ -58,7 +58,7 @@
       (.createTextFile @fs "/templates/src/app/view/layout.hiccup.clj" "layout")
       (.createTextFile @fs "/templates/src/app/view/index.hiccup.clj" "index")
       (.createTextFile @fs "/templates/src/app/view/not_found.hiccup.clj" "not_found")
-      (.createTextFile @fs "/templates/project.clj" "project: !-APP_NAME-!")
+      (.createTextFile @fs "/templates/project.clj" "project: !-APP_NAME-!, kake: !-KAKE_VERSION-!, tsukuri: !-TSUKURI_VERSION-!")
       )
     (before (execute {:name "app"}))
 
@@ -74,7 +74,7 @@
       (should= "lumberjacks ho!" (.readTextFile @fs "/home/app/config/production/logging.properties")))
 
     (it "generates misc stuff"
-      (should= "project: app" (.readTextFile @fs "/home/app/project.clj"))
+      (should= "project: app, kake: 0.5.1, tsukuri: 0.5.1" (.readTextFile @fs "/home/app/project.clj"))
       (should= true (.exists @fs "/home/app/WEB-INF")))
 
     (it "generated public dirs"
@@ -95,4 +95,6 @@
       (should= true (.exists @fs "/home/app/src/app/model")))
     )
   )
+
+(run-specs)
 

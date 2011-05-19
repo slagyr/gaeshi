@@ -2,9 +2,9 @@
   (:require
     [clojure.string :as str]))
 
-(def major 999)
+(def major 0)
 (def minor 5)
-(def tiny 1)
+(def tiny 2)
 (def snapshot false)
 (def string
   (str

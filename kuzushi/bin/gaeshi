@@ -4,7 +4,7 @@ CLASSPATH="%s"
 NULL_DEVICE=/dev/null
 JVM_OPTS=${JVM_OPTS:-$JAVA_OPTS}
 MAIN="%s"
-VERSION="0.4.0"
+VERSION="0.5.2"
 
 LEIN_JAR_FILE=`ls -r $HOME/.lein/self-installs/ | head -n 1`
 LEIN_JAR_PATH="$HOME/.lein/self-installs/$LEIN_JAR_FILE"

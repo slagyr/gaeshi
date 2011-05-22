@@ -36,6 +36,11 @@ public class GaeshiDevServerEnvironment implements LocalServerEnvironment
   {
   }
 
+  public boolean enforceApiDeadlines()
+  {
+    return false;
+  }
+
   @Override
   public String toString()
   {

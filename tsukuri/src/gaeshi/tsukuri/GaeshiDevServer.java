@@ -57,6 +57,13 @@ public class GaeshiDevServer
     servlets.put("/_ah/inboundMailHead", "org.apache.jsp.ah.inboundMailHead_jsp");
     servlets.put("/_ah/inboundMailBody", "org.apache.jsp.ah.inboundMailBody_jsp");
     servlets.put("/_ah/inboundMailFinal", "org.apache.jsp.ah.inboundMailFinal_jsp");
+    servlets.put("/_ah/admin", "com.google.apphosting.utils.servlet.DatastoreViewerServlet");
+    servlets.put("/_ah/admin/", "com.google.apphosting.utils.servlet.DatastoreViewerServlet");
+    servlets.put("/_ah/admin/datastore", "com.google.apphosting.utils.servlet.DatastoreViewerServlet");
+    servlets.put("/_ah/admin/backends", "com.google.apphosting.utils.servlet.ServersServlet");
+    servlets.put("/_ah/admin/taskqueue", "com.google.apphosting.utils.servlet.TaskQueueViewerServlet");
+    servlets.put("/_ah/admin/xmpp", "com.google.apphosting.utils.servlet.XmppServlet");
+    servlets.put("/_ah/admin/inboundmail", "com.google.apphosting.utils.servlet.InboundMailServlet");
   }
 
   private static Arguments argSpec = new Arguments();

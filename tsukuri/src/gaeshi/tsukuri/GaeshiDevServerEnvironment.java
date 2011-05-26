@@ -1,7 +1,9 @@
 package gaeshi.tsukuri;
 
+import com.google.appengine.tools.development.ApiProxyLocal;
+import com.google.appengine.tools.development.ApiProxyLocalFactory;
 import com.google.appengine.tools.development.LocalServerEnvironment;
-
+import com.google.apphosting.api.ApiProxy;
 import java.io.File;
 
 public class GaeshiDevServerEnvironment implements LocalServerEnvironment
@@ -10,6 +12,13 @@ public class GaeshiDevServerEnvironment implements LocalServerEnvironment
   public int port = 8080;
   public String env = "development";
   public String dir = ".";
+
+  public void install()
+  {
+    final ApiProxyLocalFactory apiProxyLocalFactory = new ApiProxyLocalFactory();
+    final ApiProxyLocal apiProxyLocal = apiProxyLocalFactory.create(this);
+    ApiProxy.setDelegate(apiProxyLocal);
+  }
 
   public String getConfig(String name, String defaultValue)
   {

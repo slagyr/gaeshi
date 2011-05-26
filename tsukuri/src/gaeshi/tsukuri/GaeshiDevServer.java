@@ -90,9 +90,7 @@ public class GaeshiDevServer
   public GaeshiDevServer()
   {
     env = new GaeshiDevServerEnvironment();
-    ApiProxyLocalFactory factory = new ApiProxyLocalFactory();
-    ApiProxyLocal localImpl = factory.create(env);
-    ApiProxy.setDelegate(localImpl);
+    env.install();
   }
 
   public GaeshiDevServerEnvironment getEnv()

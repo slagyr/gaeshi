@@ -12,7 +12,7 @@ public class Clj
 
   public static String nsToFilename(String name)
   {
-    return name.replace('.', '/').replace('-', '_') + ".clj";
+    return name.replace('.', '/') + ".clj";
   }
 
   public static String nsToFilename(Namespace ns)

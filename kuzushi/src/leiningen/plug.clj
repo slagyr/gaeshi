@@ -10,6 +10,8 @@
   (println "Installing " version/summary)
   (jar project)
   (exec ["mvn" "install:install-file" "-DgroupId=gaeshi" "-DartifactId=kuzushi" (str "-Dversion=" version/string) "-Dpackaging=jar" (str "-Dfile=" (get-default-jar-name project))])
-  (plugin "install" "gaeshi/kuzushi" version/string))
+  (plugin "install" "gaeshi/kuzushi" version/string)
+  (println "Installed " version/summary))
+
 
 

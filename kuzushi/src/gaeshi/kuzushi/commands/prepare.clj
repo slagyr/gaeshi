@@ -46,7 +46,7 @@
   (let [default-jar-file (File. (get-jar-filename project))
         views-jar-name (str/replace (.getName default-jar-file) #"\.jar" "_views.jar")
         views-jar-path (.getPath (File. (.getParent default-jar-file) views-jar-name))]
-    (lancet/jar {:jarfile views-jar-path :basedir (:source-path project) :includes "**/*.hiccup.clj"})
+    (lancet/jar {:jarfile views-jar-path :basedir (:source-path project) :includes "**/view/**/*"})
     (lancet/copy {:file views-jar-path :todir "war/WEB-INF/lib"})))
 
 (defn- prepare-libs [project]

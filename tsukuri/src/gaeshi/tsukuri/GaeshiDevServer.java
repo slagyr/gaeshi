@@ -1,8 +1,5 @@
 package gaeshi.tsukuri;
 
-import com.google.appengine.tools.development.ApiProxyLocal;
-import com.google.appengine.tools.development.ApiProxyLocalFactory;
-import com.google.apphosting.api.ApiProxy;
 import com.google.apphosting.utils.config.AppEngineWebXml;
 import com.google.apphosting.utils.config.AppEngineWebXmlReader;
 import mmargs.Arguments;

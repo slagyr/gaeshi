@@ -44,10 +44,24 @@
   (let [handlers (:handlers cache)]
     (= (count handlers) (count (set handlers)))))
 
+(def controller-caches (ref {}))
+
+(defn- controller-cache [root]
+  (dosync
+    (if-let [cache (get @controller-caches root)]
+      cache
+      (let [cache (ref {:handlers []} :validator no-duplicates?)]
+        (alter controller-caches assoc root cache)
+        cache))))
+
+(defn clear-controller-caches []
+  (dosync
+    (doseq [cache (vals @controller-caches)]
+      (ref-set cache {:handlers []}))))
+
 (defn controller-router [root]
-  (let [cache (ref {:handlers []} :validator no-duplicates?)]
+  (let [cache (controller-cache root)]
     (fn [request]
       (if-let [response (apply routing request (:handlers @cache))]
         response
         (dynamic-controller-routing root cache request)))))
-

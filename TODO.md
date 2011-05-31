@@ -6,3 +6,4 @@
 * spec_helpers/controller must record all views rendered in addition to the last.
 * the devserver should run a repl server
 * need to resolve conflict with hiccup files. The .clj extension should be removed, and prepare-views task updated to exclude *.clj files.
+* Add session clearing cron job to generated project

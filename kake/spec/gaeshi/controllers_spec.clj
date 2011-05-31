@@ -5,6 +5,8 @@
 
 (describe "Controllers"
 
+  (before (clear-controller-caches))
+
   (it "determines the namespaces for a request"
     (should= [] (namespaces-for-path "root" "/"))
     (should= ["root.one-controller"] (namespaces-for-path "root" "/one"))
@@ -68,3 +70,5 @@
       (should= nil (resolve-controller 'the.missing-controller))))
 
     )
+
+(run-specs)

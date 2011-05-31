@@ -120,7 +120,7 @@ public class GaeshiDevServer
 
   private void start() throws Exception
   {
-    Server server = new Server(8080);
+    Server server = new Server(env.port);
     WebAppContext context = new WebAppContext(env.dir, "/");
 
     applyAppEngineWebXml(context);

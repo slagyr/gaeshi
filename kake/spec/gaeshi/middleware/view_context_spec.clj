@@ -22,4 +22,9 @@
     (should= `test-ns (:ns @@view-context))
     (should= "test-root" (:template-root @@view-context)))
 
+  (it "can also take a map as the first param"
+    ((wrap-view-context @mock-handler {:foo "foo"} :bar "bar") {})
+    (should= "foo" (:foo @@view-context))
+    (should= "bar" (:bar @@view-context)))
+
   )

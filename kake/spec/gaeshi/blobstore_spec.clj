@@ -42,6 +42,14 @@
       (should-not= nil (:key blob))
       (should= String (class (:key blob)))))
 
+  (it "gets one blob-info"
+    (create-blob "text/plain" "test.txt" "Foobar")
+    (let [key (:key (first (blob-infos)))
+          blob (blob-info key)]
+      (should= "test.txt" (:filename blob))
+      (should= 6 (:size blob))
+      (should= "text/plain" (:content-type blob))))
+
   (it "deleted a blob"
     (create-blob "text/plain" "test.txt" "Foobar")
     (let [blob (first (blob-infos))]

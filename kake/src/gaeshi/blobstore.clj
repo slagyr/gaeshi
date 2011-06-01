@@ -48,8 +48,12 @@
   (let [iterator (.queryBlobInfos (blob-info-factory))]
     (map blob-info->map (iterator-seq iterator))))
 
-(defn blob-info [key]
+(defn blob-info-obj [key]
   (.loadBlobInfo (blob-info-factory) (blob-key key)))
+
+(defn blob-info [key]
+  (if-let [info-obj (blob-info-obj key)]
+    (blob-info->map info-obj)))
 
 (defn create-blob [content-type filename source]
   (let [file (.createNewBlobFile (file-service) content-type filename)

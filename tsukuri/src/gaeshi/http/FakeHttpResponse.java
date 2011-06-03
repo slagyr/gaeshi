@@ -18,7 +18,7 @@ public class FakeHttpResponse implements HttpServletResponse
   public List<Pair> headers = new LinkedList<Pair>();
   public int status;
   public String statusMessage;
-  public boolean commited;
+  public boolean committed;
   public String characterEncoding = "UTF-8";
   public String contentType;
   public ServletOutputStream outputStream;
@@ -72,20 +72,20 @@ public class FakeHttpResponse implements HttpServletResponse
   {
     status = i;
     statusMessage = s;
-    commited = true;
+    committed = true;
   }
 
   public void sendError(int i) throws IOException
   {
     status = i;
-    commited = true;
+    committed = true;
   }
 
   public void sendRedirect(String s) throws IOException
   {
     status = 302;
     setHeader("Location", s);
-    commited = true;
+    committed = true;
   }
 
   public void setDateHeader(String s, long l)
@@ -213,12 +213,12 @@ public class FakeHttpResponse implements HttpServletResponse
 
   public boolean isCommitted()
   {
-    return commited;
+    return committed;
   }
 
   public void reset()
   {
-    if(commited)
+    if(committed)
       throw new IllegalStateException();
     headers.clear();
     status = 0;

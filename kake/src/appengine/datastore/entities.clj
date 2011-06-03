@@ -233,9 +233,9 @@ Examples:
   (fn [entity] (.getKind entity)))
 
 (defmethod deserialize-entity :default [entity]
-           (reduce #(assoc %1 (keyword (key %2)) (val %2))
-                   (merge {:kind (.getKind entity) :key (.getKey entity)})
-                   (.entrySet (.getProperties entity))))
+  (reduce #(assoc %1 (keyword (key %2)) (val %2))
+    (merge {:kind (.getKind entity) :key (.getKey entity)})
+    (.entrySet (.getProperties entity))))
 
 (defmulti serialize-entity
   "Converts a map into an entity. The kind of the entity is determined

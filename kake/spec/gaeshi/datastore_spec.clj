@@ -2,6 +2,7 @@
   (:use
     [speclj.core]
     [gaeshi.datastore]
+    [gaeshi.spec-helpers.datastore]
     ;    [appengine.datastore]
     ))
 
@@ -20,24 +21,6 @@
   [field2]
   [field3 :default ".141592"]
   [field42 :default "value42"])
-
-;(prn (macroexpand `(defentity ManyDefaultedFields
-;  [field1]
-;  [field2]
-;  [field3 :default ".141592"]
-;  [field42 :default "value42"])))
-;
-;(do
-;  (defrecord ManyDefaultedFields [])
-;  (defn gaeshi.datastore-spec.many-defaulted-fields [& args__13636]
-;    (let [instance__13637 (new ManyDefaultedFields)]
-;      (reduce
-;        (fn [inst__13638 [kw__13639 spec__13640]]
-;          (if-let [default__13641 (:default spec__13640)]
-;            (assoc inst__13638 kw__13639 default__13641) inst__13638))
-;        instance__13637
-;        {:field42 {:default "value42"}, :field3 {:default ".141592"}, :field2 {}, :field1 {}})
-;      (if (seq args__13636) (apply assoc instance__13637 args__13636) instance__13637))))
 
 
 (describe "Datastore"
@@ -72,76 +55,30 @@
       (should= "value2" (:field2 instance))
       (should= ".141592" (:field3 instance))
       (should= "value42" (:field42 instance))))
+
+  (it "extra fields in constructor are included"
+    (should= "foo" (:foo (many-fields :foo "foo")))
+    (should= "foo" (:foo (many-defaulted-fields :foo "foo"))))
+
+  (context "with service"
+
+    (with-local-datastore)
+
+    (it "provides the datastore service"
+      (should-not= nil (datastore-service))
+      (should-be-same (datastore-service) (datastore-service)))
+
+    (it "saves and loads a hollow entity"
+      (let [unsaved (hollow)
+            saved (save unsaved)]
+        (should-not= nil (:key saved))
+        (let [loaded (find-by-key (:key saved))]
+          (should= (:key saved) (:key loaded))
+          (should-not-be-same saved loaded))))
+
+    )
+
   )
 
+
 (run-specs)
-
-
-
-;(defrecord Foo
-;  [key kind] EntityProtocol
-;  (create-entity
-;    [foo]
-;    (create-entity
-;      (serialize foo)))
-;
-;  (delete-entity [foo]
-;    (delete-entity
-;      (:key foo)))
-;
-;  (save-entity [foo]
-;    (save-entity
-;      (serialize foo)))
-;
-;  (find-entity [foo]
-;    (find-entity
-;      (serialize foo)))
-;
-;  (update-entity [foo key-vals]
-;    (save-entity
-;      (merge foo key-vals)))
-;
-;  SerializationProtocol
-;
-;  (deserialize [foo] foo)
-;
-;  (serialize [foo]
-;    (serialize-entity foo)))
-;
-;(defprotocol FooProtocol
-;  (foo? [foo] "Returns true if arg is a datastore spec/foo, false otherwise.")
-;  (foo-key-name [foo] "Extract the datastore spec/foo key name.")
-;  (foo-key [foo] "Make a datastore spec/foo key.")
-;  (foo [foo] "Make a datastore spec/foo."))
-;
-;(defmethod deserialize-entity "foo" [entity]
-;  (new Foo (.getKey entity) (.getKind entity)))
-;
-;(defmethod serialize-entity "foo" [map]
-;  (doto (com.google.appengine.api.datastore.Entity.
-;    (or (:key map) (:kind map)))))
-;
-;(do
-;  (defn find-foos "Find all foos." [& options]
-;    (appengine.datastore.query/select "foo")))
-;
-;(extend-type com.google.appengine.api.datastore.Entity FooProtocol
-;  (foo? [foo]
-;    (= (.getKind foo) "foo")))
-;
-;(extend-type com.google.appengine.api.datastore.Key FooProtocol)
-;
-;(extend-type nil FooProtocol (foo? [foo] false))
-;(extend-type java.lang.Object FooProtocol (foo? [foo] false))
-;nil
-;(extend-type clojure.lang.IPersistentMap FooProtocol
-;  (foo? [foo]
-;    (= (:kind foo) "foo"))
-;  (foo-key-name [foo]
-;    (extract-key foo []))
-;  (foo-key [foo]
-;    (if-let [key (foo-key-name foo)]
-;      (appengine.datastore.keys/make-key nil "foo" key)))
-;  (foo [foo]
-;    (new Foo
-;      (foo-key foo) "foo")))

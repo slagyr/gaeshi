@@ -1,6 +1,7 @@
 (ns gaeshi.datastore
   (:use
-    [gaeshi.string :only (gsub)])
+    [gaeshi.string :only (gsub)]
+    [gaeshi.datastore.types :only (pack unpack)])
   (:require
     [clojure.string :as str])
   (:import
@@ -35,9 +36,25 @@
       (.setProperty entity (name key) value))
     entity))
 
+(defn pack-field [packer value]
+  (cond
+    (fn? packer) (packer value)
+    :else (pack packer value)))
+
+(defn unpack-field [unpacker value]
+  (cond
+    (fn? unpacker) (unpacker value)
+    (nil? value) nil
+    (class? unpacker) (unpack value)
+    :else value))
+
 (defn- map-field-specs [fields]
   (map
-    (fn [field] [(keyword (first field)) (apply hash-map (rest field))])
+    (fn [field]
+      (let [key (keyword (first field))
+            spec (apply hash-map (rest field))
+            spec (if-let [t (:type spec)] (assoc (dissoc spec :type) :packer t :unpacker t) spec)]
+        [key spec]))
     fields))
 
 (defn- extract-defaults [field-specs]
@@ -55,7 +72,7 @@
         defaults (extract-defaults field-specs)
         field-keys (map first field-specs)]
     `(defn ~ctor-sym [& args#]
-      (let [~'values (apply hash-map args#)
+      (let [~'values (if (map? (first args#)) (first args#) (apply hash-map args#))
             ~'values (merge ~defaults ~'values)
             extras# (dissoc ~'values ~@field-keys)]
         (merge
@@ -66,15 +83,27 @@
 
 (defn- define-from-entity [class-sym field-specs]
   (let [kind (spear-case (name class-sym))
-        field-keys (map first field-specs)]
+        field-keys (map first field-specs)
+        spec-map (apply hash-map (flatten field-specs))]
     `(defmethod ~'entity->record ~kind [entity#]
       (let [~'properties (reduce (fn [m# [key# val#]] (assoc m# (keyword key#) val#)) {} (.getProperties entity#))
-            extras# (dissoc ~'properties ~@field-keys)]
+            extras# (dissoc ~'properties ~@field-keys)
+            spec-map# ~spec-map]
         (merge
           (new ~class-sym ~kind (.getKey entity#)
             ~@(for [[field _] field-specs]
-              `(get ~'properties ~field)))
+              `(unpack-field (:unpacker (~field ~spec-map)) (get ~'properties ~field))))
           extras#)))))
+
+(defn- define-to-entity [class-sym field-specs]
+  (let [kind (spear-case (name class-sym))
+        spec-map (apply hash-map (flatten field-specs))]
+    `(defmethod ~'record->entity ~kind [record#]
+      (let [entity# (if (:key record#) (Entity. (:key record#)) (Entity. (:kind record#)))
+            spec-map# ~spec-map]
+        (doseq [[key# value#] (dissoc record# :kind :key)]
+          (.setProperty entity# (name key#) (pack-field (:packer (key# spec-map#)) value#)))
+        entity#))))
 
 (defmacro defentity [class-sym & fields]
   (let [field-specs (map-field-specs fields)
@@ -82,7 +111,8 @@
     `(do
       (defrecord ~class-sym [~'kind ~'key ~@field-names])
       ~(define-constructor class-sym field-specs)
-      ~(define-from-entity class-sym field-specs))))
+      ~(define-from-entity class-sym field-specs)
+      ~(define-to-entity class-sym field-specs))))
 
 (defn save [record & values]
   (let [values (apply hash-map values)

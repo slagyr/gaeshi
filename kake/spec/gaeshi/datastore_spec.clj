@@ -110,48 +110,51 @@
         (should= "kia" (:field updated))
         (should= "kia" (:field (find-by-key (:key saved))))))
 
-    (it "finds by kind"
-      (should= [] (find-by-kind "hollow"))
-      (let [saved (save (hollow))]
-        (should= [saved] (find-by-kind "hollow"))
-        (let [saved2 (save (hollow))]
-          (should= [saved saved2] (find-by-kind "hollow")))))
+    (context "searching"
 
-    (it "finds by kind with multiple kinds"
-      (let [saved-hollow (save (hollow))
-            saved-one (save (one-field))
-            saved-many (save (many-fields))]
-        (should= [saved-hollow] (find-by-kind "hollow"))
-        (should= [saved-one] (find-by-kind 'one-field))
-        (should= [saved-many] (find-by-kind :many-fields))))
+      (it "finds by kind"
+        (should= [] (find-by-kind "hollow"))
+        (let [saved (save (hollow))]
+          (should= [saved] (find-by-kind "hollow"))
+          (let [saved2 (save (hollow))]
+            (should= [saved saved2] (find-by-kind "hollow")))))
 
-    (it "handles filters to find-by-kind"
-      (let [one (save (one-field :field 1))
-            five (save (one-field :field 5))
-            ten (save (one-field :field 10))]
-        (should= [one five ten] (find-by-kind :one-field))
-        (should= [one] (find-by-kind :one-field :filters [(= :field 1)]))
-        (should= [one] (find-by-kind :one-field :filters [(< :field 5)]))
-        (should= [one five] (find-by-kind :one-field :filters [(<= :field 5)]))
-        (should= [ten] (find-by-kind :one-field :filters [(> :field 5)]))
-        (should= [five ten] (find-by-kind :one-field :filters [(>= :field 5)]))
-        (should= [one ten] (find-by-kind :one-field :filters [(not :field 5)]))
-        (should= [five] (find-by-kind :one-field :filters [(contains? :field [4 5 6])]))
-        (should= [five] (find-by-kind :one-field :filters [(> :field 1) (< :field 10)]))
-        (should= [] (find-by-kind :one-field :filters [(> :field 1) (< :field 10) (not :field 5)]))))
+      (it "finds by kind with multiple kinds"
+        (let [saved-hollow (save (hollow))
+              saved-one (save (one-field))
+              saved-many (save (many-fields))]
+          (should= [saved-hollow] (find-by-kind "hollow"))
+          (should= [saved-one] (find-by-kind 'one-field))
+          (should= [saved-many] (find-by-kind :many-fields))))
 
-    (it "handles sort order to find-by-kind"
-      (let [three (save (many-fields :field1 3 :field2 "odd"))
-            one (save (many-fields :field1 1 :field2 "odd"))
-            four (save (many-fields :field1 4 :field2 "even"))
-            five (save (many-fields :field1 5 :field2 "odd"))
-            nine (save (many-fields :field1 9 :field2 "odd"))
-            two (save (many-fields :field1 2 :field2 "even"))]
-        (should= [one two three four five nine] (find-by-kind "many-fields" :sorts [(:field1 :asc)]))
-        (should= [nine five four three two one] (find-by-kind "many-fields" :sorts [(:field1 :desc)]))
-        (should= [three one five nine four two] (find-by-kind "many-fields" :sorts [(:field2 "desc")]))
-        (should= [four two three one five nine] (find-by-kind "many-fields" :sorts [(:field2 "asc")]))
-        (should= [two four one three five nine] (find-by-kind "many-fields" :sorts [(:field2 "asc") (:field1 :asc)]))))
+      (it "handles filters to find-by-kind"
+        (let [one (save (one-field :field 1))
+              five (save (one-field :field 5))
+              ten (save (one-field :field 10))]
+          (should= [one five ten] (find-by-kind :one-field))
+          (should= [one] (find-by-kind :one-field :filters [(= :field 1)]))
+          (should= [one] (find-by-kind :one-field :filters [(< :field 5)]))
+          (should= [one five] (find-by-kind :one-field :filters [(<= :field 5)]))
+          (should= [ten] (find-by-kind :one-field :filters [(> :field 5)]))
+          (should= [five ten] (find-by-kind :one-field :filters [(>= :field 5)]))
+          (should= [one ten] (find-by-kind :one-field :filters [(not :field 5)]))
+          (should= [five] (find-by-kind :one-field :filters [(contains? :field [4 5 6])]))
+          (should= [five] (find-by-kind :one-field :filters [(> :field 1) (< :field 10)]))
+          (should= [] (find-by-kind :one-field :filters [(> :field 1) (< :field 10) (not :field 5)]))))
+
+      (it "handles sort order to find-by-kind"
+        (let [three (save (many-fields :field1 3 :field2 "odd"))
+              one (save (many-fields :field1 1 :field2 "odd"))
+              four (save (many-fields :field1 4 :field2 "even"))
+              five (save (many-fields :field1 5 :field2 "odd"))
+              nine (save (many-fields :field1 9 :field2 "odd"))
+              two (save (many-fields :field1 2 :field2 "even"))]
+          (should= [one two three four five nine] (find-by-kind "many-fields" :sorts [(:field1 :asc)]))
+          (should= [nine five four three two one] (find-by-kind "many-fields" :sorts [(:field1 :desc)]))
+          (should= [three one five nine four two] (find-by-kind "many-fields" :sorts [(:field2 "desc")]))
+          (should= [four two three one five nine] (find-by-kind "many-fields" :sorts [(:field2 "asc")]))
+          (should= [two four one three five nine] (find-by-kind "many-fields" :sorts [(:field2 "asc") (:field1 :asc)]))))
+      )
 
     (context "handles data types:"
       (it "ShortBlob"
@@ -258,6 +261,15 @@
         (should= "hello" (:bauble unsaved))
         (should= "olleh" (.getProperty raw "bauble"))
         (should= "OLLEH" (:bauble loaded))))
+
+    (it "can store multiple values in one field"
+      (let [unsaved (one-field :field [1 2 3 4 5])
+            saved (save unsaved)
+            raw (.get (datastore-service) (:key saved))
+            loaded (find-by-key (:key saved))]
+        (should= [1 2 3 4 5] (:field loaded))
+        (should= java.util.ArrayList (class (.getProperty raw "field")))
+        (should= java.util.ArrayList (class (:field loaded)))))
 
     )
   )

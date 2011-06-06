@@ -44,8 +44,7 @@
 (defn unpack-field [unpacker value]
   (cond
     (fn? unpacker) (unpacker value)
-    (nil? value) nil
-    (class? unpacker) (unpack value)
+    unpacker (unpack value)
     :else value))
 
 (defn- map-field-specs [fields]

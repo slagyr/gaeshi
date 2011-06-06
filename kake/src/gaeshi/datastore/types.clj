@@ -103,6 +103,10 @@
 (defprotocol Packable
   (unpack [this]))
 
+(extend-type nil
+  Packable
+  (unpack [this] nil))
+
 (extend-type ShortBlob
   Packable
   (unpack [this] (.getBytes this)))

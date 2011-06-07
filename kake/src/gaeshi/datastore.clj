@@ -5,7 +5,7 @@
   (:require
     [clojure.string :as str])
   (:import
-    [com.google.appengine.api.datastore Entity Query DatastoreServiceFactory Query$FilterOperator Query$SortDirection]))
+    [com.google.appengine.api.datastore Entity Query DatastoreServiceFactory Query$FilterOperator Query$SortDirection EntityNotFoundException]))
 
 (defn spear-case [value]
   (str/lower-case
@@ -121,8 +121,14 @@
     (assoc record :key key)))
 
 (defn find-by-key [key]
-  (let [entity (.get (datastore-service) key)]
-    (entity->record entity)))
+  (try
+    (let [entity (.get (datastore-service) key)]
+      (entity->record entity))
+    (catch EntityNotFoundException e
+      nil)))
+
+(defn delete [& records]
+  (.delete (datastore-service) (map :key records)))
 
 (defn- ->filter-operator [operator]
   (cond

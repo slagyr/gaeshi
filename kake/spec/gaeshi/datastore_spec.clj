@@ -110,6 +110,11 @@
         (should= "kia" (:field updated))
         (should= "kia" (:field (find-by-key (:key saved))))))
 
+    (it "can delete an entity"
+      (let [saved (save (one-field :field "hi"))]
+        (delete saved)
+        (should= nil (find-by-key (:key saved)))))
+
     (context "searching"
 
       (it "finds by kind"

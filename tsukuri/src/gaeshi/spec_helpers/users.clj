@@ -24,7 +24,7 @@
 (def default-user-values {:name "Test User"
                           :email "test@user.com"
                           :auth-domain "test.com"
-                          :id "1234567890"})
+                          :user-id "1234567890"})
 
 (def fake-user-service (atom nil))
 

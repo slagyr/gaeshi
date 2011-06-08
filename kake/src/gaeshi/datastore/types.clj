@@ -1,4 +1,6 @@
 (ns gaeshi.datastore.types
+  (:use
+    [gaeshi.users :only (user->map)])
   (:import
     [com.google.appengine.api.datastore ShortBlob Blob Category Email GeoPt Link IMHandle IMHandle$Scheme PostalAddress Rating PhoneNumber Text]
     [com.google.appengine.api.users User]
@@ -129,10 +131,7 @@
 
 (extend-type User
   Packable
-  (unpack [this] {:email (.getEmail this)
-                  :auth-domain (.getAuthDomain this)
-                  :user-id (.getUserId this)
-                  :federated-identity (.getFederatedIdentity this)}))
+  (unpack [this] (user->map this)))
 
 (extend-type BlobKey
   Packable

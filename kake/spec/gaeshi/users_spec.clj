@@ -13,7 +13,7 @@
                            :email "joe@yahoo.com"
                            :federated-identity "http://yahoo.com/joe"
                            :nickname "joe"
-                           :id "1234567890"})]
+                           :user-id "1234567890"})]
       (should= "yahoo.com" (.getAuthDomain user))
       (should= "joe@yahoo.com" (.getEmail user))
       (should= "http://yahoo.com/joe" (.getFederatedIdentity user))
@@ -30,7 +30,7 @@
   (it "creates user from a medium map"
     (let [user (map->user {:auth-domain "yahoo.com"
                            :email "joe@yahoo.com"
-                           :id "1234567890"})]
+                           :user-id "1234567890"})]
       (should= "yahoo.com" (.getAuthDomain user))
       (should= "joe@yahoo.com" (.getEmail user))
       (should= "joe" (.getNickname user))
@@ -41,7 +41,7 @@
                   :email "joe@yahoo.com"
                   :federated-identity "http://yahoo.com/joe"
                   :nickname "joe"
-                  :id "1234567890"}
+                  :user-id "1234567890"}
           user (map->user values)
           result (user->map user)]
       (should= values result)))
@@ -68,3 +68,5 @@
     (should= false (current-user-admin?))
     (should= false (current-user-logged-in?)))
   )
+
+(run-specs)

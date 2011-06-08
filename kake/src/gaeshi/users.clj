@@ -2,7 +2,6 @@
   (:import
     [com.google.appengine.api.users UserServiceFactory User]))
 
-
 (def user-service-instance (atom nil))
 
 (defn user-service []
@@ -12,8 +11,8 @@
 
 (defn map->user [values]
   (cond
-    (contains? values :federated-identity) (User. (:email values) (:auth-domain values) (:id values) (:federated-identity values))
-    (contains? values :id) (User. (:email values) (:auth-domain values) (:id values))
+    (contains? values :federated-identity) (User. (:email values) (:auth-domain values) (:user-id values) (:federated-identity values))
+    (contains? values :user-id) (User. (:email values) (:auth-domain values) (:user-id values))
     :else (User. (:email values) (:auth-domain values))))
 
 (defn user->map [user]
@@ -21,7 +20,7 @@
     {:email (.getEmail user)
      :nickname (.getNickname user)
      :auth-domain (.getAuthDomain user)
-     :id (.getUserId user)
+     :user-id (.getUserId user)
      :federated-identity (.getFederatedIdentity user)}
     nil))
 

@@ -2,7 +2,7 @@
   (:use
     [clojure.java.io :only (copy)]
     [clojure.string :only (split)]
-    [appengine.datastore.service :only (datastore)])
+    [gaeshi.datastore :only (datastore-service)])
   (:import
     [com.google.appengine.api.blobstore BlobstoreServiceFactory BlobInfoFactory BlobKey]
     [com.google.appengine.api.files FileServiceFactory]
@@ -24,7 +24,7 @@
 
 (defn blob-info-factory []
   (when (nil? @blob-info-factory-instance)
-    (reset! blob-info-factory-instance (BlobInfoFactory. (datastore))))
+    (reset! blob-info-factory-instance (BlobInfoFactory. (datastore-service))))
   @blob-info-factory-instance)
 
 (defn- blob-key [key]

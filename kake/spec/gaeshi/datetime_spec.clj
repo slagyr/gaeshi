@@ -24,6 +24,10 @@
     (should= false (after? (datetime 2011 1 1) (datetime 2011 1 2)))
     (should= true (after? (datetime 2011 1 3) (datetime 2011 1 2))))
 
+  (it "checks if a date is btween two other dates"
+    (should= true (between? (datetime 2011 1 2) (datetime 2011 1 1) (datetime 2011 1 3)))
+    (should= false (between? (datetime 2011 1 3) (datetime 2011 1 2) (datetime 2011 1 1))))
+
   (it "creates dates relative to now in second increments"
     (should= true (before? (seconds-ago 1) (now)))
     (should= true (before? (seconds-ago 2) (seconds-ago 1)))

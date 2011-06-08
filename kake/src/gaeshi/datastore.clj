@@ -1,11 +1,12 @@
 (ns gaeshi.datastore
   (:use
     [gaeshi.string :only (gsub)]
-    [gaeshi.datastore.types :only (pack unpack)])
+    [gaeshi.datastore.types :only (pack unpack)]
+    [gaeshi.datetime :only (now)])
   (:require
     [clojure.string :as str])
   (:import
-    [com.google.appengine.api.datastore Entity Query DatastoreServiceFactory Query$FilterOperator Query$SortDirection EntityNotFoundException]))
+    [com.google.appengine.api.datastore Entity Query DatastoreServiceFactory Query$FilterOperator Query$SortDirection EntityNotFoundException KeyFactory Key]))
 
 (defn spear-case [value]
   (str/lower-case
@@ -20,13 +21,44 @@
     (reset! datastore-service-instance (DatastoreServiceFactory/getDatastoreService)))
   @datastore-service-instance)
 
+(defprotocol AfterCreate
+  (after-create [this]))
+
+(defprotocol BeforeSave
+  (before-save [this]))
+
+(defprotocol AfterLoad
+  (after-load [this]))
+
+(extend-type Object
+  AfterCreate
+  (after-create [this] this)
+  BeforeSave
+  (before-save [this] this)
+  AfterLoad
+  (after-load [this] this))
+
+(defn- with-created-at [record]
+  (if (and (contains? record :created-at) (= nil (:created-at record)))
+    (assoc record :created-at (now))
+    record))
+
+(defn- with-updated-at [record]
+  (if (contains? record :updated-at)
+    (assoc record :updated-at (now))
+    record))
+
+(defn with-updated-timestamps [record]
+  (with-updated-at (with-created-at record)))
+
 (defmulti entity->record (fn [entity] (.getKind entity)))
 
 (defmethod entity->record :default [entity]
-  (reduce
-    (fn [record entry] (assoc record (keyword (key entry)) (val entry)))
-    {:kind (.getKind entity) :key (.getKey entity)}
-    (.getProperties entity)))
+  (after-load
+    (reduce
+      (fn [record entry] (assoc record (keyword (key entry)) (val entry)))
+      {:kind (.getKind entity) :key (.getKey entity)}
+      (.getProperties entity))))
 
 (defmulti record->entity :kind)
 
@@ -71,14 +103,15 @@
         defaults (extract-defaults field-specs)
         field-keys (map first field-specs)]
     `(defn ~ctor-sym [& args#]
-      (let [~'values (if (map? (first args#)) (first args#) (apply hash-map args#))
+      (let [~'values (if (map? (first args#)) (merge (first args#) (apply hash-map (rest args#))) (apply hash-map args#))
             ~'values (merge ~defaults ~'values)
             extras# (dissoc ~'values ~@field-keys)]
-        (merge
-          (new ~class-sym ~kind nil
-            ~@(for [[field _] field-specs]
-              `(~field ~'values)))
-          extras#)))))
+        (after-create
+          (merge
+            (new ~class-sym ~kind nil
+              ~@(for [[field _] field-specs]
+                `(~field ~'values)))
+            extras#))))))
 
 (defn- define-from-entity [class-sym field-specs]
   (let [kind (spear-case (name class-sym))
@@ -88,11 +121,12 @@
       (let [~'properties (reduce (fn [m# [key# val#]] (assoc m# (keyword key#) val#)) {} (.getProperties entity#))
             extras# (dissoc ~'properties ~@field-keys)
             spec-map# ~spec-map]
-        (merge
-          (new ~class-sym ~kind (.getKey entity#)
-            ~@(for [[field _] field-specs]
-              `(unpack-field (:unpacker (~field ~spec-map)) (get ~'properties ~field))))
-          extras#)))))
+        (after-load
+          (merge
+            (new ~class-sym ~kind (.getKey entity#)
+              ~@(for [[field _] field-specs]
+                `(unpack-field (:unpacker (~field ~spec-map)) (get ~'properties ~field))))
+            extras#))))))
 
 (defn- define-to-entity [class-sym field-specs]
   (let [kind (spear-case (name class-sym))
@@ -114,8 +148,10 @@
       ~(define-to-entity class-sym field-specs))))
 
 (defn save [record & values]
-  (let [values (apply hash-map values)
+  (let [values (if (map? (first values)) (merge (first values) (apply hash-map (rest values))) (apply hash-map values))
         record (merge record values)
+        record (with-updated-timestamps record)
+        record (before-save record)
         entity (record->entity record)
         key (.put (datastore-service) entity)]
     (assoc record :key key)))
@@ -171,3 +207,18 @@
            prepared# (.prepare (datastore-service) query#)
            results# (.asQueryResultIterator prepared#)]
       (map entity->record (iterator-seq results#)))))
+
+(defn create-key [kind id]
+  (KeyFactory/createKey kind (long id)))
+
+(defn key? [key]
+  (isa? (class key) Key))
+
+(defn key->string [^Key key]
+  (KeyFactory/keyToString key))
+
+(defn string->key [value]
+  (KeyFactory/stringToKey value))
+
+
+

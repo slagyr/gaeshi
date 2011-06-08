@@ -3,6 +3,7 @@
     [speclj.core]
     [gaeshi.datastore]
     [gaeshi.spec-helpers.datastore]
+    [gaeshi.datetime :only (before? after? between? seconds-ago seconds-from-now)]
     [clojure.string :only (upper-case)])
   (:import
     [com.google.appengine.api.datastore ShortBlob Blob Category Email GeoPt Link IMHandle PostalAddress Rating PhoneNumber Text]
@@ -43,6 +44,23 @@
 (defentity CustomPacking
   [bauble :packer #(apply str (reverse %)) :unpacker upper-case])
 
+(defentity Hooks
+  [field]
+  [create-message]
+  [save-message]
+  [load-message])
+
+(extend-type Hooks
+  AfterCreate
+  (after-create [this] (assoc this :create-message (str "created with: " (:field this))))
+  BeforeSave
+  (before-save [this] (assoc this :save-message (str "saving with: " (:field this))))
+  AfterLoad
+  (after-load [this] (assoc this :load-message (str "loaded with: " (:field this)))))
+
+(defentity Timestamps
+  [created-at]
+  [updated-at])
 
 (describe "Datastore"
   (it "uses dashes in spear-case"
@@ -103,6 +121,12 @@
         (should= "kia" (:field saved))
         (should= "kia" (:field (find-by-key (:key saved))))))
 
+    (it "can set values using a map while saving"
+      (let [unsaved (one-field)
+            saved (save unsaved {:field "Hiya!"})]
+        (should= "Hiya!" (:field saved))
+        (should= "Hiya!" (:field (find-by-key (:key saved))))))
+
     (it "can update existing enitity"
       (let [saved (save (one-field :field "giyup"))
             updated (save saved :field "kia")]
@@ -114,6 +138,26 @@
       (let [saved (save (one-field :field "hi"))]
         (delete saved)
         (should= nil (find-by-key (:key saved)))))
+
+    (context "Keys"
+
+      (it "can create a key"
+        (let [key (create-key "one-field" 42)]
+          (should= "one-field" (.getKind key))
+          (should= 42 (.getId key))))
+
+      (it "knows a key when it sees one"
+        (should= false (key? "foo"))
+        (should= false (key? 42))
+        (should= true (key? (create-key "one-field" 42))))
+
+      (it "converts a key to a string and back"
+        (let [key (create-key "one-field" 42)
+              str-value (key->string key)]
+          (should= String (class str-value))
+          (should= key (string->key str-value))))
+
+      )
 
     (context "searching"
 
@@ -276,6 +320,56 @@
         (should= java.util.ArrayList (class (.getProperty raw "field")))
         (should= java.util.ArrayList (class (:field loaded)))))
 
+    (context "Hooks"
+      (it "has after create hook"
+        (let [unsaved (hooks :field "waza!")]
+          (should= "waza!" (:field unsaved))
+          (should= "created with: waza!" (:create-message unsaved))))
+
+      (it "has before save hook"
+        (let [saved (save (hooks :field "waza!"))
+              raw (.get (datastore-service) (:key saved))]
+          (should= "saving with: waza!" (:save-message saved))
+          (should= "saving with: waza!" (.getProperty raw "save-message"))))
+
+      (it "has after load hook"
+        (let [unsaved (hooks :field "waza!")
+              saved (save unsaved)
+              raw (.get (datastore-service) (:key saved))
+              loaded (find-by-key (:key saved))]
+          (should= nil (:load-message unsaved))
+          (should= nil (:load-message saved))
+          (should= nil (.getProperty raw "load-message"))
+          (should= "loaded with: waza!" (:load-message loaded))))
+      )
+
+    (context "Timestamps"
+
+      (it "are automatically populated on save"
+        (let [saved (save (timestamps))]
+          (should-not= nil (:created-at saved))
+          (should-not= nil (:updated-at saved))
+          (should (before? (seconds-ago 1) (:created-at saved)))
+          (should (before? (seconds-ago 1) (:updated-at saved)))))
+
+      (it "dont update existing created-at"
+        (let [saved (save (timestamps))
+              raw (.get (datastore-service) (:key saved))]
+          (.setProperty raw "created-at" (seconds-ago 5))
+          (.put (datastore-service) raw)
+          (let [resaved (save (find-by-key (:key saved)))
+                loaded (find-by-key (:key resaved))]
+            (should= true (between? (:created-at loaded) (seconds-ago 6) (seconds-ago 4))))))
+
+      (it "does update existing updated-at"
+        (let [saved (save (timestamps))
+              raw (.get (datastore-service) (:key saved))]
+          (.setProperty raw "updated-at" (seconds-ago 5))
+          (.put (datastore-service) raw)
+          (let [resaved (save (find-by-key (:key saved)))
+                loaded (find-by-key (:key resaved))]
+            (should= true (between? (:updated-at loaded) (seconds-ago 1) (seconds-from-now 1))))))
+      )
     )
   )
 

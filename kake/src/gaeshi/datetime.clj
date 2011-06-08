@@ -17,6 +17,11 @@
 (defn after? [^Date first ^Date second]
   (.after first second))
 
+(defn between? [^Date date ^Date start ^Date end]
+  (and
+    (after? date start)
+    (before? date end)))
+
 (defn seconds [n] (* n 1000))
 (defn minutes [n] (* n 60000))
 (defn hours [n] (* n 3600000))

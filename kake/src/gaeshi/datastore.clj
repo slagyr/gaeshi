@@ -6,7 +6,8 @@
   (:require
     [clojure.string :as str])
   (:import
-    [com.google.appengine.api.datastore Entity Query DatastoreServiceFactory Query$FilterOperator Query$SortDirection EntityNotFoundException KeyFactory Key]))
+    [com.google.appengine.api.datastore Entity Query DatastoreServiceFactory Query$FilterOperator
+     Query$SortDirection FetchOptions$Builder EntityNotFoundException KeyFactory Key]))
 
 (defn spear-case [value]
   (str/lower-case
@@ -197,16 +198,26 @@
       [(name field) (->sort-direction direction)])
     sorts))
 
+(defn build-query [kind options]
+  (let [filters (vec (parse-filters (:filters options)))
+        sorts (vec (parse-sorts (:sorts options)))]
+    `(let [query# (Query. (name ~kind))]
+      (doseq [[operator# field# value#] ~filters] (.addFilter query# field# operator# value#))
+      (doseq [[field# direction#] ~sorts] (.addSort query# field# direction#))
+      (.prepare (datastore-service) query#))))
+
 (defmacro find-by-kind [kind & optionskv]
   (let [options (apply hash-map optionskv)
-        filters (vec (parse-filters (:filters options)))
-        sorts (vec (parse-sorts (:sorts options)))]
-    `(let [query# (Query. (name ~kind))
-           _# (doseq [[operator# field# value#] ~filters] (.addFilter query# field# operator# value#))
-           _# (doseq [[field# direction#] ~sorts] (.addSort query# field# direction#))
-           prepared# (.prepare (datastore-service) query#)
-           results# (.asQueryResultIterator prepared#)]
+        limit (:limit options)
+        offset (:offset options)
+        query (build-query kind options)]
+    `(let [fetch# (if ~limit (FetchOptions$Builder/withLimit ~limit))
+           fetch# (if ~offset (if fetch# (.offset fetch# ~offset) (FetchOptions$Builder/withOffset ~offset)))
+           results# (if fetch# (.asQueryResultIterator ~query fetch#) (.asQueryResultIterator ~query))]
       (map entity->record (iterator-seq results#)))))
+
+(defmacro count-by-kind [kind & optionskv]
+  `(.countEntities ~(build-query kind (apply hash-map optionskv))))
 
 (defn create-key [kind id]
   (KeyFactory/createKey kind (long id)))
@@ -219,6 +230,3 @@
 
 (defn string->key [value]
   (KeyFactory/stringToKey value))
-
-
-

@@ -203,6 +203,30 @@
           (should= [three one five nine four two] (find-by-kind "many-fields" :sorts [(:field2 "desc")]))
           (should= [four two three one five nine] (find-by-kind "many-fields" :sorts [(:field2 "asc")]))
           (should= [two four one three five nine] (find-by-kind "many-fields" :sorts [(:field2 "asc") (:field1 :asc)]))))
+
+      (it "handles fetch options"
+        (let [three (save (many-fields :field1 3 :field2 "odd"))
+              one (save (many-fields :field1 1 :field2 "odd"))
+              four (save (many-fields :field1 4 :field2 "even"))
+              five (save (many-fields :field1 5 :field2 "odd"))
+              nine (save (many-fields :field1 9 :field2 "odd"))
+              two (save (many-fields :field1 2 :field2 "even"))]
+          (should= [one two] (find-by-kind "many-fields" :sorts [(:field1 :asc)] :limit 2 :offset 0))
+          (should= [three four] (find-by-kind "many-fields" :sorts [(:field1 :asc)] :limit 2 :offset 2))
+          (should= [five nine] (find-by-kind "many-fields" :sorts [(:field1 :asc)] :limit 2 :offset 4))))
+
+      (it "can count by kind"
+        (let [three (save (many-fields :field1 3 :field2 "odd"))
+              one (save (many-fields :field1 1 :field2 "odd"))
+              four (save (many-fields :field1 4 :field2 "even"))
+              five (save (many-fields :field1 5 :field2 "odd"))
+              nine (save (many-fields :field1 9 :field2 "odd"))
+              two (save (many-fields :field1 2 :field2 "even"))]
+          (should= 6 (count-by-kind "many-fields"))
+          (should= 4 (count-by-kind "many-fields" :filters [(< :field1 5)]))
+          (should= 1 (count-by-kind "many-fields" :filters [(> :field1 5)]))
+          (should= 4 (count-by-kind "many-fields" :filters [(= :field2 "odd")]))
+          (should= 2 (count-by-kind "many-fields" :filters [(= :field2 "even")]))))
       )
 
     (context "handles data types:"

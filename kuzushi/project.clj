@@ -1,4 +1,4 @@
-(defproject gaeshi/kuzushi "0.5.2"
+(defproject gaeshi/kuzushi "0.6.0-SNAPSHOT"
   :description "Leiningen Plugin for Gaeshi, a Clojure framework for Google App Engine apps."
   :license {:name "The MIT License"
             :url "file://LICENSE"

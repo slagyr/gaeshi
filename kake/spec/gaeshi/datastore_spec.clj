@@ -157,6 +157,11 @@
           (should= String (class str-value))
           (should= key (string->key str-value))))
 
+      (it "returns nil when converting bad keys"
+        (should= nil (string->key "blah"))
+        (should= nil (string->key :fooey))
+        (should= nil (key->string nil)))
+
       )
 
     (context "searching"

@@ -20,10 +20,7 @@
     `(fn [~'record]
       (if-let [value# (~field ~'record)]
         (let [kind# (:kind ~'record)
-              finder-name# (symbol (str "find-" (pluralize kind#) "-by-" (name ~field)))
-              record-ns# ~*ns*
-              finder# (ns-resolve record-ns# finder-name#)
               key# (:key ~'record)
-              others# (finder# value#)]
+              others# (gaeshi.datastore/find-by-kind kind# :filters [(~'= ~field value#)])]
           (if (some #(not (= key# (:key %))) others#)
             [~field ~message]))))))

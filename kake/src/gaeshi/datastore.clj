@@ -118,21 +118,20 @@
   (let [kind (spear-case (name class-sym))
         field-keys (map first field-specs)
         spec-map (apply hash-map (flatten field-specs))]
-    `(defmethod ~'entity->record ~kind [entity#]
+    `(defmethod entity->record ~kind [entity#]
       (let [~'properties (reduce (fn [m# [key# val#]] (assoc m# (keyword key#) val#)) {} (.getProperties entity#))
             extras# (dissoc ~'properties ~@field-keys)
             spec-map# ~spec-map]
-        (after-load
-          (merge
-            (new ~class-sym ~kind (.getKey entity#)
-              ~@(for [[field _] field-specs]
-                `(unpack-field (:unpacker (~field ~spec-map)) (get ~'properties ~field))))
-            extras#))))))
+        (merge
+          (new ~class-sym ~kind (.getKey entity#)
+            ~@(for [[field _] field-specs]
+              `(unpack-field (:unpacker (~field ~spec-map)) (get ~'properties ~field))))
+          extras#)))))
 
 (defn- define-to-entity [class-sym field-specs]
   (let [kind (spear-case (name class-sym))
         spec-map (apply hash-map (flatten field-specs))]
-    `(defmethod ~'record->entity ~kind [record#]
+    `(defmethod record->entity ~kind [record#]
       (let [entity# (if (:key record#) (Entity. (:key record#)) (Entity. (:kind record#)))
             spec-map# ~spec-map]
         (doseq [[key# value#] (dissoc record# :kind :key)]
@@ -155,12 +154,16 @@
         record (before-save record)
         entity (record->entity record)
         key (.put (datastore-service) entity)]
-    (assoc record :key key)))
+    (entity->record entity)))
+
+(defn load-entity [entity]
+  (after-load
+    (entity->record entity)))
 
 (defn find-by-key [key]
   (try
     (let [entity (.get (datastore-service) key)]
-      (entity->record entity))
+      (load-entity entity))
     (catch EntityNotFoundException e
       nil)))
 
@@ -214,7 +217,7 @@
     `(let [fetch# (if ~limit (FetchOptions$Builder/withLimit ~limit))
            fetch# (if ~offset (if fetch# (.offset fetch# ~offset) (FetchOptions$Builder/withOffset ~offset)))
            results# (if fetch# (.asQueryResultIterator ~query fetch#) (.asQueryResultIterator ~query))]
-      (map entity->record (iterator-seq results#)))))
+      (map load-entity (iterator-seq results#)))))
 
 (defmacro count-by-kind [kind & optionskv]
   `(.countEntities ~(build-query kind (apply hash-map optionskv))))
@@ -226,7 +229,11 @@
   (isa? (class key) Key))
 
 (defn key->string [^Key key]
-  (KeyFactory/keyToString key))
+  (try
+    (KeyFactory/keyToString key)
+    (catch Exception e nil)))
 
 (defn string->key [value]
-  (KeyFactory/stringToKey value))
+  (try
+    (KeyFactory/stringToKey value)
+    (catch Exception e nil)))

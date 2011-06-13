@@ -39,6 +39,14 @@
   AfterLoad
   (after-load [this] this))
 
+(extend-type nil
+  AfterCreate
+  (after-create [_] nil)
+  BeforeSave
+  (before-save [_] nil)
+  AfterLoad
+  (after-load [_] nil))
+
 (defn- with-created-at [record]
   (if (and (contains? record :created-at) (= nil (:created-at record)))
     (assoc record :created-at (now))
@@ -52,7 +60,16 @@
 (defn with-updated-timestamps [record]
   (with-updated-at (with-created-at record)))
 
-(defmulti entity->record (fn [entity] (.getKind entity)))
+(defn kind [thing]
+  (cond
+    (isa? (class thing) Entity) (.getKind thing)
+    (map? thing) (:kind thing)
+    :else nil))
+
+(defmulti entity->record kind)
+
+(defmethod entity->record nil [entity]
+  nil)
 
 (defmethod entity->record :default [entity]
   (after-load
@@ -165,6 +182,11 @@
       (load-entity entity))
     (catch EntityNotFoundException e
       nil)))
+
+(defn find-by-keys [& keys]
+  (let [result-map (.get (datastore-service) keys)
+        entities (map #(get result-map %) keys)]
+    (map load-entity entities)))
 
 (defn delete [& records]
   (.delete (datastore-service) (map :key records)))

@@ -25,5 +25,4 @@
                      [com.google.appengine/appengine-api-1.0-sdk "1.5.0"]
                      [ring/ring-servlet "0.3.7"]]
   :test-path "spec/"
-  :java-source-path "src/"
-  :resources-path "resources/")
+  :java-source-path "src/")

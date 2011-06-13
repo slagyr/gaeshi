@@ -160,7 +160,7 @@
   (after-load
     (entity->record entity)))
 
-(defn find-by-key [key]
+(defn find-by-key [^Key key]
   (try
     (let [entity (.get (datastore-service) key)]
       (load-entity entity))

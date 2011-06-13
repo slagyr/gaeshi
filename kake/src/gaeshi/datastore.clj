@@ -81,13 +81,14 @@
     :else value))
 
 (defn- map-field-specs [fields]
-  (map
-    (fn [field]
-      (let [key (keyword (first field))
-            spec (apply hash-map (rest field))
-            spec (if-let [t (:type spec)] (assoc (dissoc spec :type) :packer t :unpacker t) spec)]
-        [key spec]))
-    fields))
+  (vec
+    (map
+      (fn [field]
+        (let [key (keyword (first field))
+              spec (apply hash-map (rest field))
+              spec (if-let [t (:type spec)] (assoc (dissoc spec :type) :packer t :unpacker t) spec)]
+          [key spec]))
+      fields)))
 
 (defn- extract-defaults [field-specs]
   (reduce
@@ -120,8 +121,7 @@
         spec-map (apply hash-map (flatten field-specs))]
     `(defmethod entity->record ~kind [entity#]
       (let [~'properties (reduce (fn [m# [key# val#]] (assoc m# (keyword key#) val#)) {} (.getProperties entity#))
-            extras# (dissoc ~'properties ~@field-keys)
-            spec-map# ~spec-map]
+            extras# (dissoc ~'properties ~@field-keys)]
         (merge
           (new ~class-sym ~kind (.getKey entity#)
             ~@(for [[field _] field-specs]
@@ -129,13 +129,12 @@
           extras#)))))
 
 (defn- define-to-entity [class-sym field-specs]
-  (let [kind (spear-case (name class-sym))
-        spec-map (apply hash-map (flatten field-specs))]
+  (let [kind (spear-case (name class-sym))]
     `(defmethod record->entity ~kind [record#]
       (let [entity# (if (:key record#) (Entity. (:key record#)) (Entity. (:kind record#)))
-            spec-map# ~spec-map]
-        (doseq [[key# value#] (dissoc record# :kind :key)]
-          (.setProperty entity# (name key#) (pack-field (:packer (key# spec-map#)) value#)))
+            field-specs# ~field-specs]
+        (doseq [[key# spec#] field-specs#]
+          (.setProperty entity# (name key#) (pack-field (:packer spec#) (get record# key#))))
         entity#))))
 
 (defmacro defentity [class-sym & fields]

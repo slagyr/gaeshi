@@ -139,6 +139,18 @@
         (delete saved)
         (should= nil (find-by-key (:key saved)))))
 
+    (it "only saves the fields defined in the entity"
+      (let [unsaved (one-field :foo "foo")
+            saved (save unsaved)
+            loaded (find-by-key (:key saved))
+            raw (.get (datastore-service) (:key saved))]
+        (should= "foo" (:foo unsaved))
+        (should= nil (:foo saved))
+        (should= nil (:foo loaded))
+        (should= nil (.getProperty raw "foo"))
+        (should= true (.containsKey (.getProperties raw) "field"))
+        (should= true (contains? loaded :field))))
+
     (context "Keys"
 
       (it "can create a key"

@@ -155,9 +155,9 @@
       (let [one (save (one-field :field 1))
             two (save (one-field :field 2))
             three (save (one-field :field 3))]
-        (should= [one two three] (find-by-keys (:key one) (:key two) (:key three)))
-        (should= [three two one] (find-by-keys (:key three) (:key two) (:key one)))
-        (should= [one nil three] (find-by-keys (:key one) (create-key "foo" 1) (:key three)))))
+        (should= [one two three] (find-by-keys [(:key one) (:key two) (:key three)]))
+        (should= [three two one] (find-by-keys [(:key three) (:key two) (:key one)]))
+        (should= [one nil three] (find-by-keys [(:key one) (create-key "foo" 1) (:key three)]))))
 
     (context "Keys"
 

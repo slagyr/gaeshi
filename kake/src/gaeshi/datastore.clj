@@ -183,7 +183,7 @@
     (catch EntityNotFoundException e
       nil)))
 
-(defn find-by-keys [& keys]
+(defn find-by-keys [^Iterable keys]
   (let [result-map (.get (datastore-service) keys)
         entities (map #(get result-map %) keys)]
     (map load-entity entities)))

@@ -276,7 +276,9 @@
       ~(build-fetch-options options))))
 
   (defn create-key [kind id]
-    (KeyFactory/createKey kind (long id)))
+    (if (number? id)
+      (KeyFactory/createKey kind (long id))
+      (KeyFactory/createKey kind (str id))))
 
   (defn key? [key]
     (isa? (class key) Key))

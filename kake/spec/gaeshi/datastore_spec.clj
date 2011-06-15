@@ -170,9 +170,9 @@
     (context "Keys"
 
       (it "can create a key"
-        (let [key (create-key "one-field" 42)]
-          (should= "one-field" (.getKind key))
-          (should= 42 (.getId key))))
+        (should= "one-field" (.getKind (create-key "one-field" 42)))
+        (should= 42 (.getId (create-key "one-field" 42)))
+        (should= "foo" (.getName (create-key "one-field" "foo"))))
 
       (it "knows a key when it sees one"
         (should= false (key? "foo"))

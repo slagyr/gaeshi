@@ -177,14 +177,17 @@
     (entity->record entity)))
 
 (defn find-by-key [^Key key]
-  (try
-    (let [entity (.get (datastore-service) key)]
-      (load-entity entity))
-    (catch EntityNotFoundException e
-      nil)))
+  (if (nil? key)
+    nil
+    (try
+      (let [entity (.get (datastore-service) key)]
+        (load-entity entity))
+      (catch EntityNotFoundException e
+        nil))))
 
 (defn find-by-keys [^Iterable keys]
-  (let [result-map (.get (datastore-service) keys)
+  (let [keys (filter identity keys)
+        result-map (.get (datastore-service) keys)
         entities (map #(get result-map %) keys)]
     (map load-entity entities)))
 
@@ -230,31 +233,37 @@
       (doseq [[field# direction#] ~sorts] (.addSort query# field# direction#))
       (.prepare (datastore-service) query#))))
 
+(defn build-fetch-options [options]
+  (let [limit (or (:limit options) 1000)
+        offset (or (:offset options) 0)]
+    `(doto (FetchOptions$Builder/withLimit ~limit)
+      (.offset ~offset))))
+
 (defmacro find-by-kind [kind & optionskv]
   (let [options (apply hash-map optionskv)
-        limit (:limit options)
-        offset (:offset options)
-        query (build-query kind options)]
-    `(let [fetch# (if ~limit (FetchOptions$Builder/withLimit ~limit))
-           fetch# (if ~offset (if fetch# (.offset fetch# ~offset) (FetchOptions$Builder/withOffset ~offset)))
-           results# (if fetch# (.asQueryResultIterator ~query fetch#) (.asQueryResultIterator ~query))]
+        query (build-query kind options)
+        fetching (build-fetch-options options)]
+    `(let [results# (.asQueryResultIterator ~query ~fetching)]
       (map load-entity (iterator-seq results#)))))
 
 (defmacro count-by-kind [kind & optionskv]
-  `(.countEntities ~(build-query kind (apply hash-map optionskv))))
+  (let [options (apply hash-map optionskv)]
+    `(.countEntities
+      ~(build-query kind options)
+      ~(build-fetch-options options))))
 
-(defn create-key [kind id]
-  (KeyFactory/createKey kind (long id)))
+  (defn create-key [kind id]
+    (KeyFactory/createKey kind (long id)))
 
-(defn key? [key]
-  (isa? (class key) Key))
+  (defn key? [key]
+    (isa? (class key) Key))
 
-(defn key->string [^Key key]
-  (try
-    (KeyFactory/keyToString key)
-    (catch Exception e nil)))
+  (defn key->string [^Key key]
+    (try
+      (KeyFactory/keyToString key)
+      (catch Exception e nil)))
 
-(defn string->key [value]
-  (try
-    (KeyFactory/stringToKey value)
-    (catch Exception e nil)))
+  (defn string->key [value]
+    (try
+      (KeyFactory/stringToKey value)
+      (catch Exception e nil)))

@@ -159,6 +159,14 @@
         (should= [three two one] (find-by-keys [(:key three) (:key two) (:key one)]))
         (should= [one nil three] (find-by-keys [(:key one) (create-key "foo" 1) (:key three)]))))
 
+    (it "find-by-key(s) doesn't raise error when passed nil"
+      (let [one (save (one-field :field 1))]
+        (should-not-throw (find-by-key nil))
+        (should= nil (find-by-key nil))
+        (should= [] (find-by-keys [nil]))
+        (should= [one] (find-by-keys [nil (:key one)]))
+        (should= [] (find-by-keys nil))))
+
     (context "Keys"
 
       (it "can create a key"
@@ -251,7 +259,12 @@
           (should= 4 (count-by-kind "many-fields" :filters [(< :field1 5)]))
           (should= 1 (count-by-kind "many-fields" :filters [(> :field1 5)]))
           (should= 4 (count-by-kind "many-fields" :filters [(= :field2 "odd")]))
-          (should= 2 (count-by-kind "many-fields" :filters [(= :field2 "even")]))))
+          (should= 2 (count-by-kind "many-fields" :filters [(= :field2 "even")]))
+          (should= 2 (count-by-kind "many-fields" :limit 2))
+          (should= 5 (count-by-kind "many-fields" :limit 5))
+          (should= 4 (count-by-kind "many-fields" :offset 2))
+          (should= 1 (count-by-kind "many-fields" :offset 5))
+          (should= 2 (count-by-kind "many-fields" :offset 2 :limit 2))))
       )
 
     (context "handles data types:"

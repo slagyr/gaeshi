@@ -265,6 +265,22 @@
           (should= 4 (count-by-kind "many-fields" :offset 2))
           (should= 1 (count-by-kind "many-fields" :offset 5))
           (should= 2 (count-by-kind "many-fields" :offset 2 :limit 2))))
+
+      (it "finds all kinds"
+        (let [h1 (save (hollow))
+              o1 (save (one-field :field 1))
+              m1 (save (many-fields :field1 2))]
+          (should= (set (map :key [h1 o1 m1])) (set (map :key (find-all-kinds))))
+          (should= [h1] (find-all-kinds :filters [(< :__key__ (create-key "hollow" 100))]))
+          (should= [h1] (find-all-kinds :limit 1))))
+
+      (it "counts all kinds"
+        (let [h1 (save (hollow))
+              o1 (save (one-field :field 1))
+              m1 (save (many-fields :field1 2))]
+          (should= 3 (count-all-kinds))
+          (should= 1 (count-all-kinds :filters [(< :__key__ (create-key "hollow" 100))]))
+          (should= 1 (count-all-kinds :limit 1))))
       )
 
     (context "handles data types:"

@@ -228,16 +228,26 @@
 (defn build-query [kind options]
   (let [filters (vec (parse-filters (:filters options)))
         sorts (vec (parse-sorts (:sorts options)))]
-    `(let [query# (Query. (name ~kind))]
+    `(let [query# (if ~kind (Query. (name ~kind)) (Query.))]
       (doseq [[operator# field# value#] ~filters] (.addFilter query# field# operator# value#))
       (doseq [[field# direction#] ~sorts] (.addSort query# field# direction#))
       (.prepare (datastore-service) query#))))
 
 (defn build-fetch-options [options]
-  (let [limit (or (:limit options) 1000)
-        offset (or (:offset options) 0)]
-    `(doto (FetchOptions$Builder/withLimit ~limit)
-      (.offset ~offset))))
+  (let [limit (:limit options)
+        offset (:offset options)
+        prefetch-size (:prefetch-size options)
+        chunk-size (:chunk-size options)
+        start-cursor (:start-cursor options)
+        end-cursor (:end-cursor options)]
+    `(let [fetch-options# (FetchOptions$Builder/withDefaults)]
+      (when ~limit (.limit fetch-options# ~limit))
+      (when ~offset (.offset fetch-options# ~offset))
+      (when ~prefetch-size (.prefetchSize fetch-options# ~prefetch-size))
+      (when ~chunk-size (.checkSize fetch-options# ~chunk-size))
+      (when ~start-cursor (.startCursor fetch-options# ~start-cursor))
+      (when ~end-cursor (.endCursor fetch-options# ~end-cursor))
+      fetch-options#)))
 
 (defmacro find-by-kind [kind & optionskv]
   (let [options (apply hash-map optionskv)
@@ -246,10 +256,23 @@
     `(let [results# (.asQueryResultIterator ~query ~fetching)]
       (map load-entity (iterator-seq results#)))))
 
+(defmacro find-all-kinds [& optionskv]
+  (let [options (apply hash-map optionskv)
+        query (build-query nil options)
+        fetching (build-fetch-options options)]
+    `(let [results# (.asQueryResultIterator ~query ~fetching)]
+      (map load-entity (iterator-seq results#)))))
+
 (defmacro count-by-kind [kind & optionskv]
   (let [options (apply hash-map optionskv)]
     `(.countEntities
       ~(build-query kind options)
+      ~(build-fetch-options options))))
+
+(defmacro count-all-kinds [& optionskv]
+  (let [options (apply hash-map optionskv)]
+    `(.countEntities
+      ~(build-query nil options)
       ~(build-fetch-options options))))
 
   (defn create-key [kind id]

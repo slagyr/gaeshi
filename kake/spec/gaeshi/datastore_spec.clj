@@ -134,6 +134,12 @@
         (should= "kia" (:field updated))
         (should= "kia" (:field (find-by-key (:key saved))))))
 
+    (it "can save multiple entities at once"
+      (let [result (save-many [(hollow) (one-field :field 1)])]
+        (should= 2 (count result))
+        (should= "hollow" (:kind (find-by-key (:key (first result)))))
+        (should= "one-field" (:kind (find-by-key (:key (second result)))))))
+
     (it "can delete an entity"
       (let [saved (save (one-field :field "hi"))]
         (delete saved)

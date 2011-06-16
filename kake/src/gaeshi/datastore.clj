@@ -172,6 +172,13 @@
         key (.put (datastore-service) entity)]
     (entity->record entity)))
 
+(defn save-many [records]
+  (let [records (map with-updated-timestamps records)
+        records (map before-save records)
+        entities (map record->entity records)
+        keys (.put (datastore-service) entities)]
+    (map entity->record entities)))
+
 (defn load-entity [entity]
   (after-load
     (entity->record entity)))

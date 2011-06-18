@@ -163,6 +163,31 @@
       ~(define-from-entity class-sym field-specs)
       ~(define-to-entity class-sym field-specs))))
 
+(defn create-key [kind id]
+  (if (number? id)
+    (KeyFactory/createKey kind (long id))
+    (KeyFactory/createKey kind (str id))))
+
+(defn key? [key]
+  (isa? (class key) Key))
+
+(defn key->string [^Key key]
+  (try
+    (KeyFactory/keyToString key)
+    (catch Exception e nil)))
+
+(defn string->key [value]
+  (try
+    (KeyFactory/stringToKey value)
+    (catch Exception e nil)))
+
+(defn ->key [value]
+  (cond
+    (key? value) value
+    (string? value) (string->key value)
+    (nil? value) nil
+    :else (:key value)))
+
 (defn save [record & values]
   (let [values (if (map? (first values)) (merge (first values) (apply hash-map (rest values))) (apply hash-map values))
         record (merge record values)
@@ -197,6 +222,10 @@
         result-map (.get (datastore-service) keys)
         entities (map #(get result-map %) keys)]
     (map load-entity entities)))
+
+(defn reload [record]
+  (let [key (if (key? record) record (:key record))]
+    (find-by-key key)))
 
 (defn delete [& records]
   (.delete (datastore-service) (map :key records)))
@@ -281,21 +310,3 @@
     `(.countEntities
       ~(build-query nil options)
       ~(build-fetch-options options))))
-
-  (defn create-key [kind id]
-    (if (number? id)
-      (KeyFactory/createKey kind (long id))
-      (KeyFactory/createKey kind (str id))))
-
-  (defn key? [key]
-    (isa? (class key) Key))
-
-  (defn key->string [^Key key]
-    (try
-      (KeyFactory/keyToString key)
-      (catch Exception e nil)))
-
-  (defn string->key [value]
-    (try
-      (KeyFactory/stringToKey value)
-      (catch Exception e nil)))

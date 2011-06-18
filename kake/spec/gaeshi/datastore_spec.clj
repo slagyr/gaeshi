@@ -173,6 +173,23 @@
         (should= [one] (find-by-keys [nil (:key one)]))
         (should= [] (find-by-keys nil))))
 
+    (it "converts to key"
+      (let [saved (save (one-field :field 1))]
+        (should= (:key saved) (->key saved))
+        (should= (:key saved) (->key (:key saved)))
+        (should= (:key saved) (->key (key->string (:key saved))))
+        (should= nil (->key nil))))
+
+    (it "reloads entities"
+      (let [unsaved (one-field :field 1)
+            saved (save unsaved)]
+        (should= nil (reload unsaved))
+        (should= nil (reload (create-key "blah" 123)))
+        (should= 1 (:field (reload saved)))
+        (save saved :field 2)
+        (should= 2 (:field (reload saved)))
+        (should= 2 (:field (reload (:key saved))))))
+
     (context "Keys"
 
       (it "can create a key"

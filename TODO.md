@@ -7,3 +7,5 @@
 * the devserver should run a repl server
 * need to resolve conflict with hiccup files. The .clj extension should be removed, and prepare-views task updated to exclude *.clj files.
 * Add session clearing cron job to generated project
+* Add a away to bypass timestamp updates in the datastore
+* Need to address problem where data is not loaded properly when the models haven't been loaded yet.

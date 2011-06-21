@@ -64,4 +64,7 @@
     (fn [request]
       (if-let [response (apply routing request (:handlers @cache))]
         response
-        (dynamic-controller-routing root cache request)))))
+        (try
+          (dynamic-controller-routing root cache request)
+          (catch IllegalStateException e
+            (apply routing request (:handlers @cache))))))))

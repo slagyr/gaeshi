@@ -4,11 +4,12 @@
             :url "file://LICENSE"
             :distribution :repo
             :comments "Copyright © 2011 Micah Martin All Rights Reserved."}
+  :repositories {"releases" "http://gaeshi-mvn.googlecode.com/svn/trunk/releases/"}
   :dependencies [[org.clojure/clojure "1.2.1"]
                  [ring/ring-servlet "0.3.7"]
                  [compojure "0.6.2"]
                  [hiccup "0.3.1"]
-                 [com.google.appengine/appengine-api-1.0-sdk "1.5.0"]
+                 [com.google.appengine/appengine-api-1.0-sdk "1.5.1"]
                  [inflections "0.4.3"]]
   :dev-dependencies [[speclj "1.4.0"]
                      [gaeshi/tsukuri "0.6.0-SNAPSHOT"]

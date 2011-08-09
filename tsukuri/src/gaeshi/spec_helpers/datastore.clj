@@ -9,15 +9,18 @@
      LocalServiceTestHelper]
     [com.google.apphosting.api ApiProxy]))
 
-(defn tear-down []
+(defn tear-down-local-datastore []
   (.stop (ApiProxy/getDelegate))
-  (ApiProxy/clearEnvironmentForCurrentThread)
-  )
+  (ApiProxy/clearEnvironmentForCurrentThread))
+
+(defn set-up-local-datastore []
+  (.setUp (LocalServiceTestHelper.
+    (into-array LocalServiceTestConfig
+      [(LocalBlobstoreServiceTestConfig.) (LocalDatastoreServiceTestConfig.)]))))
 
 (defn with-local-datastore []
   (around [it]
     (try
-      (.setUp (LocalServiceTestHelper.
-        (into-array LocalServiceTestConfig [(LocalBlobstoreServiceTestConfig.) (LocalDatastoreServiceTestConfig.)])))
+      (set-up-local-datastore)
       (it)
-      (finally (tear-down)))))
+      (finally (tear-down-local-datastore)))))

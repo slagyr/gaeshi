@@ -50,6 +50,11 @@ public class GaeshiDevServerEnvironment implements LocalServerEnvironment
     return false;
   }
 
+  public boolean simulateProductionLatencies()
+  {
+    return false;
+  }
+
   @Override
   public String toString()
   {

@@ -2,6 +2,7 @@
   (:use
     [speclj.core]
     [gaeshi.kuzushi.spec-helper]
+    [gaeshi.cmd :only (java)]
     [gaeshi.kuzushi.commands.server]))
 
 (describe "Server Command"
@@ -30,5 +31,13 @@
   (it "parses the JVM_OPTS arguments"
     (should= "-Xmx500m" (:jvm-opts (parse-args "-j" "-Xmx500m")))
     (should= "-Xmx500m" (:jvm-opts (parse-args "--jvm-opts=-Xmx500m"))))
+
+  (it "uses the jvm options"
+    (let [jvm-args (atom nil)]
+      (binding [java (fn [& args] (reset! jvm-args (first args)))]
+        (execute {:jvm-opts "-Xmx512m"})
+        (should= "-Xmx512m" (first @jvm-args))
+        (execute {})
+        (should= "-cp" (first @jvm-args)))))
 
   )

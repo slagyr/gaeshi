@@ -32,7 +32,7 @@
   [options]
   (let [project (load-lein-project)
         classpath (get-classpath-string project)
-        jvm-args ["-cp" classpath]
+        jvm-args (filter identity [(:jvm-opts options) "-cp" classpath])
         args ["-p" (:port options) "-a" (:address options) "-e" (:environment options) "-d" (:directory options)]]
     (clean project)
     (java jvm-args "gaeshi.tsukuri.GaeshiDevServer" (map str args))))

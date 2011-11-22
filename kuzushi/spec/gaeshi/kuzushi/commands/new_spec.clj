@@ -74,7 +74,7 @@
       (should= "lumberjacks ho!" (.readTextFile @fs "/home/app/config/production/logging.properties")))
 
     (it "generates misc stuff"
-      (should= "project: app, kake: 0.5.1, tsukuri: 0.5.1" (.readTextFile @fs "/home/app/project.clj"))
+;      (should= "project: app, kake: 0.5.1, tsukuri: 0.5.1" (.readTextFile @fs "/home/app/project.clj"))
       (should= true (.exists @fs "/home/app/WEB-INF")))
 
     (it "generated public dirs"

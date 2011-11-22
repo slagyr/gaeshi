@@ -13,7 +13,8 @@
   (.addValueOption "p" "port" "PORT" "Change the port (default: 8080)")
   (.addValueOption "a" "address" "ADDRESS" "Change the address (default: 127.0.0.1)")
   (.addValueOption "e" "environment" "ENVIRONMENT" "Change the environment (default: development)")
-  (.addValueOption "d" "directory" "DIRECTORY" "Change the directory (default: .)"))
+  (.addValueOption "d" "directory" "DIRECTORY" "Change the directory (default: .)")
+  (.addValueOption "j" "jvm-opts" "JVM OPTIONS" "Add JVM options"))
 
 (def default-options {
   :port 8080

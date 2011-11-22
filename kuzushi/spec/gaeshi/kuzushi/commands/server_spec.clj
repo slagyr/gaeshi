@@ -27,4 +27,8 @@
     (should= "one" (:directory (parse-args "-d" "one")))
     (should= "two" (:directory (parse-args "--directory=two"))))
 
+  (it "parses the JVM_OPTS arguments"
+    (should= "-Xmx500m" (:jvm-opts (parse-args "-j" "-Xmx500m")))
+    (should= "-Xmx500m" (:jvm-opts (parse-args "--jvm-opts=-Xmx500m"))))
+
   )

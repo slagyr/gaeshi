@@ -1,19 +1,15 @@
-(defproject gaeshi/kake "0.6.0-SNAPSHOT"
+(defproject gaeshi/gaeshi "0.7.0"
   :description "Runtime library for Gaeshi, a Clojure framework for Google App Engine apps."
   :license {:name "The MIT License"
             :url "file://LICENSE"
             :distribution :repo
-            :comments "Copyright © 2011 Micah Martin All Rights Reserved."}
+            :comments "Copyright © 2011-2012 Micah Martin All Rights Reserved."}
   :repositories {"releases" "http://gaeshi-mvn.googlecode.com/svn/trunk/releases/"}
-  :dependencies [[org.clojure/clojure "1.2.1"]
-                 [ring/ring-servlet "0.3.7"]
-                 [compojure "0.6.2"]
-                 [hiccup "0.3.1"]
-                 [com.google.appengine/appengine-api-1.0-sdk "1.5.1"]
-                 [inflections "0.4.3"]]
-  :dev-dependencies [[speclj "1.4.0"]
-                     [gaeshi/tsukuri "0.6.0-SNAPSHOT"]
-                     [lein-clojars "0.6.0"]]
+  :dependencies [[joodo "0.7.0"]
+;                 [inflections "0.4.3"]
+                 [com.google.appengine/appengine-api-1.0-sdk "1.6.2.1"]]
+  :dev-dependencies [[speclj "2.1.1"]
+                     [gaeshi/gaeshi-dev "0.7.0"]]
   :test-path "spec/"
   :java-source-path "src/"
   )

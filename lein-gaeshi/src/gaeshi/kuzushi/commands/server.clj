@@ -3,8 +3,8 @@
     [leiningen.core :only (read-project)]
     [leiningen.clean :only (clean)]
     [leiningen.classpath :only (get-classpath-string)]
-    [gaeshi.cmd :only (java)]
-    [gaeshi.kuzushi.common :only (symbolize load-lein-project)])
+    [joodo.cmd :only (java)]
+    [joodo.kuzushi.common :only (symbolize with-lein-project *project*)])
   (:import
     [mmargs Arguments]))
 
@@ -17,10 +17,10 @@
   (.addValueOption "j" "jvm-opts" "JVM OPTIONS" "Add JVM options"))
 
 (def default-options {
-  :port 8080
-  :address "127.0.0.1"
-  :environment "development"
-  :directory "."})
+                       :port 8080
+                       :address "127.0.0.1"
+                       :environment "development"
+                       :directory "."})
 
 (defn parse-args [& args]
   (let [options (symbolize (.parse arg-spec (into-array String args)))
@@ -30,10 +30,10 @@
 (defn execute
   "Starts the app in on a local web server"
   [options]
-  (let [project (load-lein-project)
-        classpath (get-classpath-string project)
-        jvm-args (filter identity [(:jvm-opts options) "-cp" classpath])
-        args ["-p" (:port options) "-a" (:address options) "-e" (:environment options) "-d" (:directory options)]]
-    (clean project)
-    (java jvm-args "gaeshi.tsukuri.GaeshiDevServer" (map str args))))
+  (with-lein-project
+    (let [classpath (get-classpath-string *project*)
+          jvm-args (filter identity [(:jvm-opts options) "-cp" classpath])
+          args ["-p" (:port options) "-a" (:address options) "-e" (:environment options) "-d" (:directory options)]]
+      (clean *project*)
+      (java jvm-args "gaeshi.tsukuri.GaeshiDevServer" (map str args)))))
 

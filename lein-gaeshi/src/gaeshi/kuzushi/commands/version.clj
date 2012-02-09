@@ -1,6 +1,6 @@
 (ns gaeshi.kuzushi.commands.version
   (:use
-    [gaeshi.kuzushi.common :only (exit symbolize)])
+    [joodo.kuzushi.common :only (exit symbolize)])
   (:require
     [gaeshi.kuzushi.version])
   (:import
@@ -12,7 +12,7 @@
   (symbolize (.parse arg-spec (into-array String args))))
 
 (defn execute
-  "Prints the current version of gaeshi/kuzushi"
+  "Prints the current version of gaeshi/lein-gaeshi"
   [options]
   (println gaeshi.kuzushi.version/summary)
   (exit 0))

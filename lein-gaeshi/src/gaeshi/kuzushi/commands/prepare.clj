@@ -5,7 +5,7 @@
     [leiningen.jar :only (jar get-jar-filename write-jar)]
     [clojure.java.io :only (file)]
     [clojure.string :as str :only (join)]
-    [gaeshi.kuzushi.common :only (symbolize load-lein-project)])
+    [joodo.kuzushi.common :only (symbolize with-lein-project *project*)])
   (:require
     [leiningen.util.file]
     [lancet.core :as lancet])
@@ -83,7 +83,7 @@
 (defn execute
   "Build a deployable directory structure of the app"
   [options]
-  (let [project (load-lein-project)]
-    (prepare project options)))
+  (with-lein-project
+    (prepare *project* options)))
 
 

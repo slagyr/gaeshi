@@ -3,8 +3,8 @@
     [clojure.string :as str])
   (:use
     [gaeshi.kuzushi.commands.prepare :only (prepare)]
-    [gaeshi.kuzushi.common :only (symbolize load-lein-project)]
-    [gaeshi.cmd :only (exec)])
+    [joodo.kuzushi.common :only (symbolize with-lein-project *project*)]
+    [joodo.cmd :only (exec)])
   (:import
     [mmargs Arguments]
     [java.io PushbackReader FileReader]))
@@ -61,6 +61,6 @@
 (defn execute
   "Deploy the project to Google AppEngine"
   [options]
-  (let [project (load-lein-project)
-        options (assoc options :environment (or (:environment options) "development"))]
-    (deploy project options)))
+  (with-lein-project
+    (let [options (assoc options :environment (or (:environment options) "development"))]
+      (deploy *project* options))))

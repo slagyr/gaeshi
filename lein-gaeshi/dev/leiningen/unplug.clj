@@ -7,6 +7,6 @@
 (defn unplug [project]
   (println "Uninstalling" version/summary)
   (try
-    (plugin "uninstall" "gaeshi/kuzushi" version/string)
+    (plugin "uninstall" "gaeshi/lein-gaeshi" version/string)
     (catch Exception e
       (println "failed to uninstall plugin:" e))))

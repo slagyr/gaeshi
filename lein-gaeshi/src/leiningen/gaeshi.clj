@@ -1,6 +1,6 @@
 (ns leiningen.gaeshi
   (:use
-    [gaeshi.kuzushi.core :only (run-with-project)]))
+    [gaeshi.kuzushi.main :only (run-with-project)]))
 
-(defn joodo [project & args]
+(defn gaeshi [project & args]
   (apply run-with-project project args))

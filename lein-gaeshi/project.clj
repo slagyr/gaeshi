@@ -8,7 +8,7 @@
   :dev-dependencies [[speclj "2.1.1"]
                      [filecabinet "1.0.4"]]
   :test-path "spec/"
-  :shell-wrapper {:main gaeshi.kuzushi.core
+  :shell-wrapper {:main gaeshi.kuzushi.main
                   :bin "bin/gaeshi"}
   :resources-path "resources/"
   )

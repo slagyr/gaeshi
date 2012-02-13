@@ -12,6 +12,7 @@ public class GaeshiDevServerEnvironment implements LocalServerEnvironment
   public int port = 8080;
   public String env = "development";
   public String dir = ".";
+  public String hostName = "localhost";
 
   public void install()
   {
@@ -39,6 +40,11 @@ public class GaeshiDevServerEnvironment implements LocalServerEnvironment
   public int getPort()
   {
     return port;
+  }
+
+  public String getHostName()
+  {
+    return hostName;
   }
 
   public void waitForServerToStart() throws InterruptedException

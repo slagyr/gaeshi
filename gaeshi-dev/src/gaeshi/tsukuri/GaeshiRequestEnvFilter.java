@@ -50,7 +50,7 @@ public class GaeshiRequestEnvFilter implements Filter
 
     public LocalHttpRequestEnvironment(AppEngineWebXml appEngineWebXml, HttpServletRequest request)
     {
-      super(appEngineWebXml);
+      super(appEngineWebXml.getAppId(), appEngineWebXml.getMajorVersionId());
       loginCookieData = LoginCookieUtils.getCookieData(request);
       String requestNamespace = request.getHeader("X-AppEngine-Default-Namespace");
       if(requestNamespace != null)

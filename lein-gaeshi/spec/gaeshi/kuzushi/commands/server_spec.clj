@@ -2,7 +2,7 @@
   (:use
     [speclj.core]
     [gaeshi.kuzushi.spec-helper]
-    [gaeshi.cmd :only (java)]
+    [joodo.cmd :only (java)]
     [gaeshi.kuzushi.commands.server]))
 
 (describe "Server Command"

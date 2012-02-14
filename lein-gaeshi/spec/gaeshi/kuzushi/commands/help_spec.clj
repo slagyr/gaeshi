@@ -2,8 +2,8 @@
   (:use
     [speclj.core]
     [gaeshi.kuzushi.spec-helper]
-    [gaeshi.kuzushi.commands.help]
-    [gaeshi.kuzushi.core :only (run)]))
+    [joodo.kuzushi.commands.help]
+    [joodo.kuzushi.core :only (run)]))
 
 (describe "Help Comamnd"
 

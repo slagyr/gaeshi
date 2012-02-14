@@ -152,7 +152,7 @@ public class GaeshiDevServer
 
   private void applyAppEngineWebXml(WebAppContext context)
   {
-    AppEngineWebXmlReader appWebXmlReader = new AppEngineWebXmlReader(env.dir, "../config/" + env.env + "/appengine-web.xml");
+    AppEngineWebXmlReader appWebXmlReader = new AppEngineWebXmlReader(env.dir, "config/" + env.env + "/appengine-web.xml");
     appEngineWebXml = appWebXmlReader.readAppEngineWebXml();
     context.setAttribute("com.google.appengine.tools.development.appEngineWebXml", appEngineWebXml);
     System.getProperties().putAll(this.appEngineWebXml.getSystemProperties());

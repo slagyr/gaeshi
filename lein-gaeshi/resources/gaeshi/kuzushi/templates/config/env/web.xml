@@ -7,13 +7,13 @@
     <display-name>!-APP_NAME-!</display-name>
 
     <servlet>
-        <servlet-name>gaeshi</servlet-name>
-        <servlet-class>gaeshi.kake.GaeshiServlet</servlet-class>
+        <servlet-name>joodo</servlet-name>
+        <servlet-class>joodo.kake.JoodoServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>gaeshi</servlet-name>
+        <servlet-name>joodo</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 

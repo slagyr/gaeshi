@@ -1,7 +1,7 @@
 (ns gaeshi.kuzushi.spec-helper
   (:use
     [speclj.core]
-    [joodo.kuzushi.common :only (exit *command-root* *main-name* *summary*)])
+    [joodo.kuzushi.common :only (exit *lib-name* *summary*)])
   (:import
     [java.io ByteArrayOutputStream OutputStreamWriter]))
 
@@ -13,8 +13,7 @@
    (with writer (OutputStreamWriter. @output))
    (around [spec] (binding [*out* @writer] (spec)))
    (around [spec] (binding [exit identity] (spec)))
-   (around [spec] (binding [*command-root* "gaeshi.kuzushi.commands"
-                            *main-name* "gaeshi-test"
+   (around [spec] (binding [*lib-name* "gaeshi"
                             *summary* "gaeshi X.X.TEST"]
                     (spec)))])
 

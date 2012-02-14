@@ -2,7 +2,8 @@
   (:use
     [speclj.core]
     [gaeshi.kuzushi.spec-helper]
-    [joodo.kuzushi.commands.help]
+    [gaeshi.kuzushi.commands.help]
+    [joodo.kuzushi.commands.help :only (ns-regex all-commands)]
     [joodo.kuzushi.core :only (run)]))
 
 (describe "Help Comamnd"
@@ -25,7 +26,7 @@
   (it "runs help on the help command"
     (binding [all-commands (fn [& args] [])]
       (should= 0 (run "help" "help")))
-    (should-not= -1 (.indexOf (to-s @output) "Usage: gaeshi help [command]")))
+    (should-not= -1 (.indexOf (to-s @output) "Usage: [lein] gaeshi help [command]")))
 
   (it "knows the right ns regex"
     (should (re-matches ns-regex "some_command.clj"))

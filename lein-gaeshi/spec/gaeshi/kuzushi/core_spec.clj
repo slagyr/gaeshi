@@ -2,9 +2,9 @@
   (:use
     [speclj.core]
     [gaeshi.kuzushi.spec-helper]
-    [gaeshi.kuzushi.core]
-    [gaeshi.kuzushi.common :only (exit endl)]
-    [gaeshi.kuzushi.commands.help :only (all-commands)])
+    [joodo.kuzushi.core]
+    [joodo.kuzushi.common :only (exit endl)]
+    [joodo.kuzushi.commands.help :only (all-commands)])
   (:require
     [gaeshi.kuzushi.version]))
 

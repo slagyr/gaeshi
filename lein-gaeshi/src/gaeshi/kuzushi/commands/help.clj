@@ -2,6 +2,7 @@
   (:require
     [joodo.kuzushi.commands.help :as help]))
 
+(def arg-spec help/arg-spec)
 (defn parse-args [& args] (apply help/parse-args args))
 
 (defn execute

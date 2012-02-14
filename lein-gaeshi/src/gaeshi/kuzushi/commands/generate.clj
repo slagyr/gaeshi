@@ -9,12 +9,13 @@
     [mmargs Arguments]))
 
 (def arg-spec joodo/arg-spec)
-(defn parse-args [& args] joodo/parse-args)
+(defn parse-args [& args] (apply joodo/parse-args args))
 
 (defn execute
   "Generates files for various components at the specified namespace:
     controller - new controller and spec file"
   [options]
+(println "options: " options)
   (let [templater (create-templater options)
         generator (.toLowerCase (:generator options))]
     (cond

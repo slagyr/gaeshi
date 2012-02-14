@@ -60,7 +60,7 @@
   (let [options (assoc options :dir-name (->path (:name options)))
         options (assoc options :root-ns (->ns (:name options)))
         templater (create-templater options)]
-    (.createDirectory (FileSystem/instance) (:name options))
+    (.createDirectory (FileSystem/instance) (:dir-name options))
     (add-misc options templater)
     (add-config options templater "development")
     (add-config options templater "production")

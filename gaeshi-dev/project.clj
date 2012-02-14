@@ -19,7 +19,7 @@
                  [taglibs/standard "1.1.2"]
                  [commons-el "1.0"]
                  [org.apache.geronimo.specs/geronimo-jsp_2.1_spec "1.0.1"]
-                 [filecabinet "1.0.1"]]
+                 [filecabinet "1.0.4"]]
   :dev-dependencies [[speclj "2.1.1"]
                      [com.google.appengine/appengine-api-1.0-sdk "1.6.2.1"]
                      [ring/ring-servlet "1.0.2"]]

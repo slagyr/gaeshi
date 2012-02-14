@@ -35,3 +35,10 @@
     (should= nil (first (re-seq ns-regex "blah"))))
 
   )
+
+(require 'joodo.kuzushi.common)
+(binding [joodo.kuzushi.common/*lib-name* "gaeshi"]
+  (println "(all-commands): " (all-commands)))
+
+
+(run-specs)

@@ -1,7 +1,7 @@
 (ns !-APP_NAME-!.core-spec
   (:use
     [speclj.core]
-    [gaeshi.spec-helpers.controller]
+    [joodo.spec-helpers.controller]
     [!-APP_NAME-!.core]))
 
 (describe "!-APP_NAME-!"

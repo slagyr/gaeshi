@@ -8,6 +8,9 @@
     <threadsafe>true</threadsafe>
 
     <system-properties>
+        <property name="joodo.env" value="!-ENVIRONMENT-!"/>
+        <property name="joodo.core.namespace" value="!-APP_NAME-!.core"/>
+        <property name="joodo.ignore.config" value="true"/>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
 

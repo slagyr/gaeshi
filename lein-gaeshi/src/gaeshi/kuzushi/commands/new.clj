@@ -20,7 +20,6 @@
         dir-name (:dir-name options)
         root-ns (:root-ns options)]
     (add-tokens templater "APP_NAME" root-ns "ENV_SUFFIX" env-suffix "ENVIRONMENT" env)
-    (.file templater (format "%s/config/%s/environment.clj" dir-name env) "config/env.clj")
     (.file templater (format "%s/config/%s/appengine-web.xml" dir-name env) "config/env/appengine-web.xml")
     (.file templater (format "%s/config/%s/web.xml" dir-name env) "config/env/web.xml")
     (.file templater (format "%s/config/%s/logging.properties" dir-name env) "config/env/logging.properties")
@@ -31,7 +30,6 @@
   (let [dir-name (:dir-name options)
         root-ns (:root-ns options)]
     (add-tokens templater "APP_NAME" root-ns "GAESHI_VERSION" gaeshi-version "GAESHI_DEV_VERSION" gaeshi-dev-version)
-    (.file templater (format "%s/config/environment.clj" dir-name) "config/environment.clj")
     (.file templater (format "%s/project.clj" dir-name) "project.clj")
     (.directory templater (format "%s/WEB-INF" dir-name))))
 

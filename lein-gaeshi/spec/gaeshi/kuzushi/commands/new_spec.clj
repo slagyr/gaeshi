@@ -38,6 +38,8 @@
     (before
       (.createDirectory @fs "/home")
       (.setWorkingDirectory @fs "/home")
+      (.createTextFile @fs "/templates/config/environment.clj" "default env, core: !-APP_NAME-!")
+      (.createTextFile @fs "/templates/config/env.clj" "!-ENVIRONMENT-! env")
       (.createTextFile @fs "/templates/config/env/appengine-web.xml" "appengine: !-APP_NAME-!!-ENV_SUFFIX-!:!-ENVIRONMENT-!")
       (.createTextFile @fs "/templates/config/env/logging.properties" "lumberjacks ho!")
       (.createTextFile @fs "/templates/config/env/repl_init.clj" "repl_init: !-APP_NAME-!-!-ENVIRONMENT-!")
@@ -58,17 +60,20 @@
       (before (execute {:name "app"}))
 
       (it "generates development configuration"
+        (should= "development env" (.readTextFile @fs "/home/app/config/development/environment.clj"))
         (should= "appengine: app-development:development" (.readTextFile @fs "/home/app/config/development/appengine-web.xml"))
         (should= "web.xml: app" (.readTextFile @fs "/home/app/config/development/web.xml"))
         (should= "lumberjacks ho!" (.readTextFile @fs "/home/app/config/development/logging.properties"))
         (should= "repl_init: app-development" (.readTextFile @fs "/home/app/config/development/repl_init.clj")))
 
       (it "generates production configuration"
+        (should= "production env" (.readTextFile @fs "/home/app/config/production/environment.clj"))
         (should= "appengine: app:production" (.readTextFile @fs "/home/app/config/production/appengine-web.xml"))
         (should= "web.xml: app" (.readTextFile @fs "/home/app/config/production/web.xml"))
         (should= "lumberjacks ho!" (.readTextFile @fs "/home/app/config/production/logging.properties")))
 
       (it "generates misc stuff"
+        (should= "default env, core: app" (.readTextFile @fs "/home/app/config/environment.clj"))
         (should= (format "project: app, gaeshi: %s, gaeshi-dev: %s" version/string version/string) (.readTextFile @fs "/home/app/project.clj"))
         (should= true (.exists @fs "/home/app/WEB-INF")))
 

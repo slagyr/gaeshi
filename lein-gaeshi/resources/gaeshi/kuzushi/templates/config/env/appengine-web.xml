@@ -9,9 +9,6 @@
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
-
-        <property name="joodo.env" value="!-ENVIRONMENT-!"/>
-        <property name="joodo.core.namespace" value="!-APP_NAME-!.core"/>
     </system-properties>
 
 </appengine-web-app>

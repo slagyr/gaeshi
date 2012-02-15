@@ -7,7 +7,9 @@
      LocalDatastoreServiceTestConfig
      LocalBlobstoreServiceTestConfig
      LocalServiceTestHelper]
-    [com.google.apphosting.api ApiProxy]))
+    [com.google.appengine.api.datastore.dev LocalDatastoreService]
+    [com.google.apphosting.api ApiProxy]
+    [java.util.logging Logger Level]))
 
 (defn tear-down-local-datastore []
   (.stop (ApiProxy/getDelegate))
@@ -21,6 +23,7 @@
 (defn with-local-datastore []
   (around [it]
     (try
+      (.setLevel (Logger/getLogger (.getName LocalDatastoreService)) (Level/OFF))
       (set-up-local-datastore)
       (it)
       (finally (tear-down-local-datastore)))))

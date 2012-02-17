@@ -232,7 +232,6 @@
         (should= nil (string->key "blah"))
         (should= nil (string->key :fooey))
         (should= nil (key->string nil)))
-
       )
 
     (context "searching"

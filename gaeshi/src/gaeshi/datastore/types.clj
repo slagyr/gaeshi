@@ -2,7 +2,9 @@
   (:use
     [gaeshi.users :only (user->map)])
   (:import
-    [com.google.appengine.api.datastore ShortBlob Blob Category Email GeoPt Link IMHandle IMHandle$Scheme PostalAddress Rating PhoneNumber Text]
+    [com.google.appengine.api.datastore
+     Key KeyFactory ShortBlob Blob Category Email GeoPt Link
+     IMHandle IMHandle$Scheme PostalAddress Rating PhoneNumber Text]
     [com.google.appengine.api.users User]
     [com.google.appengine.api.blobstore BlobKey]
     [java.net URL]))
@@ -10,6 +12,12 @@
 (defmulti pack (fn [packer value] packer))
 
 (defmethod pack :default [packer value] value)
+
+(defmethod pack Key [_ value]
+  (cond
+    (nil? value) nil
+    (= Key (class value)) value
+    :else (KeyFactory/stringToKey value)))
 
 (defmethod pack ShortBlob [_ value]
   (cond
@@ -108,6 +116,10 @@
 (extend-type nil
   Packable
   (unpack [this] nil))
+
+(extend-type Key
+  Packable
+  (unpack [this] (KeyFactory/keyToString this)))
 
 (extend-type ShortBlob
   Packable

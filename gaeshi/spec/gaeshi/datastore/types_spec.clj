@@ -1,14 +1,31 @@
 (ns gaeshi.datastore.types-spec
   (:use
     [speclj.core]
-    [gaeshi.datastore.types])
+    [gaeshi.datastore.types]
+    [gaeshi.spec-helpers.datastore])
   (:import
-    [com.google.appengine.api.datastore ShortBlob Blob Category Email GeoPt Link IMHandle IMHandle$Scheme PostalAddress Rating PhoneNumber Text]
+    [com.google.appengine.api.datastore
+     Key KeyFactory ShortBlob Blob Category Email GeoPt Link
+     IMHandle IMHandle$Scheme PostalAddress Rating PhoneNumber Text]
     [com.google.appengine.api.users User]
     [com.google.appengine.api.blobstore BlobKey]
     [java.net URL]))
 
 (describe "Datastore Types"
+
+  (context "with database"
+    (with-local-datastore)
+
+    (it "handles keys"
+      (let [a-key (KeyFactory/createKey "foo" (long 42))
+            a-key-str (KeyFactory/keyToString a-key)
+            packed (pack Key a-key-str)]
+        (should= Key (class packed))
+        (should-be-same packed (pack Key packed))
+        (should= a-key-str (KeyFactory/keyToString packed))
+        (should= a-key-str (unpack packed))
+        (should= nil (pack Key nil))))
+    )
 
   (it "handles ShortBlob"
     (let [packed (pack ShortBlob (.getBytes "Hello" "UTF-8"))]

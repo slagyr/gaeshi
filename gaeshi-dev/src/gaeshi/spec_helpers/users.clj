@@ -31,9 +31,11 @@
 (defn setup-fake-user [& args]
   (let [values (apply hash-map args)
         service @fake-user-service]
-    (when (contains? values :user) (reset! (.user service) (map->user (merge default-user-values (:user values)))))
-    (when (contains? values :admin?) (reset! (.admin? service) (:admin? values)))
-    (when (contains? values :logged-in?) (reset! (.logged-in? service) (:logged-in? values)))))
+    (if-let [user-map (:user values)]
+      (reset! (.user service) (map->user (merge default-user-values user-map)))
+      (reset! (.user service) nil))
+    (reset! (.admin? service) (true? (:admin? values)))
+    (reset! (.logged-in? service) (true? (:logged-in? values)))))
 
 (defn with-fake-users [& args]
   (before

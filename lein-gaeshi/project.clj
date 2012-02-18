@@ -11,4 +11,5 @@
   :shell-wrapper {:main gaeshi.kuzushi.main
                   :bin "bin/gaeshi"}
   :resources-path "resources/"
+  :extra-classpath-dirs ["leiningen-1.7.0-standalone.jar"]
   )

@@ -115,6 +115,11 @@
           (should= (:key saved) (:key loaded))
           (should-not-be-same saved loaded))))
 
+    (it "find-by-key can handle nil-ish keys"
+      (should= nil (find-by-key nil))
+      (should= nil (find-by-key ""))
+      (should= nil (find-by-key "bad key")))
+
     (it "can set values while saving"
       (let [unsaved (one-field)
             saved (save unsaved :field "kia")]
@@ -232,6 +237,12 @@
         (should= nil (string->key "blah"))
         (should= nil (string->key :fooey))
         (should= nil (key->string nil)))
+
+      (it "converts to key"
+        (should= nil (->key ""))
+        (should= nil (->key nil))
+        (should= nil (->key "bad key"))
+        (should= (create-key "foo" 42) (->key (key->string (create-key "foo" 42)))))
       )
 
     (context "searching"

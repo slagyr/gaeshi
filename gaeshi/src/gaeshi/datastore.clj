@@ -99,7 +99,7 @@
 (defmethod entity->record :default [entity]
   (println "entity->record" entity)
   (reduce
-    (fn [record entry] (println "record: " record)(assoc record (keyword (key entry)) (val entry)))
+    (fn [record entry] (println "record: " record) (assoc record (keyword (key entry)) (val entry)))
     {:kind (.getKind entity) :key (key->string (.getKey entity))}
     (.getProperties entity)))
 
@@ -208,11 +208,10 @@
   (after-load
     (entity->record entity)))
 
-(defn find-by-key [key]
-  (if (nil? key)
-    nil
+(defn find-by-key [value]
+  (when-let [key (->key value)]
     (try
-      (let [entity (.get (datastore-service) (->key key))]
+      (let [entity (.get (datastore-service) key)]
         (load-entity entity))
       (catch EntityNotFoundException e
         nil))))

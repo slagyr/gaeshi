@@ -24,6 +24,13 @@ namespace :gaeshi do
       run_command "lein spec"
     end
   end
+
+  desc "push to clojars"
+  task :push do
+    in_dir "gaeshi" do
+      run_command "lein push"
+    end
+  end
 end
 
 namespace :gaeshi_dev do
@@ -32,6 +39,13 @@ namespace :gaeshi_dev do
     in_dir "gaeshi-dev" do
       run_command "lein deps, javac"
       run_command "lein spec"
+    end
+  end
+
+  desc "push to clojars"
+  task :push do
+    in_dir "gaeshi-dev" do
+      run_command "lein push"
     end
   end
 end
@@ -57,9 +71,17 @@ namespace :lein_gaeshi do
       run_command "lein spec"
     end
   end
+
+  desc "push to clojars"
+  task :push do
+    in_dir "lein-gaeshi" do
+      run_command "lein push"
+    end
+  end
 end
 
 desc "full build"
 task :build => %w{gaeshi:build gaeshi_dev:build lein_gaeshi:build}
+task :push => %w{gaeshi:push gaeshi_dev:push lein_gaeshi:push}
 
 task :default => :build

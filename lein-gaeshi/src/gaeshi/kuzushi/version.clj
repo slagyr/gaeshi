@@ -4,7 +4,7 @@
 
 (def major 0)
 (def minor 7)
-(def tiny 0)
+(def tiny 1)
 (def snapshot false)
 (def string
   (str
@@ -12,5 +12,5 @@
     (if snapshot "-SNAPSHOT" "")))
 (def summary (str "gaeshi/lein-gaeshi " string))
 
-(def gaeshi-version "0.7.0")
-(def gaeshi-dev-version "0.7.0")
+(def gaeshi-version "0.7.1")
+(def gaeshi-dev-version "0.7.1")

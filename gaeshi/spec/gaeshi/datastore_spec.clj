@@ -223,10 +223,6 @@
         (should= nil (string->key :fooey))
         (should= nil (key->string nil)))
 
-      (it "uses stringified keys when converting to string"
-        (let [key (create-key "foo" 42)]
-          (should= (key->string key) (str "" key))))
-
       )
 
     (context "searching"

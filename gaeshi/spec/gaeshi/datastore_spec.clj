@@ -449,7 +449,7 @@
               raw (.get (datastore-service) (:key saved))
               loaded (find-by-key (:key saved))]
           (should= nil (:load-message unsaved))
-          (should= nil (:load-message saved))
+          (should= "loaded with: waza!" (:load-message saved))
           (should= nil (.getProperty raw "load-message"))
           (should= "loaded with: waza!" (:load-message loaded))))
       )

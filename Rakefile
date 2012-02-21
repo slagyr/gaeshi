@@ -16,41 +16,38 @@ ensure
   Dir.chdir pwd
 end
 
-namespace :gaeshi do
-  desc "full gaeshi build"
-  task :build do
-    in_dir "gaeshi" do
-      run_command "lein deps, javac"
-      run_command "lein spec"
+DIRS = %w{gaeshi gaeshi-dev lein-gaeshi}
+
+DIRS.each do |dir|
+
+  namespace dir do
+    desc "full #{dir} build"
+    task :build do
+      in_dir dir do
+        run_command "lein deps, javac"
+        run_command "lein spec"
+      end
+    end
+
+    desc "push to clojars"
+    task :push do
+      in_dir dir do
+        run_command "lein push"
+      end
+    end
+
+    desc "install locally"
+    task :install do
+      in_dir dir do
+        run_command "lein install"
+      end
     end
   end
 
-  desc "push to clojars"
-  task :push do
-    in_dir "gaeshi" do
-      run_command "lein push"
-    end
-  end
 end
 
-namespace :gaeshi_dev do
-  desc "full gaeshi-dev build"
-  task :build do
-    in_dir "gaeshi-dev" do
-      run_command "lein deps, javac"
-      run_command "lein spec"
-    end
-  end
 
-  desc "push to clojars"
-  task :push do
-    in_dir "gaeshi-dev" do
-      run_command "lein push"
-    end
-  end
-end
-
-namespace :lein_gaeshi do
+namespace "lein-gaeshi" do
 
   desc "init lein-gaeshi"
   task :init do
@@ -64,24 +61,16 @@ namespace :lein_gaeshi do
     end
   end
 
-  desc "full lein-gaeshi build"
-  task :build => %w{init} do
-    in_dir "lein-gaeshi" do
-      run_command "lein deps, javac"
-      run_command "lein spec"
-    end
-  end
-
-  desc "push to clojars"
-  task :push do
-    in_dir "lein-gaeshi" do
-      run_command "lein push"
-    end
-  end
+  task :build => %w{init}
 end
 
-desc "full build"
-task :build => %w{gaeshi:build gaeshi_dev:build lein_gaeshi:build}
-task :push => %w{gaeshi:push gaeshi_dev:push lein_gaeshi:push}
+desc "build all projects"
+task :build => DIRS.map {|dir| "#{dir}:build"}
+
+desc "push all projects"
+task :push => DIRS.map {|dir| "#{dir}:push"}
+
+desc "install all projects"
+task :install => DIRS.map {|dir| "#{dir}:install"}
 
 task :default => :build

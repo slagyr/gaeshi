@@ -4,7 +4,7 @@
             :url "file://LICENSE"
             :distribution :repo
             :comments "Copyright © 2011-2012 Micah Martin All Rights Reserved."}
-  :dependencies [[joodo/lein-joodo "0.7.0"]]
+  :dependencies [[joodo/lein-joodo "0.7.1"]]
   :dev-dependencies [[speclj "2.1.1"]
                      [filecabinet "1.0.4"]]
   :test-path "spec/"

@@ -5,8 +5,7 @@
             :distribution :repo
             :comments "Copyright © 2011-2012 Micah Martin All Rights Reserved."}
   :repositories {"releases" "http://gaeshi-mvn.googlecode.com/svn/trunk/releases/"}
-  :dependencies [[joodo "0.7.0"]
-;                 [inflections "0.4.3"]
+  :dependencies [[joodo "0.7.1"]
                  [com.google.appengine/appengine-api-1.0-sdk "1.6.2.1"]]
   :dev-dependencies [[speclj "2.1.1"]
                      [gaeshi/gaeshi-dev "0.7.0"]]

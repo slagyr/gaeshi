@@ -247,15 +247,17 @@
               five (save (one-field :field 5))
               ten (save (one-field :field 10))]
           (should= [one five ten] (find-by-kind :one-field))
-          (should= [one] (find-by-kind :one-field :filters [(= :field 1)]))
-          (should= [one] (find-by-kind :one-field :filters [(< :field 5)]))
-          (should= [one five] (find-by-kind :one-field :filters [(<= :field 5)]))
-          (should= [ten] (find-by-kind :one-field :filters [(> :field 5)]))
-          (should= [five ten] (find-by-kind :one-field :filters [(>= :field 5)]))
-          (should= [one ten] (find-by-kind :one-field :filters [(not :field 5)]))
-          (should= [five] (find-by-kind :one-field :filters [(contains? :field [4 5 6])]))
-          (should= [five] (find-by-kind :one-field :filters [(> :field 1) (< :field 10)]))
-          (should= [] (find-by-kind :one-field :filters [(> :field 1) (< :field 10) (not :field 5)]))))
+          (should= [one] (find-by-kind :one-field :filters [:= :field 1]))
+          (should= [five] (find-by-kind :one-field :filters [:= :field 5]))
+          (should= [one five] (find-by-kind :one-field :filters [:<= :field 5]))
+          (should= [ten] (find-by-kind :one-field :filters [:> :field 5]))
+          (should= [five ten] (find-by-kind :one-field :filters [:>= :field 5]))
+          (should= [one ten] (find-by-kind :one-field :filters [:!= :field 5]))
+          (should= [one ten] (find-by-kind :one-field :filters [:not :field 5]))
+          (should= [five] (find-by-kind :one-field :filters [:contains? :field [4 5 6]]))
+          (should= [five] (find-by-kind :one-field :filters [:in :field [4 5 6]]))
+          (should= [five] (find-by-kind :one-field :filters [[:> :field 1] [:< :field 10]]))
+          (should= [] (find-by-kind :one-field :filters [[:> :field 1][:< :field 10][:not :field 5]]))))
 
       (it "handles sort order to find-by-kind"
         (let [three (save (many-fields :field1 3 :field2 "odd"))
@@ -264,11 +266,11 @@
               five (save (many-fields :field1 5 :field2 "odd"))
               nine (save (many-fields :field1 9 :field2 "odd"))
               two (save (many-fields :field1 2 :field2 "even"))]
-          (should= [one two three four five nine] (find-by-kind "many-fields" :sorts [(:field1 :asc)]))
-          (should= [nine five four three two one] (find-by-kind "many-fields" :sorts [(:field1 :desc)]))
-          (should= [three one five nine four two] (find-by-kind "many-fields" :sorts [(:field2 "desc")]))
-          (should= [four two three one five nine] (find-by-kind "many-fields" :sorts [(:field2 "asc")]))
-          (should= [two four one three five nine] (find-by-kind "many-fields" :sorts [(:field2 "asc") (:field1 :asc)]))))
+          (should= [one two three four five nine] (find-by-kind "many-fields" :sorts [:field1 :asc]))
+          (should= [nine five four three two one] (find-by-kind "many-fields" :sorts [:field1 :desc]))
+          (should= [three one five nine four two] (find-by-kind "many-fields" :sorts [:field2 "desc"]))
+          (should= [four two three one five nine] (find-by-kind "many-fields" :sorts [:field2 "asc"]))
+          (should= [two four one three five nine] (find-by-kind "many-fields" :sorts [[:field2 "asc"][:field1 :asc]]))))
 
       (it "handles fetch options"
         (let [three (save (many-fields :field1 3 :field2 "odd"))
@@ -277,9 +279,9 @@
               five (save (many-fields :field1 5 :field2 "odd"))
               nine (save (many-fields :field1 9 :field2 "odd"))
               two (save (many-fields :field1 2 :field2 "even"))]
-          (should= [one two] (find-by-kind "many-fields" :sorts [(:field1 :asc)] :limit 2 :offset 0))
-          (should= [three four] (find-by-kind "many-fields" :sorts [(:field1 :asc)] :limit 2 :offset 2))
-          (should= [five nine] (find-by-kind "many-fields" :sorts [(:field1 :asc)] :limit 2 :offset 4))))
+          (should= [one two] (find-by-kind "many-fields" :sorts [:field1 :asc] :limit 2 :offset 0))
+          (should= [three four] (find-by-kind "many-fields" :sorts [:field1 :asc] :limit 2 :offset 2))
+          (should= [five nine] (find-by-kind "many-fields" :sorts [:field1 :asc] :limit 2 :offset 4))))
 
       (it "can count by kind"
         (let [three (save (many-fields :field1 3 :field2 "odd"))
@@ -289,10 +291,10 @@
               nine (save (many-fields :field1 9 :field2 "odd"))
               two (save (many-fields :field1 2 :field2 "even"))]
           (should= 6 (count-by-kind "many-fields"))
-          (should= 4 (count-by-kind "many-fields" :filters [(< :field1 5)]))
-          (should= 1 (count-by-kind "many-fields" :filters [(> :field1 5)]))
-          (should= 4 (count-by-kind "many-fields" :filters [(= :field2 "odd")]))
-          (should= 2 (count-by-kind "many-fields" :filters [(= :field2 "even")]))
+          (should= 4 (count-by-kind "many-fields" :filters [:< :field1 5]))
+          (should= 1 (count-by-kind "many-fields" :filters [:> :field1 5]))
+          (should= 4 (count-by-kind "many-fields" :filters [:= :field2 "odd"]))
+          (should= 2 (count-by-kind "many-fields" :filters [:= :field2 "even"]))
           (should= 2 (count-by-kind "many-fields" :limit 2))
           (should= 5 (count-by-kind "many-fields" :limit 5))
           (should= 4 (count-by-kind "many-fields" :offset 2))
@@ -304,7 +306,7 @@
               o1 (save (one-field :field 1))
               m1 (save (many-fields :field1 2))]
           (should= (set (map :key [h1 o1 m1])) (set (map :key (find-all-kinds))))
-          (should= [h1] (find-all-kinds :filters [(< :__key__ (create-key "hollow" 100))]))
+          (should= [h1] (find-all-kinds :filters [[:< :__key__ (create-key "hollow" 100)]]))
           (should= [h1] (find-all-kinds :limit 1))))
 
       (it "counts all kinds"
@@ -312,7 +314,7 @@
               o1 (save (one-field :field 1))
               m1 (save (many-fields :field1 2))]
           (should= 3 (count-all-kinds))
-          (should= 1 (count-all-kinds :filters [(< :__key__ (create-key "hollow" 100))]))
+          (should= 1 (count-all-kinds :filters [[:< :__key__ (create-key "hollow" 100)]]))
           (should= 1 (count-all-kinds :limit 1))))
       )
 

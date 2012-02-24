@@ -2,6 +2,7 @@
   (:use
     [joodo.string :only (gsub)]
     [joodo.datetime :only (now)]
+    [joodo.core :only (->options)]
     [gaeshi.datastore.types :only (pack unpack)])
   (:require
     [clojure.string :as str])
@@ -230,43 +231,47 @@
   (.delete (datastore-service) (map #(->key (:key %)) records)))
 
 (defn- ->filter-operator [operator]
-  (cond
-    (= '= operator) `Query$FilterOperator/EQUAL
-    (= '< operator) `Query$FilterOperator/LESS_THAN
-    (= '<= operator) `Query$FilterOperator/LESS_THAN_OR_EQUAL
-    (= '> operator) `Query$FilterOperator/GREATER_THAN
-    (= '>= operator) `Query$FilterOperator/GREATER_THAN_OR_EQUAL
-    (= 'not operator) `Query$FilterOperator/NOT_EQUAL
-    (= 'contains? operator) `Query$FilterOperator/IN
-    :else (throw (Exception. (str "Unknown filter: " operator)))))
+  (or
+    (case (name operator)
+      "=" Query$FilterOperator/EQUAL
+      "<" Query$FilterOperator/LESS_THAN
+      "<=" Query$FilterOperator/LESS_THAN_OR_EQUAL
+      ">" Query$FilterOperator/GREATER_THAN
+      ">=" Query$FilterOperator/GREATER_THAN_OR_EQUAL
+      ("!=" "not") Query$FilterOperator/NOT_EQUAL
+      ("in" "contains?") Query$FilterOperator/IN)
+    (throw (Exception. (str "Unknown filter: " operator)))))
 
 (defn- parse-filters [filters]
-  (map
-    (fn [[operator field value]]
-      [(->filter-operator operator) (name field) value])
-    filters))
+  (when filters
+    (let [filters (if (vector? (first filters)) filters (vector filters))]
+      (map
+        (fn [[operator field value]]
+          [(->filter-operator operator) (name field) value])
+        filters))))
 
 (defn- ->sort-direction [direction]
-  (cond
-    (= :asc direction) `Query$SortDirection/ASCENDING
-    (= :desc direction) `Query$SortDirection/DESCENDING
-    (= "asc" (name direction)) `Query$SortDirection/ASCENDING
-    (= "desc" (name direction)) `Query$SortDirection/DESCENDING
-    :else (throw (Exception. (str "Unknown sort direction: " direction)))))
+  (or
+    (case (name direction)
+      "asc" Query$SortDirection/ASCENDING
+      "desc" Query$SortDirection/DESCENDING)
+    (throw (Exception. (str "Unknown sort direction: " direction)))))
 
 (defn- parse-sorts [sorts]
-  (map
-    (fn [[field direction]]
-      [(name field) (->sort-direction direction)])
-    sorts))
+  (when sorts
+    (let [sorts (if (vector? (first sorts)) sorts (vector sorts))]
+      (map
+        (fn [[field direction]]
+          [(name field) (->sort-direction direction)])
+        sorts))))
 
 (defn build-query [kind options]
   (let [filters (vec (parse-filters (:filters options)))
         sorts (vec (parse-sorts (:sorts options)))]
-    `(let [query# (if ~kind (Query. (name ~kind)) (Query.))]
-       (doseq [[operator# field# value#] ~filters] (.addFilter query# field# operator# value#))
-       (doseq [[field# direction#] ~sorts] (.addSort query# field# direction#))
-       (.prepare (datastore-service) query#))))
+    (let [query (if kind (Query. (name kind)) (Query.))]
+      (doseq [[operator field value] filters] (.addFilter query field operator value))
+      (doseq [[field direction] sorts] (.addSort query field direction))
+      (.prepare (datastore-service) query))))
 
 (defn build-fetch-options [options]
   (let [limit (:limit options)
@@ -275,37 +280,37 @@
         chunk-size (:chunk-size options)
         start-cursor (:start-cursor options)
         end-cursor (:end-cursor options)]
-    `(let [fetch-options# (FetchOptions$Builder/withDefaults)]
-       (when ~limit (.limit fetch-options# ~limit))
-       (when ~offset (.offset fetch-options# ~offset))
-       (when ~prefetch-size (.prefetchSize fetch-options# ~prefetch-size))
-       (when ~chunk-size (.checkSize fetch-options# ~chunk-size))
-       (when ~start-cursor (.startCursor fetch-options# ~start-cursor))
-       (when ~end-cursor (.endCursor fetch-options# ~end-cursor))
-       fetch-options#)))
+    (let [fetch-options (FetchOptions$Builder/withDefaults)]
+      (when limit (.limit fetch-options limit))
+      (when offset (.offset fetch-options offset))
+      (when prefetch-size (.prefetchSize fetch-options prefetch-size))
+      (when chunk-size (.checkSize fetch-options chunk-size))
+      (when start-cursor (.startCursor fetch-options start-cursor))
+      (when end-cursor (.endCursor fetch-options end-cursor))
+      fetch-options)))
 
-(defmacro find-by-kind [kind & optionskv]
-  (let [options (apply hash-map optionskv)
+(defn find-by-kind [kind & optionskv]
+  (let [options (->options optionskv)
         query (build-query kind options)
         fetching (build-fetch-options options)]
-    `(let [results# (.asQueryResultIterator ~query ~fetching)]
-       (map load-entity (iterator-seq results#)))))
+    (let [results (.asQueryResultIterator query fetching)]
+      (map load-entity (iterator-seq results)))))
 
-(defmacro find-all-kinds [& optionskv]
-  (let [options (apply hash-map optionskv)
+(defn find-all-kinds [& optionskv]
+  (let [options (->options optionskv)
         query (build-query nil options)
         fetching (build-fetch-options options)]
-    `(let [results# (.asQueryResultIterator ~query ~fetching)]
-       (map load-entity (iterator-seq results#)))))
+    (let [results (.asQueryResultIterator query fetching)]
+      (map load-entity (iterator-seq results)))))
 
-(defmacro count-by-kind [kind & optionskv]
-  (let [options (apply hash-map optionskv)]
-    `(.countEntities
-       ~(build-query kind options)
-       ~(build-fetch-options options))))
+(defn count-by-kind [kind & optionskv]
+  (let [options (->options optionskv)]
+    (.countEntities
+      (build-query kind options)
+      (build-fetch-options options))))
 
-(defmacro count-all-kinds [& optionskv]
-  (let [options (apply hash-map optionskv)]
-    `(.countEntities
-       ~(build-query nil options)
-       ~(build-fetch-options options))))
+(defn count-all-kinds [& optionskv]
+  (let [options (->options optionskv)]
+    (.countEntities
+      (build-query nil options)
+      (build-fetch-options options))))

@@ -5,3 +5,4 @@ classes
 .idea
 *.iml
 gaeshi-mvn
+.lein-deps-sum

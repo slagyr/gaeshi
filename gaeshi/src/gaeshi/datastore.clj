@@ -16,6 +16,8 @@
       (str/replace (name value) "_" "-")
       #"([a-z])([A-Z])" (fn [[_ lower upper]] (str lower "-" upper)))))
 
+(def *entities* (ref {}))
+
 (def datastore-service-instance (atom nil))
 
 (defn datastore-service []
@@ -48,44 +50,25 @@
   AfterLoad
   (after-load [_] nil))
 
-(defn- with-created-at [record]
-  (if (and (contains? record :created-at) (= nil (:created-at record)))
+(defn- with-created-at [record spec]
+  (if (and (or (contains? spec :created-at) (contains? record :created-at)) (= nil (:created-at record)))
     (assoc record :created-at (now))
     record))
 
-(defn- with-updated-at [record]
-  (if (contains? record :updated-at)
+(defn- with-updated-at [record spec]
+  (if (or (contains? spec :updated-at) (contains? record :updated-at))
     (assoc record :updated-at (now))
     record))
 
 (defn with-updated-timestamps [record]
-  (with-updated-at (with-created-at record)))
+  (let [spec (get @*entities* (:kind record))]
+    (with-updated-at (with-created-at record spec) spec)))
 
 (defn kind [thing]
   (cond
     (isa? (class thing) Entity) (.getKind thing)
     (map? thing) (:kind thing)
     :else nil))
-
-(defmulti entity->record kind)
-
-(defmethod entity->record nil [entity]
-  nil)
-
-(defmethod entity->record :default [entity]
-  (after-load
-    (reduce
-      (fn [record entry] (assoc record (keyword (key entry)) (val entry)))
-      {:kind (.getKind entity) :key (.getKey entity)}
-      (.getProperties entity))))
-
-(defmulti record->entity :kind)
-
-(defmethod record->entity :default [record]
-  (let [entity (if (:key record) (Entity. (:key record)) (Entity. (:kind record)))]
-    (doseq [[key value] (dissoc record :kind :key)]
-      (.setProperty entity (name key) value))
-    entity))
 
 (defn pack-field [packer value]
   (cond
@@ -98,15 +81,78 @@
     unpacker (unpack value)
     :else value))
 
-(defn- map-field-specs [fields]
-  (vec
-    (map
-      (fn [field]
-        (let [key (keyword (first field))
-              spec (apply hash-map (rest field))
-              spec (if-let [t (:type spec)] (assoc (dissoc spec :type) :packer t :unpacker t) spec)]
-          [key spec]))
-      fields)))
+(defmulti entity->record kind)
+
+(defmethod entity->record nil [entity]
+  nil)
+
+(defn known-entity->record
+  ([entity]
+    (let [kind (.getKind entity)
+          spec (get @*entities* kind)]
+      (known-entity->record entity kind spec)))
+  ([entity kind spec]
+    (let [key (.getKey entity)
+          record ((:*ctor* spec) key)]
+      (after-load
+        (reduce
+          (fn [record [str-key value]]
+            (let [key (keyword str-key)]
+              (assoc record key (unpack-field (:unpacker (get spec key)) value))))
+          record
+          (.getProperties entity))))))
+
+(defn- unknown-entity->record [entity kind]
+  (after-load
+    (reduce
+      (fn [record entry] (assoc record (keyword (key entry)) (val entry)))
+      {:kind kind :key (.getKey entity)}
+      (.getProperties entity))))
+
+(defmethod entity->record :default [entity]
+  (let [kind (.getKind entity)
+        spec (get @*entities* kind)]
+    (if spec
+      (known-entity->record entity kind spec)
+      (unknown-entity->record entity kind))))
+
+(defprotocol EntityRecord
+  (->entity [this]))
+
+(defn- unknown-record->entity [record kind]
+  (let [entity (if (:key record) (Entity. (:key record)) (Entity. kind))]
+    (doseq [[key value] (dissoc record :kind :key)]
+      (.setProperty entity (name key) value))
+    entity))
+
+(defn known-record->entity
+  ([record]
+    (let [kind (:kind record)
+          spec (get @*entities* kind)]
+      (known-record->entity record kind spec)))
+  ([record kind spec]
+    (let [entity (if (:key record) (Entity. (:key record)) (Entity. kind))]
+      (doseq [[field attrs] (dissoc spec :*ctor*)]
+        (.setProperty entity (name field) (pack-field (:packer (field spec)) (field record))))
+      entity)))
+
+(extend-type clojure.lang.APersistentMap
+  EntityRecord
+  (->entity [record]
+    (let [kind (:kind record)
+          spec (get @*entities* kind)]
+      (if spec
+        (known-record->entity record kind spec)
+        (unknown-record->entity record kind)))))
+
+(defn- map-fields [fields]
+  (reduce
+    (fn [spec [key & args]]
+      (let [attrs (apply hash-map args)
+            attrs (if-let [t (:type attrs)] (assoc (dissoc attrs :type) :packer t :unpacker t) attrs)]
+        (assoc spec (keyword key) attrs)))
+    {}
+    fields))
 
 (defn- extract-defaults [field-specs]
   (reduce
@@ -117,53 +163,28 @@
     {}
     field-specs))
 
-(defn- define-constructor [class-sym field-specs]
-  (let [kind (spear-case (name class-sym))
-        ctor-sym (symbol kind)
-        defaults (extract-defaults field-specs)
-        field-keys (map first field-specs)]
-    `(defn ~ctor-sym [& args#]
-       (let [~'values (if (map? (first args#)) (merge (first args#) (apply hash-map (rest args#))) (apply hash-map args#))
-             ~'values (merge ~defaults ~'values)
-             extras# (dissoc ~'values ~@field-keys)]
-         (after-create
-           (merge
-             (new ~class-sym ~kind nil
-               ~@(for [[field _] field-specs]
-                   `(~field ~'values)))
-             extras#))))))
-
-(defn- define-from-entity [class-sym field-specs]
-  (let [kind (spear-case (name class-sym))
-        field-keys (map first field-specs)
-        spec-map (apply hash-map (flatten field-specs))]
-    `(defmethod entity->record ~kind [entity#]
-       (let [~'properties (reduce (fn [m# [key# val#]] (assoc m# (keyword key#) val#)) {} (.getProperties entity#))
-             extras# (dissoc ~'properties ~@field-keys)]
-         (merge
-           (after-load
-             (new ~class-sym ~kind (.getKey entity#)
-               ~@(for [[field _] field-specs]
-                   `(unpack-field (:unpacker (~field ~spec-map)) (get ~'properties ~field)))))
-           extras#)))))
-
-(defn- define-to-entity [class-sym field-specs]
-  (let [kind (spear-case (name class-sym))]
-    `(defmethod record->entity ~kind [record#]
-       (let [entity# (if (:key record#) (Entity. (:key record#)) (Entity. (:kind record#)))
-             field-specs# ~field-specs]
-         (doseq [[key# spec#] field-specs#]
-           (.setProperty entity# (name key#) (pack-field (:packer spec#) (get record# key#))))
-         entity#))))
+(defn construct-entity-record [kind & args]
+  (let [spec (get @*entities* kind)
+        args (->options args)
+        extras (apply dissoc args (keys spec))
+        record ((:*ctor* spec) nil)]
+    (after-create
+      (merge
+        (reduce
+          (fn [record [key attrs]] (assoc record key (or (key args) (:default attrs))))
+          record
+          (dissoc spec :*ctor*))
+        extras))))
 
 (defmacro defentity [class-sym & fields]
-  (let [field-specs (map-field-specs fields)
-        field-names (map first fields)]
+  (let [field-map (map-fields fields)
+        kind (spear-case class-sym)]
     `(do
-       (defrecord ~class-sym [~'kind ~'key ~@field-names])
-       ~(define-constructor class-sym field-specs)
-       ~(define-from-entity class-sym field-specs)
-       ~(define-to-entity class-sym field-specs))))
+       (defrecord ~class-sym [~'kind ~'key])
+       (dosync (alter *entities* assoc ~kind (assoc ~field-map :*ctor* (fn [key#] (new ~class-sym ~kind key#)))))
+       (defn ~(symbol kind) [& args#] (apply construct-entity-record ~kind args#))
+       (extend-type ~class-sym EntityRecord (~'->entity [this#] (known-record->entity this#)))
+       (defmethod entity->record ~kind [entity#] (known-entity->record entity#)))))
 
 (defn create-key [kind id]
   (if (number? id)
@@ -191,18 +212,18 @@
     :else (:key value)))
 
 (defn save [record & values]
-  (let [values (if (map? (first values)) (merge (first values) (apply hash-map (rest values))) (apply hash-map values))
+  (let [values (->options values)
         record (merge record values)
         record (with-updated-timestamps record)
         record (before-save record)
-        entity (record->entity record)
+        entity (->entity record)
         key (.put (datastore-service) entity)]
     (entity->record entity)))
 
 (defn save-many [records]
   (let [records (map with-updated-timestamps records)
         records (map before-save records)
-        entities (map record->entity records)
+        entities (map ->entity records)
         keys (.put (datastore-service) entities)]
     (map entity->record entities)))
 

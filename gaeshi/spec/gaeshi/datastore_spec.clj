@@ -76,10 +76,24 @@
     (let [instance (hollow)]
       (should= `Hollow (symbol (.getName (class instance))))))
 
+  (it "caches the entity definition"
+    (let [entities @(deref #'*entities*)
+          hollow-entity (get entities "hollow")]
+      (should= 1 (count hollow-entity))
+      (should= true (fn? (:*ctor* hollow-entity)))))
+
   (it "defines entity with one field"
     (let [instance (one-field :field "value")]
       (should= `OneField (symbol (.getName (class instance))))
       (should= "value" (:field instance))))
+
+  (it "caches the one-field definition"
+    (let [entities @(deref #'*entities*)
+          entity-def (get entities "one-field")]
+      (should= 2 (count entity-def))
+      (should= true (fn? (:*ctor* entity-def)))
+      (should= {} (:field entity-def))))
+
 
   (it "defines an entity with multiple field"
     (let [instance (many-fields :field1 "value" :field2 "value2" :field42 "value42")]
@@ -257,7 +271,7 @@
           (should= [five] (find-by-kind :one-field :filters [:contains? :field [4 5 6]]))
           (should= [five] (find-by-kind :one-field :filters [:in :field [4 5 6]]))
           (should= [five] (find-by-kind :one-field :filters [[:> :field 1] [:< :field 10]]))
-          (should= [] (find-by-kind :one-field :filters [[:> :field 1][:< :field 10][:not :field 5]]))))
+          (should= [] (find-by-kind :one-field :filters [[:> :field 1] [:< :field 10] [:not :field 5]]))))
 
       (it "handles sort order to find-by-kind"
         (let [three (save (many-fields :field1 3 :field2 "odd"))
@@ -270,7 +284,7 @@
           (should= [nine five four three two one] (find-by-kind "many-fields" :sorts [:field1 :desc]))
           (should= [three one five nine four two] (find-by-kind "many-fields" :sorts [:field2 "desc"]))
           (should= [four two three one five nine] (find-by-kind "many-fields" :sorts [:field2 "asc"]))
-          (should= [two four one three five nine] (find-by-kind "many-fields" :sorts [[:field2 "asc"][:field1 :asc]]))))
+          (should= [two four one three five nine] (find-by-kind "many-fields" :sorts [[:field2 "asc"] [:field1 :asc]]))))
 
       (it "handles fetch options"
         (let [three (save (many-fields :field1 3 :field2 "odd"))
@@ -460,6 +474,13 @@
 
       (it "are automatically populated on save"
         (let [saved (save (timestamps))]
+          (should-not= nil (:created-at saved))
+          (should-not= nil (:updated-at saved))
+          (should (before? (seconds-ago 1) (:created-at saved)))
+          (should (before? (seconds-ago 1) (:updated-at saved)))))
+
+    (it "are saved based on kind, not provided keys"
+        (let [saved (save {:kind "timestamps"})]
           (should-not= nil (:created-at saved))
           (should-not= nil (:updated-at saved))
           (should (before? (seconds-ago 1) (:created-at saved)))

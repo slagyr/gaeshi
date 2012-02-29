@@ -6,7 +6,7 @@
     [joodo.datetime :only (before? after? between? seconds-ago seconds-from-now)]
     [clojure.string :only (upper-case)])
   (:import
-    [com.google.appengine.api.datastore ShortBlob Blob Category Email GeoPt Link IMHandle PostalAddress Rating PhoneNumber Text]
+    [com.google.appengine.api.datastore Key ShortBlob Blob Category Email GeoPt Link IMHandle PostalAddress Rating PhoneNumber Text]
     [com.google.appengine.api.users User]
     [com.google.appengine.api.blobstore BlobKey]))
 
@@ -39,7 +39,8 @@
   [address :type PostalAddress]
   [rating :type Rating]
   [phone :type PhoneNumber]
-  [text :type Text])
+  [text :type Text]
+  [other :type Key])
 
 (defentity CustomPacking
   [bauble :packer #(apply str (reverse %)) :unpacker upper-case])
@@ -163,7 +164,7 @@
       (let [unsaved (one-field :foo "foo")
             saved (save unsaved)
             loaded (find-by-key (:key saved))
-            raw (.get (datastore-service) (:key saved))]
+            raw (.get (datastore-service) (->key (:key saved)))]
         (should= "foo" (:foo unsaved))
         (should= nil (:foo saved))
         (should= nil (:foo loaded))
@@ -193,15 +194,16 @@
       (let [one (save (one-field :field 1))
             two (save (one-field :field 2))
             three (save (one-field :field 3))]
-        (should= one (find-by-key (key->string (:key one))))
-        (should= two (find-by-key (key->string (:key two))))
-        (should= [one two three] (find-by-keys (map #(key->string (:key %)) [one two three])))))
+        (should= one (find-by-key (:key one)))
+        (should= two (find-by-key (:key two)))
+        (should= [one two three] (find-by-keys (map :key [one two three])))))
 
     (it "converts to key"
-      (let [saved (save (one-field :field 1))]
-        (should= (:key saved) (->key saved))
-        (should= (:key saved) (->key (:key saved)))
-        (should= (:key saved) (->key (key->string (:key saved))))
+      (let [one (save (one-field :field 1))
+            akey (string->key (:key one))]
+        (should= akey (->key akey))
+        (should= akey (->key (key->string akey)))
+        (should= akey (->key one))
         (should= nil (->key nil))))
 
     (it "reloads entities"
@@ -335,35 +337,35 @@
     (context "handles data types:"
       (it "ShortBlob"
         (let [saved (save (variety-show :short-blob (.getBytes "Short" "UTF-8")))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= ShortBlob (class (.getProperty raw "short-blob")))
           (should= "Short" (String. (.getBytes (.getProperty raw "short-blob"))))
           (should= "Short" (String. (:short-blob (find-by-key (:key saved)))))))
 
       (it "Blob"
         (let [saved (save (variety-show :blob (.getBytes "Blob" "UTF-8")))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= Blob (class (.getProperty raw "blob")))
           (should= "Blob" (String. (.getBytes (.getProperty raw "blob"))))
           (should= "Blob" (String. (:blob (find-by-key (:key saved)))))))
 
       (it "Category"
         (let [saved (save (variety-show :category "red"))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= Category (class (.getProperty raw "category")))
           (should= "red" (.getCategory (.getProperty raw "category")))
           (should= "red" (:category (find-by-key (:key saved))))))
 
       (it "Email"
         (let [saved (save (variety-show :email "joe@blow.com"))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= Email (class (.getProperty raw "email")))
           (should= "joe@blow.com" (.getEmail (.getProperty raw "email")))
           (should= "joe@blow.com" (:email (find-by-key (:key saved))))))
 
       (it "GeoPt"
         (let [saved (save (variety-show :geo-pt {:latitude 12.34 :longitude 56.78}))
-              raw (.get (datastore-service) (:key saved))
+              raw (.get (datastore-service) (->key (:key saved)))
               loaded (find-by-key (:key saved))]
           (should= GeoPt (class (.getProperty raw "geo-pt")))
           (should= 12.34 (.getLatitude (.getProperty raw "geo-pt")) 0.01)
@@ -373,7 +375,7 @@
 
       (it "User"
         (let [saved (save (variety-show :user {:email "joe@blow.com" :auth-domain "gmail.com" :user-id "1234567890"}))
-              raw (.get (datastore-service) (:key saved))
+              raw (.get (datastore-service) (->key (:key saved)))
               loaded (find-by-key (:key saved))]
           (should= User (class (.getProperty raw "user")))
           (should= "joe@blow.com" (.getEmail (.getProperty raw "user")))
@@ -381,58 +383,99 @@
 
       (it "BlobKey"
         (let [saved (save (variety-show :blob-key "4321"))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= BlobKey (class (.getProperty raw "blob-key")))
           (should= "4321" (.getKeyString (.getProperty raw "blob-key")))
           (should= "4321" (:blob-key (find-by-key (:key saved))))))
 
       (it "Link"
         (let [saved (save (variety-show :link "http://gaeshi.org"))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= Link (class (.getProperty raw "link")))
           (should= "http://gaeshi.org" (.getValue (.getProperty raw "link")))
           (should= "http://gaeshi.org" (:link (find-by-key (:key saved))))))
 
       (it "IMHandle"
         (let [saved (save (variety-show :imhandle {:protocol "sip" :address "somewhere"}))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= IMHandle (class (.getProperty raw "imhandle")))
           (should= "somewhere" (.getAddress (.getProperty raw "imhandle")))
           (should= {:protocol "sip" :address "somewhere"} (:imhandle (find-by-key (:key saved))))))
 
       (it "PostalAddress"
         (let [saved (save (variety-show :address "123 Elm"))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= PostalAddress (class (.getProperty raw "address")))
           (should= "123 Elm" (.getAddress (.getProperty raw "address")))
           (should= "123 Elm" (:address (find-by-key (:key saved))))))
 
       (it "Rating"
         (let [saved (save (variety-show :rating 42))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= Rating (class (.getProperty raw "rating")))
           (should= 42 (.getRating (.getProperty raw "rating")))
           (should= 42 (:rating (find-by-key (:key saved))))))
 
       (it "PhoneNumber"
         (let [saved (save (variety-show :phone "555-867-5309"))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= PhoneNumber (class (.getProperty raw "phone")))
           (should= "555-867-5309" (.getNumber (.getProperty raw "phone")))
           (should= "555-867-5309" (:phone (find-by-key (:key saved))))))
 
       (it "Text"
         (let [saved (save (variety-show :text "some text"))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= Text (class (.getProperty raw "text")))
           (should= "some text" (.getValue (.getProperty raw "text")))
           (should= "some text" (:text (find-by-key (:key saved))))))
+
+      (it "Key"
+        (let [other (save (hollow))
+              saved (save (variety-show :other (:key other)))
+              raw (.get (datastore-service) (->key (:key saved)))]
+          (should= Key (class (.getProperty raw "other")))
+          (should= (:key other) (key->string (.getProperty raw "other")))
+          (should= (:key other) (:other (find-by-key (:key saved))))))
+
+      (it "many Keys"
+        (let [other1 (save (hollow))
+              other2 (save (hollow))
+              saved (save (variety-show :other [(:key other1) (:key other2)]))
+              raw (.get (datastore-service) (->key (:key saved)))]
+          (should= [Key Key] (map class (.getProperty raw "other")))
+          (should= [(:key other1) (:key other2)] (map key->string (.getProperty raw "other")))
+          (should= [(:key other1) (:key other2)] (:other (find-by-key (:key saved))))))
+
+      (context "in queries"
+
+        (it "for keys"
+          (let [other (save (hollow))
+                saved (save (variety-show :other (:key other)))
+                result (find-by-kind "variety-show" :filters [:= :other (:key other)])]
+            (should= 1 (count result))
+            (should= saved (first result))))
+
+        (it "for contains keys"
+          (let [other (save (hollow))
+                saved (save (variety-show :other (:key other)))
+                result (find-by-kind "variety-show" :filters [:in :other [(:key other)]])]
+            (should= 1 (count result))
+            (should= saved (first result))))
+
+        (it "for GeoPt"
+          (let [saved (save (variety-show :geo-pt {:latitude 12.34 :longitude 56.78}))
+                result (find-by-kind "variety-show" :filters [:eq :geo-pt {:latitude 12.34 :longitude 56.78}])]
+            (should= 1 (count result))
+            (should= saved (first result)))
+          )
+        )
       )
 
     (it "allows custom packing"
       (let [unsaved (custom-packing :bauble "hello")
             saved (save unsaved)
-            raw (.get (datastore-service) (:key saved))
+            raw (.get (datastore-service) (->key (:key saved)))
             loaded (find-by-key (:key saved))]
         (should= "hello" (:bauble unsaved))
         (should= "olleh" (.getProperty raw "bauble"))
@@ -441,11 +484,10 @@
     (it "can store multiple values in one field"
       (let [unsaved (one-field :field [1 2 3 4 5])
             saved (save unsaved)
-            raw (.get (datastore-service) (:key saved))
+            raw (.get (datastore-service) (->key (:key saved)))
             loaded (find-by-key (:key saved))]
         (should= [1 2 3 4 5] (:field loaded))
-        (should= java.util.ArrayList (class (.getProperty raw "field")))
-        (should= java.util.ArrayList (class (:field loaded)))))
+        (should= java.util.ArrayList (class (.getProperty raw "field")))))
 
     (context "Hooks"
       (it "has after create hook"
@@ -455,14 +497,14 @@
 
       (it "has before save hook"
         (let [saved (save (hooks :field "waza!"))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (should= "saving with: waza!" (:save-message saved))
           (should= "saving with: waza!" (.getProperty raw "save-message"))))
 
       (it "has after load hook"
         (let [unsaved (hooks :field "waza!")
               saved (save unsaved)
-              raw (.get (datastore-service) (:key saved))
+              raw (.get (datastore-service) (->key (:key saved)))
               loaded (find-by-key (:key saved))]
           (should= nil (:load-message unsaved))
           (should= "loaded with: waza!" (:load-message saved))
@@ -479,7 +521,7 @@
           (should (before? (seconds-ago 1) (:created-at saved)))
           (should (before? (seconds-ago 1) (:updated-at saved)))))
 
-    (it "are saved based on kind, not provided keys"
+      (it "are saved based on kind, not provided keys"
         (let [saved (save {:kind "timestamps"})]
           (should-not= nil (:created-at saved))
           (should-not= nil (:updated-at saved))
@@ -488,7 +530,7 @@
 
       (it "dont update existing created-at"
         (let [saved (save (timestamps))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (.setProperty raw "created-at" (seconds-ago 5))
           (.put (datastore-service) raw)
           (let [resaved (save (find-by-key (:key saved)))
@@ -497,7 +539,7 @@
 
       (it "does update existing updated-at"
         (let [saved (save (timestamps))
-              raw (.get (datastore-service) (:key saved))]
+              raw (.get (datastore-service) (->key (:key saved)))]
           (.setProperty raw "updated-at" (seconds-ago 5))
           (.put (datastore-service) raw)
           (let [resaved (save (find-by-key (:key saved)))

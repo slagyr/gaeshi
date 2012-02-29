@@ -25,6 +25,31 @@
     (reset! datastore-service-instance (DatastoreServiceFactory/getDatastoreService)))
   @datastore-service-instance)
 
+(defn create-key [kind id]
+  (if (number? id)
+    (KeyFactory/createKey kind (long id))
+    (KeyFactory/createKey kind (str id))))
+
+(defn key? [key]
+  (isa? (class key) Key))
+
+(defn key->string [^Key key]
+  (try
+    (KeyFactory/keyToString key)
+    (catch Exception e nil)))
+
+(defn string->key [value]
+  (try
+    (KeyFactory/stringToKey value)
+    (catch Exception e nil)))
+
+(defn ->key [value]
+  (cond
+    (key? value) value
+    (string? value) (string->key value)
+    (nil? value) nil
+    :else (string->key (:key value))))
+
 (defprotocol AfterCreate
   (after-create [this]))
 
@@ -72,11 +97,13 @@
 
 (defn pack-field [packer value]
   (cond
+    (sequential? value) (map #(pack-field packer %) value)
     (fn? packer) (packer value)
     :else (pack packer value)))
 
 (defn unpack-field [unpacker value]
   (cond
+    (isa? (class value) java.util.List) (map #(unpack-field unpacker %) value)
     (fn? unpacker) (unpacker value)
     unpacker (unpack value)
     :else value))
@@ -92,13 +119,13 @@
           spec (get @*entities* kind)]
       (known-entity->record entity kind spec)))
   ([entity kind spec]
-    (let [key (.getKey entity)
+    (let [key (key->string (.getKey entity))
           record ((:*ctor* spec) key)]
       (after-load
         (reduce
-          (fn [record [str-key value]]
-            (let [key (keyword str-key)]
-              (assoc record key (unpack-field (:unpacker (get spec key)) value))))
+          (fn [record [field value]]
+            (let [field (keyword field)]
+              (assoc record field (unpack-field (:unpacker (field spec)) value))))
           record
           (.getProperties entity))))))
 
@@ -106,7 +133,7 @@
   (after-load
     (reduce
       (fn [record entry] (assoc record (keyword (key entry)) (val entry)))
-      {:kind kind :key (.getKey entity)}
+      {:kind kind :key (key->string (.getKey entity))}
       (.getProperties entity))))
 
 (defmethod entity->record :default [entity]
@@ -120,9 +147,10 @@
   (->entity [this]))
 
 (defn- unknown-record->entity [record kind]
-  (let [entity (if (:key record) (Entity. (:key record)) (Entity. kind))]
-    (doseq [[key value] (dissoc record :kind :key)]
-      (.setProperty entity (name key) value))
+  (let [key (string->key (:key record))
+        entity (if key (Entity. key) (Entity. kind))]
+    (doseq [[field value] (dissoc record :kind :key)]
+      (.setProperty entity (name field) value))
     entity))
 
 (defn known-record->entity
@@ -131,7 +159,8 @@
           spec (get @*entities* kind)]
       (known-record->entity record kind spec)))
   ([record kind spec]
-    (let [entity (if (:key record) (Entity. (:key record)) (Entity. kind))]
+    (let [key (string->key (:key record))
+          entity (if key (Entity. key) (Entity. kind))]
       (doseq [[field attrs] (dissoc spec :*ctor*)]
         (.setProperty entity (name field) (pack-field (:packer (field spec)) (field record))))
       entity)))
@@ -186,31 +215,6 @@
        (extend-type ~class-sym EntityRecord (~'->entity [this#] (known-record->entity this#)))
        (defmethod entity->record ~kind [entity#] (known-entity->record entity#)))))
 
-(defn create-key [kind id]
-  (if (number? id)
-    (KeyFactory/createKey kind (long id))
-    (KeyFactory/createKey kind (str id))))
-
-(defn key? [key]
-  (isa? (class key) Key))
-
-(defn key->string [^Key key]
-  (try
-    (KeyFactory/keyToString key)
-    (catch Exception e nil)))
-
-(defn string->key [value]
-  (try
-    (KeyFactory/stringToKey value)
-    (catch Exception e nil)))
-
-(defn ->key [value]
-  (cond
-    (key? value) value
-    (string? value) (string->key value)
-    (nil? value) nil
-    :else (:key value)))
-
 (defn save [record & values]
   (let [values (->options values)
         record (merge record values)
@@ -245,8 +249,10 @@
     (map load-entity entities)))
 
 (defn reload [record]
-  (let [key (if (key? record) record (:key record))]
-    (find-by-key key)))
+  (cond
+    (key? record) (find-by-key record)
+    (string? record) (find-by-key (string->key record))
+    (map? record) (find-by-key (:key record))))
 
 (defn delete [& records]
   (.delete (datastore-service) (map #(->key (:key %)) records)))
@@ -254,13 +260,13 @@
 (defn- ->filter-operator [operator]
   (or
     (case (name operator)
-      "=" Query$FilterOperator/EQUAL
-      "<" Query$FilterOperator/LESS_THAN
-      "<=" Query$FilterOperator/LESS_THAN_OR_EQUAL
-      ">" Query$FilterOperator/GREATER_THAN
-      ">=" Query$FilterOperator/GREATER_THAN_OR_EQUAL
+      ("=" "eq") Query$FilterOperator/EQUAL
+      ("<" "lt") Query$FilterOperator/LESS_THAN
+      ("<=" "lte") Query$FilterOperator/LESS_THAN_OR_EQUAL
+      (">" "gt") Query$FilterOperator/GREATER_THAN
+      (">=" "gte") Query$FilterOperator/GREATER_THAN_OR_EQUAL
       ("!=" "not") Query$FilterOperator/NOT_EQUAL
-      ("in" "contains?") Query$FilterOperator/IN)
+      ("contains?" "in") Query$FilterOperator/IN)
     (throw (Exception. (str "Unknown filter: " operator)))))
 
 (defn- parse-filters [filters]
@@ -287,10 +293,11 @@
         sorts))))
 
 (defn build-query [kind options]
-  (let [filters (vec (parse-filters (:filters options)))
+  (let [spec (get @*entities* kind)
+        filters (vec (parse-filters (:filters options)))
         sorts (vec (parse-sorts (:sorts options)))]
     (let [query (if kind (Query. (name kind)) (Query.))]
-      (doseq [[operator field value] filters] (.addFilter query field operator value))
+      (doseq [[operator field value] filters] (.addFilter query field operator (pack-field (:packer (get spec (keyword field))) value)))
       (doseq [[field direction] sorts] (.addSort query field direction))
       (.prepare (datastore-service) query))))
 

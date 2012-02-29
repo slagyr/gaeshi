@@ -10,6 +10,8 @@
     [com.google.appengine.api.datastore Entity Query DatastoreServiceFactory Query$FilterOperator
      Query$SortDirection FetchOptions$Builder EntityNotFoundException KeyFactory Key]))
 
+; Added to joodo.string
+; remove when using a newer version of joodo (>= 0.7.2)
 (defn spear-case [value]
   (str/lower-case
     (gsub

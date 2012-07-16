@@ -5,7 +5,7 @@
 1. Install [Leiningen](https://github.com/technomancy/leiningen) 1.5 or later.
 2. Install the `gaeshi/kuzushi` plugin
 
-        lein plugin install gaeshi/kuzushi 0.5.0
+        lein plugin install gaeshi/kuzushi 0.9.0
 
 3. Make sure `~/.lein/bin` is in your path.
 

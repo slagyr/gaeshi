@@ -1,8 +1,8 @@
 (ns gaeshi.datastore
   (:use
-    [joodo.string :only (gsub)]
-    [joodo.datetime :only (now)]
-    [joodo.core :only (->options)]
+    [chee.string :only (gsub spear-case)]
+    [chee.datetime :only (now)]
+    [chee.util :only (->options)]
     [gaeshi.datastore.types :only (pack unpack)])
   (:require
     [clojure.string :as str])
@@ -10,15 +10,7 @@
     [com.google.appengine.api.datastore Entity Query DatastoreServiceFactory Query$FilterOperator
      Query$SortDirection FetchOptions$Builder EntityNotFoundException KeyFactory Key]))
 
-; Added to joodo.string
-; remove when using a newer version of joodo (>= 0.7.2)
-(defn spear-case [value]
-  (str/lower-case
-    (gsub
-      (str/replace (name value) "_" "-")
-      #"([a-z])([A-Z])" (fn [[_ lower upper]] (str lower "-" upper)))))
-
-(def *entities* (ref {}))
+(def ^:dynamic *entities* (ref {}))
 
 (def datastore-service-instance (atom nil))
 
@@ -209,7 +201,7 @@
 
 (defmacro defentity [class-sym & fields]
   (let [field-map (map-fields fields)
-        kind (spear-case class-sym)]
+        kind (spear-case (name class-sym))]
     `(do
        (defrecord ~class-sym [~'kind ~'key])
        (dosync (alter *entities* assoc ~kind (assoc ~field-map :*ctor* (fn [key#] (new ~class-sym ~kind key#)))))

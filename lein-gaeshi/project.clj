@@ -1,11 +1,13 @@
-(defproject gaeshi/lein-gaeshi "0.7.2"
+(def config (load-file "../config.clj"))
+
+(defproject gaeshi/lein-gaeshi (:version config)
   :description "Leiningen Plugin for Gaeshi, a Clojure framework for Google App Engine apps."
   :license {:name "The MIT License"
             :url "file://LICENSE"
             :distribution :repo
             :comments "Copyright © 2011-2012 Micah Martin All Rights Reserved."}
-  :dependencies [[joodo/lein-joodo "0.7.1"]]
-  :dev-dependencies [[speclj "2.1.1"]
+  :dependencies [[joodo/lein-joodo ~(:joodo-version config)]]
+  :dev-dependencies [[speclj ~(:speclj-version config)]
                      [filecabinet "1.0.4"]]
   :test-path "spec/"
   :shell-wrapper {:main gaeshi.kuzushi.main

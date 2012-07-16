@@ -3,7 +3,7 @@
     [speclj.core]
     [gaeshi.datastore]
     [gaeshi.spec-helpers.datastore]
-    [joodo.datetime :only (before? after? between? seconds-ago seconds-from-now)]
+    [chee.datetime :only (before? after? between? seconds-ago seconds-from-now)]
     [clojure.string :only (upper-case)])
   (:import
     [com.google.appengine.api.datastore Key ShortBlob Blob Category Email GeoPt Link IMHandle PostalAddress Rating PhoneNumber Text]
@@ -64,14 +64,6 @@
   [updated-at])
 
 (describe "Datastore"
-  (it "uses dashes in spear-case"
-    (should= "normal-name" (spear-case "NormalName"))
-    (should= "one" (spear-case "One"))
-    (should= "one-two" (spear-case "OneTwo"))
-    (should= "one-two-three" (spear-case "OneTwo-Three"))
-    (should= "four" (spear-case "FOUR"))
-    (should= "fou-r" (spear-case "FOuR"))
-    (should= "fi-ve" (spear-case "FI_VE")))
 
   (it "defines simple entities"
     (let [instance (hollow)]

@@ -4,7 +4,7 @@
             [clojure.java.io :refer [file]]
             [clojure.string :as str :refer [join]]
             [joodo.kuzushi.common :refer [symbolize with-lein-project *project*]]
-;            [leiningen.util.file]
+            [leiningen.core.classpath :refer [get-classpath]]
             [lancet.core :as lancet])
   (:import [java.io File]
            [mmargs Arguments]))
@@ -41,15 +41,22 @@
 (defn- prepare-views-jar [project]
   (let [default-jar-file (File. (get-jar-filename project))
         views-jar-name (str/replace (.getName default-jar-file) #"\.jar" "_views.jar")
-        views-jar-path (.getPath (File. (.getParent default-jar-file) views-jar-name))]
-    (lancet/jar {:jarfile views-jar-path :basedir (:source-path project) :includes "**/*.hiccup*"})
+        views-jar-path (.getPath (File. (.getParent default-jar-file) views-jar-name))
+        source-path (or (:source-path project) (first (:source-paths project)))]
+    (lancet/jar {:jarfile views-jar-path :basedir source-path :includes "**/*.hiccup*"})
     (lancet/copy {:file views-jar-path :todir "war/WEB-INF/lib"})))
 
+;(defn- prepare-libs [project]
+;  (let [lib-dir (:library-path project)
+;        dev-lib-dir (.getPath (file lib-dir "dev"))]
+;    (lancet/copy {:todir "war/WEB-INF/lib"}
+;      (lancet/fileset {:dir lib-dir :includes "*" :excludes "dev"}))))
+
 (defn- prepare-libs [project]
-  (let [lib-dir (:library-path project)
-        dev-lib-dir (.getPath (file lib-dir "dev"))]
-    (lancet/copy {:todir "war/WEB-INF/lib"}
-      (lancet/fileset {:dir lib-dir :includes "*" :excludes "dev"}))))
+  (let [classpaths (get-classpath *project*)
+        jars (filter #(.endsWith % ".jar") classpaths)]
+    (doseq [jar jars]
+      (lancet/copy {:file jar :todir "war/WEB-INF/lib"}))))
 
 (defn- clean-public [project]
   (lancet/delete {:dir "war/public"})

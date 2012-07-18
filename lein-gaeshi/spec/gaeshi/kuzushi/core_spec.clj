@@ -1,12 +1,10 @@
 (ns gaeshi.kuzushi.core-spec
-  (:use
-    [speclj.core]
-    [gaeshi.kuzushi.spec-helper]
-    [joodo.kuzushi.core]
-    [joodo.kuzushi.common :only (exit endl)]
-    [joodo.kuzushi.commands.help :only (all-commands)])
-  (:require
-    [gaeshi.kuzushi.version]))
+  (:use [speclj.core]
+        [gaeshi.kuzushi.spec-helper]
+        [joodo.kuzushi.core]
+        [joodo.kuzushi.common :only (exit endl)]
+        [joodo.kuzushi.commands.help :only (all-commands)])
+  (:require [gaeshi.kuzushi.version]))
 
 
 (describe "Gaeshi main"
@@ -14,7 +12,7 @@
   (with-command-help)
 
   (it "parses no arguments"
-    (binding [all-commands (fn [& args] [])]
+    (with-redefs [all-commands (fn [& args] [])]
       (should= -1 (parse-args))))
 
   (it "parses command arg dirs"

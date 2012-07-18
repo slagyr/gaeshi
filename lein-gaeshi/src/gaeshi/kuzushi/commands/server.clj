@@ -1,12 +1,9 @@
 (ns gaeshi.kuzushi.commands.server
-  (:use
-    [leiningen.core :only (read-project)]
-    [leiningen.clean :only (clean)]
-    [leiningen.classpath :only (get-classpath-string)]
-    [joodo.cmd :only (java)]
-    [joodo.kuzushi.common :only (symbolize with-lein-project *project*)])
-  (:import
-    [mmargs Arguments]))
+  (:require [clojure.string]
+            [leiningen.core.classpath :refer [get-classpath]]
+            [joodo.cmd :refer [java]]
+            [joodo.kuzushi.common :refer [symbolize with-lein-project *project*]])
+  (:import [mmargs Arguments]))
 
 (def arg-spec (Arguments.))
 (doto arg-spec
@@ -24,16 +21,15 @@
 
 (defn parse-args [& args]
   (let [options (symbolize (.parse arg-spec (into-array String args)))
-        options (if (contains? options :port) (assoc options :port (Integer/parseInt (:port options))) options)]
+        options (if (contains? options :port ) (assoc options :port (Integer/parseInt (:port options))) options)]
     (merge default-options options)))
 
 (defn execute
   "Starts the app in on a local web server"
   [options]
   (with-lein-project
-    (let [classpath (get-classpath-string *project*)
+    (let [classpath (clojure.string/join java.io.File/pathSeparatorChar (get-classpath *project*))
           jvm-args (filter identity [(:jvm-opts options) "-cp" classpath])
           args ["-p" (:port options) "-a" (:address options) "-e" (:environment options) "-d" (:directory options)]]
-      (clean *project*)
       (java jvm-args "gaeshi.tsukuri.GaeshiDevServer" (map str args)))))
 

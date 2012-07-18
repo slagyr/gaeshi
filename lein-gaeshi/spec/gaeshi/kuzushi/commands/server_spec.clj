@@ -34,7 +34,7 @@
 
   (it "uses the jvm options"
     (let [jvm-args (atom nil)]
-      (binding [java (fn [& args] (reset! jvm-args (first args)))]
+      (with-redefs [java (fn [& args] (reset! jvm-args (first args)))]
         (execute {:jvm-opts "-Xmx512m"})
         (should= "-Xmx512m" (first @jvm-args))
         (execute {})

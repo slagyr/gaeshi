@@ -28,7 +28,7 @@
       (proxy [Templater$TemplaterLogger] []
         (say [message])))
     (around [it]
-      (binding [create-templater
+      (with-redefs [create-templater
                 (fn [options]
                   (let [templater (Templater. "." "/templates")]
                     (.setLogger templater @logger)

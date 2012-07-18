@@ -1,3 +1,5 @@
+lein_exe = "lein2"
+
 def run_command(command)
   system command
   exit_code = $?.exitstatus
@@ -24,22 +26,23 @@ DIRS.each do |dir|
     desc "full #{dir} build"
     task :build do
       in_dir dir do
-        run_command "lein deps, javac"
-        run_command "lein spec"
+        run_command "#{lein_exe} deps"
+        run_command "#{lein_exe} javac"
+        run_command "#{lein_exe} spec"
       end
     end
 
     desc "push to clojars"
     task :push do
       in_dir dir do
-        run_command "lein push"
+        run_command "#{lein_exe} push"
       end
     end
 
     desc "install locally"
     task :install do
       in_dir dir do
-        run_command "lein install"
+        run_command "#{lein_exe} install"
       end
     end
   end
@@ -47,16 +50,16 @@ DIRS.each do |dir|
 end
 
 
-namespace "lein-gaeshi" do
+namespace "#{lein_exe}-gaeshi" do
 
   desc "init lein-gaeshi"
   task :init do
     in_dir "lein-gaeshi" do
-      if !File.exists?("leiningen-1.7.0-standalone.jar")
+      if !File.exists?("#leiningen-1.7.0-standalone.jar")
         puts "downloading Leiningen"
         run_command "wget https://github.com/downloads/technomancy/leiningen/leiningen-1.7.0-standalone.jar"
       else
-        puts "Leiningen already downloaded"
+        puts "leiningen already downloaded"
       end
     end
   end

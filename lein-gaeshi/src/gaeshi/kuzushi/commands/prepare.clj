@@ -1,17 +1,13 @@
 (ns gaeshi.kuzushi.commands.prepare
   "Build a deployable directory structure of the app"
-  (:use
-    [leiningen.core :only (read-project)]
-    [leiningen.jar :only (jar get-jar-filename write-jar)]
-    [clojure.java.io :only (file)]
-    [clojure.string :as str :only (join)]
-    [joodo.kuzushi.common :only (symbolize with-lein-project *project*)])
-  (:require
-    [leiningen.util.file]
-    [lancet.core :as lancet])
-  (:import
-    [java.io File]
-    [mmargs Arguments]))
+  (:require [leiningen.jar :refer [jar get-jar-filename write-jar]]
+            [clojure.java.io :refer [file]]
+            [clojure.string :as str :refer [join]]
+            [joodo.kuzushi.common :refer [symbolize with-lein-project *project*]]
+;            [leiningen.util.file]
+            [lancet.core :as lancet])
+  (:import [java.io File]
+           [mmargs Arguments]))
 
 (def arg-spec (Arguments.))
 (doto arg-spec
@@ -28,7 +24,7 @@
 
 (defn- create-app-jar [project]
   (let [core-namespace (or (:gaeshi-core-namespace project) (str (:name project) ".core"))
-        project (assoc project :aot :all) ;[core-namespace])
+        project (assoc project :aot :all ) ;[core-namespace])
         project (assoc project :keep-non-project-classes true)
         project (assoc project :omit-source true)]
     (jar project)))

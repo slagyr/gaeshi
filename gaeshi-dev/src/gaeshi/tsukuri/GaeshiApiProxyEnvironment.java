@@ -66,6 +66,11 @@ public class GaeshiApiProxyEnvironment implements ApiProxy.Environment
     return attributes;
   }
 
+  public long getRemainingMillis()
+  {
+    return 1000;
+  }
+
   @Override
   public String toString()
   {

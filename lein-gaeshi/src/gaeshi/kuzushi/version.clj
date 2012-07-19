@@ -3,8 +3,8 @@
     [clojure.string :as str]))
 
 (def major 0)
-(def minor 7)
-(def tiny 2)
+(def minor 10)
+(def tiny 0)
 (def snapshot false)
 (def string
   (str
@@ -12,5 +12,5 @@
     (if snapshot "-SNAPSHOT" "")))
 (def summary (str "gaeshi/lein-gaeshi " string))
 
-(def gaeshi-version "0.7.2")
-(def gaeshi-dev-version "0.7.2")
+(def gaeshi-version "0.10.0")
+(def gaeshi-dev-version "0.10.0")

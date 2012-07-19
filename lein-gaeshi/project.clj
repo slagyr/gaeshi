@@ -7,7 +7,7 @@
   :license {:name "The MIT License"
             :url "file://LICENSE"
             :distribution :repo
-            :comments "Copyright © 2011-2012 Micah Martin All Rights Reserved."}
+            :comments "Copyright (c) 2011-2012 Micah Martin All Rights Reserved."}
   :dependencies [[joodo/lein-joodo ~(:joodo-version config)]
                  [leiningen "2.0.0-preview7"]
                  [lancet "1.0.1"]]

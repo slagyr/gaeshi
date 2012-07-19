@@ -2,10 +2,12 @@
 
 ## Installation
 
-1. Install [Leiningen](https://github.com/technomancy/leiningen) 1.5 or later.
-2. Install the `gaeshi/kuzushi` plugin
+### Leiningen 1
 
-        lein plugin install gaeshi/kuzushi 0.9.0
+1. Install [Leiningen](https://github.com/technomancy/leiningen) 1.5 or later.
+2. Install the `gaeshi/lein-gaeshi` plugin
+
+        lein plugin install gaeshi/lein-gaeshi 0.9.0
 
 3. Make sure `~/.lein/bin` is in your path.
 
@@ -16,6 +18,21 @@
 
         gaeshi help
 
+
+### Leiningen 2
+
+1. Install [Leiningen](https://github.com/technomancy/leiningen) 2.0 or later.
+2. Install the `gaeshi/lein-gaeshi` plugin by updating your ~/.lein/profiles.clj file.
+
+        {
+         :user {:plugins [[gaeshi/lein-gaeshi "0.10.0"]]}
+         }
+
+3. Try it out!
+
+        lein gaeshi help
+
+
 If all goes well you should see a helpful message printed in your console.
 
 ## Usage
@@ -24,7 +41,7 @@ If all goes well you should see a helpful message printed in your console.
 
 1. Gaeshi will create a boiler plate project structure for you.
 
-        gaeshi new my_new_project
+        [lein] gaeshi new my_new_project
 
 2. Download/Install all the dependencies.
 
@@ -33,10 +50,10 @@ If all goes well you should see a helpful message printed in your console.
 
 3. Start the development server
 
-        gaeshi server
+        lein gaeshi server
 
 ## License
 
-Copyright (C) 2011 Micah Martin All Rights Reserved.
+Copyright (C) 2011-2012 Micah Martin All Rights Reserved.
 
 Distributed under the The MIT License.

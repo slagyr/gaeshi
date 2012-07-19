@@ -8,7 +8,7 @@
     :license {:name "The MIT License"
               :url "file://LICENSE"
               :distribution :repo
-              :comments "Copyright © 2011-2012 Micah Martin All Rights Reserved."}
+              :comments "Copyright (c) 2011-2012 Micah Martin All Rights Reserved."}
     :repositories {"releases" "http://gaeshi-mvn.googlecode.com/svn/trunk/releases/"}
     :dependencies [[org.clojure/clojure ~(:clojure-version config)]
                    [speclj ~(:speclj-version config)]

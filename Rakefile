@@ -1,4 +1,4 @@
-lein_exe = "lein2"
+lein_exe = "lein"
 
 def run_command(command)
   system command
@@ -47,24 +47,6 @@ DIRS.each do |dir|
     end
   end
 
-end
-
-
-namespace "#{lein_exe}-gaeshi" do
-
-  desc "init lein-gaeshi"
-  task :init do
-    in_dir "lein-gaeshi" do
-      if !File.exists?("#leiningen-1.7.0-standalone.jar")
-        puts "downloading Leiningen"
-        run_command "wget https://github.com/downloads/technomancy/leiningen/leiningen-1.7.0-standalone.jar"
-      else
-        puts "leiningen already downloaded"
-      end
-    end
-  end
-
-  task :build => %w{init}
 end
 
 desc "build all projects"

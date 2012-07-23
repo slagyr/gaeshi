@@ -306,7 +306,7 @@
       (when limit (.limit fetch-options limit))
       (when offset (.offset fetch-options offset))
       (when prefetch-size (.prefetchSize fetch-options prefetch-size))
-      (when chunk-size (.chuckSize fetch-options chunk-size))
+      (when chunk-size (.chunkSize fetch-options chunk-size))
       (when start-cursor (.startCursor fetch-options start-cursor))
       (when end-cursor (.endCursor fetch-options end-cursor))
       fetch-options)))

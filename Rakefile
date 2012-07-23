@@ -1,4 +1,4 @@
-lein_exe = "lein"
+lein_exe = "lein2"
 
 def run_command(command)
   system command
@@ -18,7 +18,7 @@ ensure
   Dir.chdir pwd
 end
 
-DIRS = %w{gaeshi gaeshi-dev lein-gaeshi}
+DIRS = %w{gaeshi-dev gaeshi lein-gaeshi}
 
 DIRS.each do |dir|
 

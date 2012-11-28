@@ -3,7 +3,7 @@
                 ['com.google.appengine/appengine-api-1.0-sdk (:gae-version config)]
                 ['ring/ring-servlet "1.0.2"]]]
 
-  (defproject gaeshi/gaeshi-dev (:dev-version config)
+  (defproject gaeshi/gaeshi-dev (:version config)
     :description "Development library for Gaeshi, a Clojure framework for Google App Engine apps."
     :license {:name "The MIT License"
               :url "file://LICENSE"

@@ -1,6 +1,6 @@
 (let [config (load-file "../config.clj")
       dev-deps [['speclj (:speclj-version config)]
-                ['gaeshi/gaeshi-dev (:dev-version config)]]]
+                ['gaeshi/gaeshi-dev (:version config)]]]
 
   (defproject gaeshi/gaeshi (:version config)
     :description "Runtime library for Gaeshi, a Clojure framework for Google App Engine apps."

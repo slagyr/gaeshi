@@ -9,7 +9,7 @@
             :distribution :repo
             :comments "Copyright (c) 2011-2012 Micah Martin All Rights Reserved."}
   :dependencies [[joodo/lein-joodo ~(:joodo-version config)]
-                 [leiningen "2.0.0-preview7"]
+                 [leiningen "2.0.0-preview10"]
                  [lancet "1.0.1"]]
   :profiles {:dev {:dependencies ~dev-deps}}
   :plugins ~dev-deps

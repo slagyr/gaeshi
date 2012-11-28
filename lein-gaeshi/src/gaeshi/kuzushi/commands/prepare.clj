@@ -5,6 +5,7 @@
             [clojure.string :as str :refer [join]]
             [joodo.kuzushi.common :refer [symbolize with-lein-project *project*]]
             [leiningen.core.classpath :refer [get-classpath]]
+            [leiningen.core.project :refer [set-profiles]]
             [lancet.core :as lancet])
   (:import [java.io File]
            [mmargs Arguments]))
@@ -53,7 +54,8 @@
 ;      (lancet/fileset {:dir lib-dir :includes "*" :excludes "dev"}))))
 
 (defn- prepare-libs [project]
-  (let [classpaths (get-classpath *project*)
+  (let [project (set-profiles *project* [:base])
+        classpaths (get-classpath project)
         jars (filter #(.endsWith % ".jar") classpaths)]
     (doseq [jar jars]
       (lancet/copy {:file jar :todir "war/WEB-INF/lib"}))))

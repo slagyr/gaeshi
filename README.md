@@ -3,8 +3,8 @@
 ## Deprecated
 
 Due to frustrations with Google App Engine, Gaeshi has been deprecated and is no longer maintained.  It's parent library
-[Joodo](https://github.com/slagyr/joodo) is staill alive and well.  It is suggested that you use Joodo on Heroku or AWS 
-rather than deploy anything to GAE.
+[Joodo (https://github.com/slagyr/joodo)](https://github.com/slagyr/joodo) is still alive and well.  
+It is suggested that you use Joodo on Heroku or AWS rather than deploy anything to GAE.
 
 ## Installation
 
